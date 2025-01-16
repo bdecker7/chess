@@ -40,6 +40,13 @@ public class ChessBoard {
 
     }
 
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "squares=" + Arrays.deepToString(squares) +
+                '}';
+    }
+
     /**
      * Gets a chess piece on the chessboard
      *
@@ -60,6 +67,51 @@ public class ChessBoard {
         //Thinking of adding each piece, but dont I need to delete the board first?
         //for each row set each square to null
         // add pieces to the board by either addPiece function or directly
-        throw new RuntimeException("Not implemented");
+        for(int i = 0 ; i < 8; i++ ){
+            for(int j = 0; j < 8; j++){
+                squares[i][j] = null;
+                ChessPosition position = new ChessPosition(i+1,j+1);
+                if(i == 1){                              //White pawns
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
+                    squares[i][j] = piece;
+                }else if(i == 6){                       // Black Pawns placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.PAWN);
+                    squares[i][j] = piece;
+                }else if(i == 0 && (j == 0 || j == 7)){ //White Rook placement      //This is where it fails
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.ROOK);
+                    squares[i][j] = piece;   //This is where it fails. It seems like the position is off on the function here
+                }else if(i == 7 && (j == 0 || j == 7)){ //Black Rook placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.ROOK);
+                    squares[i][j] = piece;
+                }else if(i == 0 && (j == 1 || j == 6)){ //White Knight placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KNIGHT);
+                    squares[i][j] = piece;
+                }else if(i == 7 && (j == 1 || j == 6)){ //Black Knight placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KNIGHT);
+                    squares[i][j] = piece;
+                }else if(i == 0 && (j == 2 || j == 5)){ //White Bishop placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.BISHOP);
+                    squares[i][j] = piece;
+                }else if(i == 7 && (j == 2 || j == 5)){ //Black Bishop placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.BISHOP);
+                    squares[i][j] = piece;
+                }else if(i == 0 && (j == 3)){ //White KING placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.QUEEN);
+                    squares[i][j] = piece;
+                }else if(i == 0 && (j == 4)){ //White QUEEN placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.KING);
+                    squares[i][j] = piece;
+                }else if(i == 7 && (j == 3)){ //Black KING placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.QUEEN);
+                    squares[i][j] = piece;
+                }else if(i == 7 && (j == 4)){ //Black QUEEN placement
+                    ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK,ChessPiece.PieceType.KING);
+                    squares[i][j] = piece;
+                }
+
+
+            }
+        }
+
     }
 }
