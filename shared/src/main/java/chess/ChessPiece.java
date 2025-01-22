@@ -77,7 +77,8 @@ public class ChessPiece {
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT) {
             return null;
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK) {
-            return null;
+            RookMoves rook = new RookMoves(board,myPosition);
+            return rook.validMove();
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
             return null;
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
