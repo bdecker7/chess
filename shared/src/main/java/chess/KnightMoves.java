@@ -7,9 +7,8 @@ public class KnightMoves implements PieceMovesCalculator{
 
     private final ChessBoard board;
     private final ChessPosition currentPosition;
-    private int numOfMaxMovesPossible = 0;
-    private int threeTile = 2;
-    private int oneTile = 1;
+    private final int threeTile = 2;
+    private final int oneTile = 1;
 
     public KnightMoves(ChessBoard board, ChessPosition currentPosition){
         this.board = board;
@@ -32,7 +31,7 @@ public class KnightMoves implements PieceMovesCalculator{
 
             }
         }
-        return null; // I cant have this return statement be null!! what do i do?
+        return null; // I can only have this return statement as null if I write it in the valid moves
     }
 
     @Override
@@ -75,12 +74,12 @@ public class KnightMoves implements PieceMovesCalculator{
             return false;
         }
         KnightMoves that = (KnightMoves) o;
-        return numOfMaxMovesPossible == that.numOfMaxMovesPossible && threeTile == that.threeTile && oneTile == that.oneTile && Objects.equals(board, that.board) && Objects.equals(currentPosition, that.currentPosition);
+        return threeTile == that.threeTile && oneTile == that.oneTile && Objects.equals(board, that.board) && Objects.equals(currentPosition, that.currentPosition);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(board, currentPosition, numOfMaxMovesPossible, threeTile, oneTile);
+        return Objects.hash(board, currentPosition, threeTile, oneTile);
     }
 
     @Override
@@ -88,7 +87,6 @@ public class KnightMoves implements PieceMovesCalculator{
         return "KnightMoves{" +
                 "board=" + board +
                 ", currentPosition=" + currentPosition +
-                ", numOfMaxMovesPossible=" + numOfMaxMovesPossible +
                 ", threeTile=" + threeTile +
                 ", oneTile=" + oneTile +
                 '}';

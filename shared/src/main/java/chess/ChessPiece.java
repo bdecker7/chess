@@ -1,5 +1,6 @@
 package chess;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -69,6 +70,9 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
+        ArrayList<ChessMove> movesList = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> movesList2 = new ArrayList<ChessMove>();
+
         if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
             return null;
         } else if (board.getPiece(myPosition).getPieceType() == PieceType.BISHOP) {
@@ -81,9 +85,16 @@ public class ChessPiece {
             RookMoves rook = new RookMoves(board,myPosition);
             return rook.validMove();
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
-            return null;
+            KingMoves king = new KingMoves(board,myPosition);
+            return king.validMove();
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
-            return null;
+            //Queen moves just use Bishop moves and Rook moves so this gets both and combines them in a list
+            BishopMoves queen1 = new BishopMoves(board,myPosition);
+            RookMoves queen2 = new RookMoves(board,myPosition);
+            movesList = queen1.validMove();
+            movesList2 = queen2.validMove();
+            movesList.addAll(movesList2);
+            return movesList;
         }
         return null;
     }
