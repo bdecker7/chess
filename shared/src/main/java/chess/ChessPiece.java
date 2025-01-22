@@ -75,7 +75,8 @@ public class ChessPiece {
             BishopMoves bishop = new BishopMoves(board,myPosition);
             return bishop.validMove();
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT) {
-            return null;
+            KnightMoves knight = new KnightMoves(board, myPosition);
+            return knight.validMove();
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK) {
             RookMoves rook = new RookMoves(board,myPosition);
             return rook.validMove();
