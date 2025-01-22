@@ -12,7 +12,6 @@ import java.util.Objects;
 public class ChessBoard {
     private ChessPiece[][] squares = new ChessPiece[8][8];
     public ChessBoard() {
-        
     }
 
     @Override
@@ -64,12 +63,11 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        //Thinking of adding each piece, but dont I need to delete the board first?
-        //for each row set each square to null
-        // add pieces to the board by either addPiece function or directly
+        //deletes everything on the board by setting it to null
+        // adds pieces to the board directly depending on i and j positions
         for(int i = 0 ; i < 8; i++ ){
             for(int j = 0; j < 8; j++){
-                squares[i][j] = null;
+                squares[i][j] = null;   // deletes everything on the board
                 ChessPosition position = new ChessPosition(i+1,j+1);
                 if(i == 1){                              //White pawns
                     ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);

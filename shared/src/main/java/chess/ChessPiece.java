@@ -68,10 +68,22 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        // I need to modify this method. Right now it just gives an empty array.
 
-        return new ArrayList<>();
-
+        if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
+            return null;
+        } else if (board.getPiece(myPosition).getPieceType() == PieceType.BISHOP) {
+            BishopMoves bishop = new BishopMoves(board,myPosition);
+            return bishop.validMove();
+        }else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT) {
+            return null;
+        }else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK) {
+            return null;
+        }else if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
+            return null;
+        }else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
+            return null;
+        }
+        return null;
     }
 
     @Override
