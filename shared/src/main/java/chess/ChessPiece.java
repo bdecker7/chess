@@ -73,9 +73,15 @@ public class ChessPiece {
         ArrayList<ChessMove> movesList = new ArrayList<ChessMove>();
         ArrayList<ChessMove> movesList2 = new ArrayList<ChessMove>();
 
-        if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
-            return null;
-        } else if (board.getPiece(myPosition).getPieceType() == PieceType.BISHOP) {
+        ChessPiece selectedPiece = board.getPiece(myPosition);
+
+        if(selectedPiece.getPieceType() == PieceType.PAWN && selectedPiece.getTeamColor() == ChessGame.TeamColor.WHITE){
+            PawnMoves pawn = new PawnMoves(board, myPosition, ChessGame.TeamColor.WHITE);
+            return pawn.validMove();
+        }else if(selectedPiece.getPieceType() == PieceType.PAWN && selectedPiece.getTeamColor() == ChessGame.TeamColor.BLACK){
+            PawnMoves pawn = new PawnMoves(board, myPosition, ChessGame.TeamColor.BLACK);
+            return pawn.validMove();
+        }else if (selectedPiece.getPieceType() == PieceType.BISHOP) {
             BishopMoves bishop = new BishopMoves(board,myPosition);
             return bishop.validMove();
         }else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT) {
