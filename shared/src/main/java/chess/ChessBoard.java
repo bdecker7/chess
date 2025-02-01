@@ -68,7 +68,6 @@ public class ChessBoard {
         for(int i = 0 ; i < 8; i++ ){
             for(int j = 0; j < 8; j++){
                 squares[i][j] = null;   // deletes everything on the board
-                ChessPosition position = new ChessPosition(i+1,j+1);
                 if(i == 1){                              //White pawns
                     ChessPiece piece = new ChessPiece(ChessGame.TeamColor.WHITE,ChessPiece.PieceType.PAWN);
                     squares[i][j] = piece;
