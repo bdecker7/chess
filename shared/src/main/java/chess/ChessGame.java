@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -63,13 +64,19 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
         if(validMoves(move.getStartPosition()) != null){
-            if(!validMoves(move.getStartPosition()).contains(move)){
+            if(validMoves(move.getEndPosition()) != null){
+                if(!validMoves(move.getEndPosition()).contains(move)) {
+                    throw new InvalidMoveException("Invalid move!");
+                }
+            }
+            else if(!validMoves(move.getStartPosition()).contains(move)){
                 throw new InvalidMoveException("Invalid move!") ;
-            }else{
+            }
+            else{
                 gameBoard.addPiece(move.getEndPosition(),gameBoard.getPiece(move.getStartPosition())); //adds piece to desired end position
                 gameBoard.addPiece(move.getStartPosition(),null); // sets previous position to null piece
-        }
-        }
+            }
+        }else{throw new InvalidMoveException("Invalid move!");} // not sure about this line of code
     }
 
     /**
@@ -78,34 +85,28 @@ public class ChessGame {
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
-
-    public ChessPosition findKing(TeamColor teamColor){
-
-//                ChessPosition currentPosition = new ChessPosition(i,j);
-//                ChessPiece currentGamePiece = gameBoard.getPiece(currentPosition);
-//                if(gameBoard.getPiece(currentPosition) != null){
-//                    if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING && currentGamePiece.getTeamColor() ==teamColor){
-//
-//                    }
-//        }
-    }
+    
 
     public boolean isInCheck(TeamColor teamColor) {
         //iterate through all the opposite colored pieces.
         // if the piece contains the same position as the king of current team color, return true
-
-        for(int i = 0; i < 8; i++){
-            for(int j = 0; j< 8; j++){
+        Collection<ChessMove> OtherTeamMoves = new ArrayList<ChessMove>();
+        ChessPosition kingPosition = null;
+        for(int i = 1; i <= 8; i++){
+            for(int j = 1; j<= 8; j++){
                 ChessPosition currentPosition = new ChessPosition(i,j);
                 ChessPiece currentGamePiece = gameBoard.getPiece(currentPosition);
-                if(gameBoard.getPiece(currentPosition) != null){
-                    if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING && currentGamePiece.getTeamColor() ==teamColor){
-
+                if(currentGamePiece != null){
+                    if(currentGamePiece.getTeamColor() != teamColor){ //if it's not the same team, get collection of moves it can take
+                        OtherTeamMoves.addAll(currentGamePiece.pieceMoves(gameBoard,currentPosition));
+                    }
+                    else if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING && currentGamePiece.getTeamColor() == teamColor){
+                        kingPosition = new ChessPosition(i,j);
                     }
                 }
             }
         }
-        return false;
+        return OtherTeamMoves.contains(kingPosition);
     }
 
     /**
