@@ -57,15 +57,63 @@ public class ChessGame {
 //    the piece at the input location and making that move would not leave the team’s king in danger of check.
 
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ArrayList<ChessMove> pieceMoves = new ArrayList<ChessMove>();
+
         if(gameBoard.getPiece(startPosition) != null ) { //checks current position to see if it is valid
+            ArrayList<ChessMove> pieceMoves = new ArrayList<ChessMove>(gameBoard.getPiece(startPosition).pieceMoves(gameBoard, startPosition));
+            ArrayList<ChessMove> finalMoves = new ArrayList<ChessMove>();
+            //Check to see if you move the piece then king will be in check.
             if (!isInCheck(gameBoard.getPiece(startPosition).getTeamColor())) {
-                pieceMoves.addAll(gameBoard.getPiece(startPosition).pieceMoves(gameBoard, startPosition)); //checks if king not in check
-                return pieceMoves;
-            }
+                //checks if king not in check
+                for(ChessMove element: pieceMoves) {
+
+                    if (gameBoard.getPiece(element.getEndPosition()) != null && gameBoard.getPiece(element.getEndPosition()).getTeamColor() != gameBoard.getPiece(startPosition).getTeamColor()) {
+                        ChessPiece ghostPiece = new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(), gameBoard.getPiece(element.getEndPosition()).getPieceType());
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), null);
+                        if (!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())) {
+                            finalMoves.add(element);
+                        }
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), ghostPiece);
+                    } else if (gameBoard.getPiece(element.getEndPosition()) == null) {
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), null);
+                        if (!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())) {
+                            finalMoves.add(element);
+                        }
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), null);
+                    }
+
+                }
+//                return pieceMoves;
+            }else{
+                //try out the area and see if it is in check. if in check, delete that from the list of moves
+                for(ChessMove element: pieceMoves){
+
+                    if(gameBoard.getPiece(element.getEndPosition()) != null && gameBoard.getPiece(element.getEndPosition()).getTeamColor() != gameBoard.getPiece(startPosition).getTeamColor()){
+                        ChessPiece ghostPiece = new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(),gameBoard.getPiece(element.getEndPosition()).getPieceType());
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), null);
+                        if(!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())){
+                            finalMoves.add(element);
+                        }
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), ghostPiece);
+                    }else if(gameBoard.getPiece(element.getEndPosition())== null){
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), null);
+                        if(!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())){
+                            finalMoves.add(element);
+                        }
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), null);
+                    }
+
+                }
+            }return finalMoves;
 
         } else{return null;}
-        return null;
     }
 
     /**
