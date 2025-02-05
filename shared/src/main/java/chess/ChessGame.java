@@ -13,6 +13,7 @@ public class ChessGame {
     ChessBoard gameBoard = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
     public ChessGame() {
+        gameBoard.resetBoard();
     }
 
     /**
@@ -261,7 +262,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        gameBoard.resetBoard(); //unsure about this
+//        gameBoard.resetBoard(); //unsure about this
         return gameBoard;
     }
 }
