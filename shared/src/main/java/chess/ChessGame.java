@@ -236,6 +236,36 @@ public class ChessGame {
         }return OutOfAllMoves.isEmpty();
     }
 
+    //The capturing pawn must be one square ahead of the halfway point on the opponent's board
+    //The opponent's pawn must move two squares forward, landing next to the capturing pawn
+    //The capturing pawn must move immediately after the opponent's move
+    //The capturing pawn moves to the square the opponent's pawn passed over
+    //The capturing move is only allowed once
+
+    public boolean EnPassant(TeamColor teamColor){
+        return true;
+    }
+
+
+    //Neither the king nor the rook has previously moved.
+    //There are no pieces between the king and the rook.
+    //The king is not currently in check.
+    //The king does not pass through or finish on a square that is attacked by an enemy piece.
+
+    //if team color white, check the positions
+    // if team color black, check the positions
+    public boolean canCastle(TeamColor teamColor){
+        if(teamColor == TeamColor.WHITE){
+            //check to see if king move or in check
+                //Checks if rooks are there
+            return false;
+        }else{
+            //check to see if king moved or in check
+                //Check if rooks are there
+            return false;
+        }
+
+    }
     /**
      * Sets this game's chessboard with a given board
      *
