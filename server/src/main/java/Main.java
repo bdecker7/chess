@@ -1,12 +1,14 @@
 import chess.*;
+import spark.Spark;
+
+import static spark.Spark.port;
 
 public class Main {
     public static void main(String[] args) {
         var piece = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         System.out.println("♕ 240 Chess Server: " + piece);
-
-
-        int run = Server.run(8080);
+        var server = new Server().run(8080);
+        port(8080);
 
     }
 }
