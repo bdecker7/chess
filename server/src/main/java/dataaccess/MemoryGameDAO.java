@@ -1,13 +1,14 @@
 package dataaccess;
 
+import Model.GameData;
 import chess.ChessGame;
 
 import java.util.ArrayList;
 
 public class MemoryGameDAO implements GameDAO{
     @Override
-    public void createGame() {
-
+    public GameData createGame() {
+        return null;
     }
 
     @Override
