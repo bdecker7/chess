@@ -9,6 +9,7 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+
         Spark.init();
 
         Spark.awaitInitialization();

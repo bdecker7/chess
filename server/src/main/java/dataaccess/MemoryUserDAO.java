@@ -2,11 +2,15 @@ package dataaccess;
 
 import Model.UserData;
 
-import java.util.Dictionary;
+import java.util.HashMap;
 
 public class MemoryUserDAO implements UserDAO{
 
-    Dictionary<String,UserData> allUsersDataStorage;
+    HashMap<String,UserData> allUsersDataStorage;
+
+    public MemoryUserDAO(){
+        this.allUsersDataStorage= new HashMap<>();
+    }
 
     @Override
     public void clear() {
