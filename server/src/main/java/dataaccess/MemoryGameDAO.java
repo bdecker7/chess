@@ -1,16 +1,21 @@
 package dataaccess;
 
 import Model.GameData;
+import Model.UserData;
 import chess.ChessGame;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Dictionary;
+
+import java.util.HashMap;
 
 public class MemoryGameDAO implements GameDAO{
 
-//    ArrayList<MemoryGameDAO> allGameDAOs; //possibly store in a list or dictionary by game id
-    Dictionary<Integer,GameData> allGameDAOs;
+    HashMap<Integer, GameData> allGameDataStorage;
+
+    public MemoryGameDAO(){
+        this.allGameDataStorage= new HashMap<>();
+    }
 
 
     @Override

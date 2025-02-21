@@ -1,12 +1,19 @@
 package dataaccess;
 
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.UUID;
 import Model.AuthData;
+import Model.UserData;
 
 public class MemoryAuthDAO implements AuthDAO{
 
-    Dictionary<String,AuthData> allAuthDataStorage;
+
+    HashMap<String, AuthData> allAuthDataStorage;
+
+    public MemoryAuthDAO(){
+        this.allAuthDataStorage= new HashMap<>();
+    }
 
     @Override
     public void createAuth() {
