@@ -2,7 +2,12 @@ package dataaccess;
 
 import Model.UserData;
 
+import java.util.Dictionary;
+
 public class MemoryUserDAO implements UserDAO{
+
+    Dictionary<String,UserData> allUsersDataStorage;
+
     @Override
     public void clear() {
 

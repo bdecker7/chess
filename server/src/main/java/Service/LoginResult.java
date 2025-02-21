@@ -1,4 +1,3 @@
 package Service;
 
-public class LoginResult {
-}
+record LoginResult(String username, String authToken) {}
