@@ -1,5 +1,6 @@
 package server;
 
+import Handler.RegisterHandler;
 import spark.*;
 
 public class Server {
@@ -9,6 +10,8 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        Spark.post("/user", (req, res) ->
+                (new RegisterHandler()).handleRequest(req, res));
 
         Spark.init();
 

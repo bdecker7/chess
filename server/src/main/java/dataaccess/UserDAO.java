@@ -8,6 +8,6 @@ import Model.UserData;
 
 public interface UserDAO {
     void clear();
-    UserData createUser();
-    void getUser();
+    void createUser(UserData data);
+    boolean getUser(String username);
 }

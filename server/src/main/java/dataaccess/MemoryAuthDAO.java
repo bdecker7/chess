@@ -9,12 +9,15 @@ import Model.UserData;
 public class MemoryAuthDAO implements AuthDAO{
 
 
-    HashMap<String, AuthData> allAuthDataStorage;
+    public HashMap<String, AuthData> allAuthDataStorage;
 
     public MemoryAuthDAO(){
         this.allAuthDataStorage= new HashMap<>();
     }
 
+    public HashMap<String,AuthData> getAuthHashMap(){
+        return allAuthDataStorage;
+    }
     @Override
     public void createAuth() {
 
