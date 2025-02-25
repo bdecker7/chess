@@ -1,33 +1,31 @@
 package dataaccess;
 
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.UUID;
-import Model.AuthData;
+
 import Model.UserData;
 
 public class MemoryAuthDAO implements AuthDAO{
 
 
-    public HashMap<String, AuthData> allAuthDataStorage;
+    public HashMap<String, String> allAuthDataStorage;
 
     public MemoryAuthDAO(){
         this.allAuthDataStorage= new HashMap<>();
     }
 
-    public HashMap<String,AuthData> getAuthHashMap(){
+    public HashMap<String,String> getAuthHashMap(){
         return allAuthDataStorage;
     }
     @Override
-    public void createAuth(String username) {
-        String authToken = generateToken();
-        allAuthDataStorage.put(authToken,);
+    public void createAuth(UserData newUser) {
+        String authToken = UUID.randomUUID().toString();;
+        allAuthDataStorage.put(newUser.username(), authToken);
     }
 
     @Override
-    public AuthData getAuth(String authToken) {
-
-        return null;
+    public String getAuth(String username) {
+        return allAuthDataStorage.get(username);
     }
 
     @Override
@@ -35,7 +33,4 @@ public class MemoryAuthDAO implements AuthDAO{
 
     }
 
-    public static String generateToken() {
-        return UUID.randomUUID().toString();
-    }
 }

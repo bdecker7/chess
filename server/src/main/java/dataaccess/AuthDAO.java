@@ -1,12 +1,12 @@
 package dataaccess;
 
-import Model.AuthData;
+import Model.UserData;
 
 //createAuth: Create a new authorization.
 //getAuth: Retrieve an authorization given an authToken.
 //deleteAuth: Delete an authorization so that it is no longer valid.
 public interface AuthDAO {
-    void createAuth(String username);
-    AuthData getAuth(String authToken);
+    void createAuth(UserData newUser);
+    String getAuth(String authToken);
     void deleteAuth(String authToken);
 }

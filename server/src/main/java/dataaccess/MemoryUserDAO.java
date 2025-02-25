@@ -31,8 +31,8 @@ public class MemoryUserDAO implements UserDAO{
 
     @Override
     public boolean checkUser(String username){
-        //checks to see if the username is not in the database
+        //checks to see if the username is in the database
         // then creates the userdata, then auth data.
-        return !allUsersDataStorage.containsKey(username);
+        return allUsersDataStorage.containsKey(username);
     }
 }
