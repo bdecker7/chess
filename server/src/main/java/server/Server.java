@@ -10,8 +10,10 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
+        //this is the register request
         Spark.post("/user", (req, res) ->
-                (new RegisterHandler()).handleRequest(req, res));
+                new RegisterHandler().handleRequest(req,res));
+
 
         Spark.init();
 

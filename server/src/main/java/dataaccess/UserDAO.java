@@ -9,5 +9,5 @@ import Model.UserData;
 public interface UserDAO {
     void clear();
     void createUser(UserData data);
-    boolean getUser(String username);
+    boolean checkUser(String username);
 }
