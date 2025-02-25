@@ -1,4 +1,7 @@
 import chess.*;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryGameDAO;
+import dataaccess.MemoryUserDAO;
 import spark.Spark;
 import server.Server;
 import static spark.Spark.port;
@@ -9,6 +12,8 @@ public class Main {
         System.out.println("♕ 240 Chess Server: " + piece);
         Server server = new Server();
         server.run(8080);
+
+
 
         // Add a shutdown hook to stop the server when the application is terminated
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

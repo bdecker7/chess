@@ -1,19 +1,16 @@
 package Service;
 import Handler.*;
 import Model.UserData;
-import dataaccess.AlreadyTakenException;
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 
 public class UserService {
 
-    MemoryUserDAO userDAO;
-    MemoryAuthDAO authDAO;
+    UserDAO userDAO;
+    AuthDAO authDAO;
 
-    public UserService(){
-        this.userDAO = new MemoryUserDAO();
-        this.authDAO = new MemoryAuthDAO();
+    public UserService(UserDAO userDAO,AuthDAO authDAO){
+        this.userDAO = userDAO;
+        this.authDAO = authDAO;
     }
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException, AlreadyTakenException {
