@@ -37,4 +37,9 @@ public class MemoryGameDAO implements GameDAO{
     public void updateGame() {
 
     }
+
+    @Override
+    public void clear() {
+        allGameDataStorage.clear();
+    }
 }

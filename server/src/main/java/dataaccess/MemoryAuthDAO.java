@@ -8,7 +8,7 @@ import Model.UserData;
 public class MemoryAuthDAO implements AuthDAO{
 
 
-    public HashMap<String, String> allAuthDataStorage;
+    private HashMap<String, String> allAuthDataStorage;
 
     public MemoryAuthDAO(){
         this.allAuthDataStorage= new HashMap<>();
@@ -31,6 +31,11 @@ public class MemoryAuthDAO implements AuthDAO{
     @Override
     public void deleteAuth(String authToken) {
 
+    }
+
+    @Override
+    public void clear() {
+        allAuthDataStorage.clear();
     }
 
 }

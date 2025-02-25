@@ -20,8 +20,9 @@ public class UserService {
             throw new AlreadyTakenException("Error: Username already taken");
         }
         //if any of the data in register request is null, I should throw an exception.
-        else if(registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null){
-            throw new DataAccessException("Error: Bad request");
+        //currently not working right now
+        else if(registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null){ //I dont think this works?
+            throw new DataAccessException("Error: Bad request. Make sure username, password, or email is not empty.");
         }
         //creates a new user
         UserData newUser = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());

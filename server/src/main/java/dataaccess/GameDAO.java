@@ -14,5 +14,6 @@ public interface GameDAO {
     ChessGame getGame(int gameID);
     ArrayList<ChessGame> listGames();
     void updateGame(); //not sure if this returns anything
+    void clear();
 
 }

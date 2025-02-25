@@ -1,10 +1,9 @@
 package server;
 
 import Handler.RegisterHandler;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 import spark.*;
+import Service.OwnerService;
 
 public class Server {
 
@@ -12,9 +11,9 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        MemoryUserDAO UsersMemory = new MemoryUserDAO();
-        MemoryAuthDAO AuthsMemory = new MemoryAuthDAO();
-        MemoryGameDAO GamesMemory = new MemoryGameDAO();
+        UserDAO UsersMemory = new MemoryUserDAO();
+        AuthDAO AuthsMemory = new MemoryAuthDAO();
+        GameDAO GamesMemory = new MemoryGameDAO();
         //this is the register request
         Spark.post("/user", (req, res) ->
                 new RegisterHandler(UsersMemory,AuthsMemory).handleRequest(req,res));
