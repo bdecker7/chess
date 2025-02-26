@@ -32,9 +32,8 @@ public class UserService {
         //puts new user in the database
         userDAO.createUser(newUser);
         //creates an authorization Token for the new user
-        authDAO.createAuth(newUser.username());
-        String newUserAuthToken = authDAO.getAuth(registerRequest.username());
-        return new RegisterResult(registerRequest.username(), newUserAuthToken);
+        String newAuthToken = authDAO.createAuth(newUser.username());
+        return new RegisterResult(registerRequest.username(), newAuthToken);
     }
 
     public LoginResult login(LoginRequest loginRequest) {
@@ -45,9 +44,14 @@ public class UserService {
             throw new UnAuthorizedException("Error: Not Authorized");
         }
         AuthData newAuthTokenAssignment = new AuthData(loginRequest.username());
-        authDAO.createAuth(newAuthTokenAssignment.username());
-        return new LoginResult(newAuthTokenAssignment.username(), authDAO.getAuth(newAuthTokenAssignment.username()));
+        String newAuthToken = authDAO.createAuth(newAuthTokenAssignment.username());
+        return new LoginResult(newAuthTokenAssignment.username(), newAuthToken);
     }
-    public void logout(LogOutRequest logoutRequest) {}
+    public void logout(LogOutRequest logoutRequest) {
+        if(authDAO.getAuthUsername(logoutRequest.authToken()) != logoutRequest.authToken()){
+            throw new UnAuthorizedException("Error: UnAuthorized logout. Check Auth Token.");
+        }
+        authDAO.deleteAuth(logoutRequest.authToken());
+    }
 
 }

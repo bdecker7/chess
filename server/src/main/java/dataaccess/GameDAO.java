@@ -10,8 +10,8 @@ import java.util.ArrayList;
 //listGames: Retrieve all games.
 //updateGame: Updates a chess game. It should replace the chess game string corresponding to a given gameID. This is used when players join a game or when a move is made.
 public interface GameDAO {
-    GameData createGame();
-    ChessGame getGame(int gameID);
+    GameData createGame(String gameName);
+    GameData getGame(int gameID);
     ArrayList<ChessGame> listGames();
     void updateGame(); //not sure if this returns anything
     void clear();

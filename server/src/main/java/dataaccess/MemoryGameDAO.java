@@ -8,6 +8,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class MemoryGameDAO implements GameDAO{
 
@@ -19,13 +20,18 @@ public class MemoryGameDAO implements GameDAO{
 
 
     @Override
-    public GameData createGame() {
-        return null;
+    public GameData createGame(String gameName) {
+        Random random = new Random();
+        int newGameID = 1000 + random.nextInt(9000);
+        ChessGame game = new ChessGame();
+        GameData newGameData = new GameData(newGameID,null,null,gameName,game);
+        allGameDataStorage.put(newGameID,newGameData);
+        return newGameData;
     }
 
     @Override
-    public ChessGame getGame(int gameID) {
-        return null;
+    public GameData getGame(int gameID) {
+        return allGameDataStorage.get(gameID);
     }
 
     @Override

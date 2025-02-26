@@ -6,8 +6,9 @@ import Model.UserData;
 //getAuth: Retrieve an authorization given an authToken.
 //deleteAuth: Delete an authorization so that it is no longer valid.
 public interface AuthDAO {
-    void createAuth(String currentUser);
-    String getAuth(String username);
-    void deleteAuth(String username);
+    String createAuth(String currentUser);
+    String getAuthUsername(String auth);
+    void deleteAuth(String auth);
     void clear();
+    boolean usernameInAuthDatabase(String authToken);
 }

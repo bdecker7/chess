@@ -3,5 +3,5 @@ package Handler;
 import chess.ChessGame;
 import chess.ChessPiece;
 
-public record joinGameRequest(int gameID, ChessGame.TeamColor playerColor) {
+public record joinGameRequest(ChessGame.TeamColor playerColor, int gameID) {
 }

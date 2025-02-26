@@ -1,5 +1,7 @@
 package server;
 
+import Handler.CreateGameHandler;
+import Handler.LogOutHandler;
 import Handler.LoginHandler;
 import Handler.RegisterHandler;
 import dataaccess.*;
@@ -20,7 +22,10 @@ public class Server {
                 new RegisterHandler(UsersMemory,AuthsMemory).handleRequest(req,res));
         Spark.post("/session",(req,res)->
                 new LoginHandler(UsersMemory,AuthsMemory).handleLoginRequest(req,res));
-
+        Spark.delete("/session",((request, response) ->
+                new LogOutHandler(UsersMemory,AuthsMemory).handleLogOutRequest(request,response)));
+        Spark.post("/game",((request, response) ->
+                new CreateGameHandler(GamesMemory,AuthsMemory).handleRequest(request,response)));
 
         Spark.init();
 
