@@ -1,5 +1,6 @@
 package Handler;
 
+import Service.UserService;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
@@ -44,6 +45,9 @@ public class deleteEverything {
             deleteAuth();
             deleteGame();
             deleteUser();
+            res.status(200);
+            return "{}";
+
         }catch(ServerMalfunctionException e){
             res.status(500);
             return new Gson().toJson(e.getMessage());

@@ -25,6 +25,7 @@ public class Server {
                 new CreateGameHandler(GamesMemory,AuthsMemory).handleRequest(request,response)));
         Spark.delete("/db",((request, response) ->
                 new deleteEverything(UsersMemory,AuthsMemory,GamesMemory).deleteAllData(request,response)));
+
         Spark.init();
 
         Spark.awaitInitialization();

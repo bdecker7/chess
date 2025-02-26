@@ -16,7 +16,7 @@ public class RegisterHandler{
         this.authDAO = authDAO;
     }
 
-    public String handleRequest(Request req, Response res) throws DataAccessException, AlreadyTakenException {
+    public String handleRequest(Request req, Response res) throws DataAccessException, AlreadyTakenException,ServerMalfunctionException {
 
         try{
             RegisterRequest request = new Gson().fromJson(req.body(), RegisterRequest.class);   //gets json to a request object
@@ -33,7 +33,10 @@ public class RegisterHandler{
             res.status(403);
             return new Gson().toJson(e.getMessage());
         }
-        // put the 500 error in here?
+        catch(ServerMalfunctionException e){
+            res.status(500);
+            return new Gson().toJson(e.getMessage());
+        }
 
     }
 
