@@ -10,4 +10,5 @@ public interface UserDAO {
     void clear();
     void createUser(UserData data);
     boolean checkUser(String username);
+    UserData getUserData(String username);
 }

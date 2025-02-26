@@ -1,5 +1,6 @@
 package server;
 
+import Handler.LoginHandler;
 import Handler.RegisterHandler;
 import dataaccess.*;
 import spark.*;
@@ -17,6 +18,8 @@ public class Server {
         //this is the register request
         Spark.post("/user", (req, res) ->
                 new RegisterHandler(UsersMemory,AuthsMemory).handleRequest(req,res));
+        Spark.post("/session",(req,res)->
+                new LoginHandler(UsersMemory,AuthsMemory).handleLoginRequest(req,res));
 
 
         Spark.init();

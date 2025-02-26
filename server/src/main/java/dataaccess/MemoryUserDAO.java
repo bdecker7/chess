@@ -38,4 +38,9 @@ public class MemoryUserDAO implements UserDAO{
         }
         return false;
     }
+
+    @Override
+    public UserData getUserData(String username) {
+        return allUsersDataStorage.get(username);
+    }
 }

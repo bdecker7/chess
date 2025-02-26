@@ -1,7 +1,10 @@
 package Service;
 import Handler.*;
+import Model.AuthData;
 import Model.UserData;
 import dataaccess.*;
+
+import java.util.Objects;
 
 public class UserService {
 
@@ -29,13 +32,22 @@ public class UserService {
         //puts new user in the database
         userDAO.createUser(newUser);
         //creates an authorization Token for the new user
-        authDAO.createAuth(newUser);
+        authDAO.createAuth(newUser.username());
         String newUserAuthToken = authDAO.getAuth(registerRequest.username());
-        RegisterResult newRegisterer = new RegisterResult(registerRequest.username(), newUserAuthToken);
-        return newRegisterer;
+        return new RegisterResult(registerRequest.username(), newUserAuthToken);
     }
 
-    public LoginResult login(LoginRequest loginRequest) {return null;}
+    public LoginResult login(LoginRequest loginRequest) {
+
+        if(!userDAO.checkUser(loginRequest.username())){
+            throw new UnAuthorizedException("Error: Not Valid Username");
+        }else if(!Objects.equals(userDAO.getUserData(loginRequest.username()).password(), loginRequest.password())){
+            throw new UnAuthorizedException("Error: Not Authorized");
+        }
+        AuthData newAuthTokenAssignment = new AuthData(loginRequest.username());
+        authDAO.createAuth(newAuthTokenAssignment.username());
+        return new LoginResult(newAuthTokenAssignment.username(), authDAO.getAuth(newAuthTokenAssignment.username()));
+    }
     public void logout(LogOutRequest logoutRequest) {}
 
 }
