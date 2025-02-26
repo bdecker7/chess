@@ -4,6 +4,7 @@ import Model.GameData;
 import chess.ChessGame;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 //createGame: Create a new game.
 //getGame: Retrieve a specified game with the given game ID.
@@ -15,5 +16,6 @@ public interface GameDAO {
     ArrayList<ChessGame> listGames();
     void updateGame(); //not sure if this returns anything
     void clear();
+    HashMap<Integer, GameData> getGameHash();
 
 }

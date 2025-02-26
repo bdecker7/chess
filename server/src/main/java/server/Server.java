@@ -1,9 +1,6 @@
 package server;
 
-import Handler.CreateGameHandler;
-import Handler.LogOutHandler;
-import Handler.LoginHandler;
-import Handler.RegisterHandler;
+import Handler.*;
 import dataaccess.*;
 import spark.*;
 import Service.OwnerService;
@@ -26,7 +23,8 @@ public class Server {
                 new LogOutHandler(UsersMemory,AuthsMemory).handleLogOutRequest(request,response)));
         Spark.post("/game",((request, response) ->
                 new CreateGameHandler(GamesMemory,AuthsMemory).handleRequest(request,response)));
-
+        Spark.delete("/db",((request, response) ->
+                new deleteEverything(UsersMemory,AuthsMemory,GamesMemory).deleteAllData(request,response)));
         Spark.init();
 
         Spark.awaitInitialization();

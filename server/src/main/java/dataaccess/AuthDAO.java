@@ -2,6 +2,8 @@ package dataaccess;
 
 import Model.UserData;
 
+import java.util.HashMap;
+
 //createAuth: Create a new authorization.
 //getAuth: Retrieve an authorization given an authToken.
 //deleteAuth: Delete an authorization so that it is no longer valid.
@@ -11,4 +13,5 @@ public interface AuthDAO {
     void deleteAuth(String auth);
     void clear();
     boolean usernameInAuthDatabase(String authToken);
+    HashMap<String,String> grabHash();
 }

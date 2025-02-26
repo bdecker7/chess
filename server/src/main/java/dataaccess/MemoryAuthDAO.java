@@ -18,6 +18,11 @@ public class MemoryAuthDAO implements AuthDAO{
         return allAuthDataStorage;
     }
     @Override
+    public HashMap<String,String> grabHash(){
+        return allAuthDataStorage;
+    }
+
+    @Override
     public String createAuth(String newUser) {
         String authToken = UUID.randomUUID().toString();;
         allAuthDataStorage.put(authToken, newUser);

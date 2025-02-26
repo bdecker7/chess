@@ -1,9 +1,6 @@
 package dataaccess;
 
-import Handler.RegisterRequest;
-import Model.AuthData;
 import Model.UserData;
-import Service.RegisterResult;
 
 import java.util.HashMap;
 
@@ -14,7 +11,7 @@ public class MemoryUserDAO implements UserDAO{
     public MemoryUserDAO(){
         this.allUsersDataStorage= new HashMap<>();
     }
-
+    @Override
     public HashMap<String,UserData> getUserHashMap(){
         return allUsersDataStorage;
     }

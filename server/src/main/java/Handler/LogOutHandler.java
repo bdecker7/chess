@@ -21,12 +21,11 @@ public class LogOutHandler {
         try{
             //not sure what to do here.
 
-//            LogOutRequest request = new Gson().fromJson(req.body(), LogOutRequest.class);   //gets json to a request object
-//            UserService service = new UserService(memoryDAO,authDAO);
-//            service.logout(req);
+            LogOutRequest request = new Gson().fromJson(req.headers("authorization"), LogOutRequest.class);   //gets json to a request object
+            UserService service = new UserService(memoryDAO,authDAO);
+            service.logout(request);
             res.status(200);
-            EmptyResponse nothing = new EmptyResponse();
-            return new Gson().toJson(nothing);
+            return "{}";
         }
         catch(UnAuthorizedException e){
             res.status(400);

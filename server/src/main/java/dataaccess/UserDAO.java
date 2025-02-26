@@ -6,7 +6,10 @@ package dataaccess;
 
 import Model.UserData;
 
+import java.util.HashMap;
+
 public interface UserDAO {
+    HashMap<String,UserData> getUserHashMap();
     void clear();
     void createUser(UserData data);
     boolean checkUser(String username);

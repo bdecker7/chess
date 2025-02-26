@@ -48,4 +48,9 @@ public class MemoryGameDAO implements GameDAO{
     public void clear() {
         allGameDataStorage.clear();
     }
+
+    @Override
+    public HashMap<Integer, GameData> getGameHash() {
+        return allGameDataStorage;
+    }
 }
