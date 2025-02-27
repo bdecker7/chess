@@ -2,10 +2,7 @@ package Service;
 import Handler.*;
 import Model.AuthData;
 import Model.GameData;
-import dataaccess.AuthDAO;
-import dataaccess.DataAccessException;
-import dataaccess.GameDAO;
-import dataaccess.UnAuthorizedException;
+import dataaccess.*;
 
 import java.util.Objects;
 
@@ -23,17 +20,23 @@ public class GameService {
         return null;
     }
 
-    public CreateGameResult createGame(CreateGameRequest createGameRequest)throws UnAuthorizedException, DataAccessException{
-        if(!authToken.usernameInAuthDatabase(createGameRequest.authToken())){
+    public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)throws UnAuthorizedException, DataAccessException{
+        if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
-        }else if(Objects.equals(createGameRequest.gameName(), "")){
-            throw new UnAuthorizedException("Error: Not Authorized");
+        }else if(createGameRequest.gameName() == null){
+            throw new DataAccessException("Error: Incorrect Body Format");
         }
         GameData currentGameData = gameData.createGame(createGameRequest.gameName());
         return new CreateGameResult(currentGameData.gameID());
     }
-    public void joinGame(joinGameRequest joinGamesRequest){
-
+    public void joinGame(String authString, joinGameRequest joinGamesRequest) throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
+        if(!authToken.usernameInAuthDatabase(authString)){
+            throw new UnAuthorizedException("Error: UnAuthorized");
+        }else if(gameData.getGame(joinGamesRequest.gameID())){
+            throw new DataAccessException("Error: Incorrect Body Format");
+        }
+        GameData currentGameData = gameData.createGame(createGameRequest.gameName());
+        return new CreateGameResult(currentGameData.gameID());
     }
 
 }

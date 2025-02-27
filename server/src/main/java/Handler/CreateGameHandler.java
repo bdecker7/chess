@@ -18,12 +18,13 @@ public class CreateGameHandler {
         this.authDAO = authDAO;
     }
 
-    public String handleRequest(Request req, Response res) throws DataAccessException, UnAuthorizedException {
+    public String handleRequest(Request req, Response res) throws DataAccessException, UnAuthorizedException,ServerMalfunctionException {
 
         try {
             CreateGameRequest request = new Gson().fromJson(req.body(), CreateGameRequest.class);   //this needs to change to get the authToken parameter not the body
+            String authToken = new Gson().fromJson(req.headers("authorization"),String.class);
             GameService service = new GameService(authDAO, gameDAO);
-            CreateGameResult result = service.createGame(request);
+            CreateGameResult result = service.createGame(authToken, request);
             res.status(200);
             return new Gson().toJson(result);
         } catch (DataAccessException e) {
@@ -33,6 +34,9 @@ public class CreateGameHandler {
             res.status(403);
             return new Gson().toJson(e.getMessage());
         }
-        // put the 500 error in here?
+        catch(ServerMalfunctionException e){
+            res.status(500);
+            return new Gson().toJson(e.getMessage());
+        }
     }
 }

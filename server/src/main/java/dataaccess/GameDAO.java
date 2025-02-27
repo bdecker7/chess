@@ -11,7 +11,9 @@ import java.util.HashMap;
 //listGames: Retrieve all games.
 //updateGame: Updates a chess game. It should replace the chess game string corresponding to a given gameID. This is used when players join a game or when a move is made.
 public interface GameDAO {
+
     GameData createGame(String gameName);
+    boolean checkIfGameExists(int gameID);
     GameData getGame(int gameID);
     ArrayList<ChessGame> listGames();
     void updateGame(); //not sure if this returns anything

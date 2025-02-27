@@ -1,10 +1,8 @@
 package dataaccess;
 
 import Model.GameData;
-import Model.UserData;
 import chess.ChessGame;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -27,6 +25,11 @@ public class MemoryGameDAO implements GameDAO{
         GameData newGameData = new GameData(newGameID,null,null,gameName,game);
         allGameDataStorage.put(newGameID,newGameData);
         return newGameData;
+    }
+
+    @Override
+    public boolean checkIfGameExists(int gameID) {
+        return allGameDataStorage.containsKey(gameID);
     }
 
     @Override
