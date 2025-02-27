@@ -31,6 +31,14 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
+    public boolean authTokenExists(String authToken) {
+        if(allAuthDataStorage != null){
+            return allAuthDataStorage.containsKey(authToken);
+        }
+        return false;
+    }
+
+    @Override
     public String createAuth(String newUser) {
         String authToken = UUID.randomUUID().toString();;
         allAuthDataStorage.put(authToken, newUser);

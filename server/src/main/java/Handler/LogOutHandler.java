@@ -19,7 +19,7 @@ public class LogOutHandler {
     public String handleLogOutRequest(Request req, Response res) throws UnAuthorizedException, ServerMalfunctionException{
 
         try{
-            LogOutRequest request = new Gson().fromJson(req.headers("authorization"), LogOutRequest.class);   //gets json to a request object
+            String request = new Gson().fromJson(req.headers("authorization"), String.class);   //gets json to a request object
             UserService service = new UserService(memoryDAO,authDAO);
             service.logout(request);
             res.status(200);

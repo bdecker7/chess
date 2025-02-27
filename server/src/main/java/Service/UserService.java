@@ -49,11 +49,11 @@ public class UserService {
         String newAuthToken = authDAO.createAuth(newAuthTokenAssignment.username());
         return new LoginResult(newAuthTokenAssignment.username(), newAuthToken);
     }
-    public void logout(LogOutRequest logoutRequest) {
-        if(authDAO.getAuthUsername(logoutRequest.authToken()) != logoutRequest.authToken()){
+    public void logout(String authString) {
+        if(!authDAO.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized logout. Check Auth Token.");
         }
-        authDAO.deleteAuth(logoutRequest.authToken());
+        authDAO.deleteAuth(authString);
     }
 
 }
