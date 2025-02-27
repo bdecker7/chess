@@ -17,7 +17,7 @@ public class LoginHandler {
         this.authDAO = authDAO;
     }
 
-    public String handleLoginRequest(Request req, Response res) throws DataAccessException, UnAuthorizedException, ServerMalfunctionException {
+    public String handleLoginRequest(Request req, Response res) throws DataAccessException, UnAuthorizedException, ServerMalfunctionException, AlreadyAuthorizedException {
 
         try {
             LoginRequest request = new Gson().fromJson(req.body(), LoginRequest.class);   //gets json to a request object
@@ -25,11 +25,10 @@ public class LoginHandler {
             LoginResult result = service.login(request);
             res.status(200);
             return new Gson().toJson(result);
-        } catch (UnAuthorizedException e) {
+        } catch (UnAuthorizedException | AlreadyAuthorizedException e) {
             res.status(401);
             return new Gson().toJson(e.getMessage());
-        }
-        catch(ServerMalfunctionException e){
+        } catch(ServerMalfunctionException e){
             res.status(500);
             return new Gson().toJson(e.getMessage());
         }

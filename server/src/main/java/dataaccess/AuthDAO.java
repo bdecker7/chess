@@ -14,4 +14,5 @@ public interface AuthDAO {
     void clear();
     boolean usernameInAuthDatabase(String authToken);
     HashMap<String,String> grabHash();
+    boolean usernameWithAuthExists(String username);
 }

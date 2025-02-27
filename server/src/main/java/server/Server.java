@@ -14,7 +14,8 @@ public class Server {
         UserDAO UsersMemory = new MemoryUserDAO();
         AuthDAO AuthsMemory = new MemoryAuthDAO();
         GameDAO GamesMemory = new MemoryGameDAO();
-        //this is the register request
+
+        //does registering also log in a user?
         Spark.post("/user", (req, res) ->
                 new RegisterHandler(UsersMemory,AuthsMemory).handleRequest(req,res));
         Spark.post("/session",(req,res)->
