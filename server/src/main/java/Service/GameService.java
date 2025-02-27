@@ -2,6 +2,7 @@ package Service;
 import Handler.*;
 import Model.AuthData;
 import Model.GameData;
+import chess.ChessGame;
 import dataaccess.*;
 
 import java.util.Objects;
@@ -32,11 +33,37 @@ public class GameService {
     public void joinGame(String authString, joinGameRequest joinGamesRequest) throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
-        }else if(gameData.getGame(joinGamesRequest.gameID())){
-            throw new DataAccessException("Error: Incorrect Body Format");
+        }else if(!gameData.checkIfGameExists(joinGamesRequest.gameID())){
+            throw new DataAccessException("Error: game doesn't exist");
         }
-        GameData currentGameData = gameData.createGame(createGameRequest.gameName());
-        return new CreateGameResult(currentGameData.gameID());
+        else {
+            String username = checkPlayerColor(joinGamesRequest.playerColor(), joinGamesRequest.gameID(),authString);
+            //This prevents a user from playing as both white and black. not sure if needed.
+            if(Objects.equals(gameData.getGame(joinGamesRequest.gameID()).blackUsername(), username) || Objects.equals(gameData.getGame(joinGamesRequest.gameID()).whiteUsername(), username)){
+                throw new AlreadyTakenException("Error: can't be both players!!");
+            }
+            gameData.updateGame(joinGamesRequest.playerColor(),username, joinGamesRequest.gameID());
+        }
+
+    }
+
+    String checkPlayerColor(ChessGame.TeamColor requestedColor, int gameID, String authString) throws AlreadyTakenException, DataAccessException {
+        if(requestedColor == ChessGame.TeamColor.WHITE){
+            if(gameData.getGame(gameID).whiteUsername() != null) {
+                throw new AlreadyTakenException("Error: White already taken");
+            }else{
+                return authToken.getAuthUsername(authString);
+            }
+
+        }else if(requestedColor == ChessGame.TeamColor.BLACK){
+            if(gameData.getGame(gameID).blackUsername() != null){
+                throw new AlreadyTakenException("Error: Black already taken");
+            }else{
+                return authToken.getAuthUsername(authString);
+            }
+        }else{
+            throw new DataAccessException("Error: bad Request");
+        }
     }
 
 }

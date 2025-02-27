@@ -22,9 +22,13 @@ public class Server {
         Spark.delete("/session",((request, response) ->
                 new LogOutHandler(UsersMemory,AuthsMemory).handleLogOutRequest(request,response)));
         Spark.post("/game",((request, response) ->
-                new CreateGameHandler(GamesMemory,AuthsMemory).handleRequest(request,response)));
+                new GameHandler(GamesMemory,AuthsMemory).handleRequest(request,response)));
         Spark.delete("/db",((request, response) ->
                 new deleteEverything(UsersMemory,AuthsMemory,GamesMemory).deleteAllData(request,response)));
+
+        // Works, but username can be black and white player. Probably not what I want to happen.
+        Spark.put("/game",((request, response) ->
+                new GameHandler(GamesMemory,AuthsMemory).handleJoinRequest(request,response)));
 
         Spark.init();
 

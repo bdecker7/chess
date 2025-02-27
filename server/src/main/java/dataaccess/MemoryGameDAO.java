@@ -17,6 +17,7 @@ public class MemoryGameDAO implements GameDAO{
     }
 
 
+
     @Override
     public GameData createGame(String gameName) {
         Random random = new Random();
@@ -43,8 +44,15 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public void updateGame() {
-
+    public void updateGame(ChessGame.TeamColor colorToUpdate, String usernameToInput, int gameID) {
+        GameData currentGameData = allGameDataStorage.get(gameID);
+        if(colorToUpdate == ChessGame.TeamColor.WHITE){
+            GameData newGameData = new GameData(gameID,usernameToInput, currentGameData.blackUsername(), currentGameData.gameName(),currentGameData.game());
+            allGameDataStorage.replace(gameID,newGameData);
+        }else if(colorToUpdate == ChessGame.TeamColor.BLACK){
+            GameData newGameData = new GameData(gameID, currentGameData.whiteUsername(), usernameToInput, currentGameData.gameName(),currentGameData.game());
+            allGameDataStorage.replace(gameID,newGameData);
+        }
     }
 
     @Override

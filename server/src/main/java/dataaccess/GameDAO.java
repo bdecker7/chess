@@ -2,6 +2,7 @@ package dataaccess;
 
 import Model.GameData;
 import chess.ChessGame;
+import chess.ChessPiece;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +17,7 @@ public interface GameDAO {
     boolean checkIfGameExists(int gameID);
     GameData getGame(int gameID);
     ArrayList<ChessGame> listGames();
-    void updateGame(); //not sure if this returns anything
+    void updateGame(ChessGame.TeamColor colorToUpdate,String usernameToInput,int gameID); //not sure if this returns anything
     void clear();
     HashMap<Integer, GameData> getGameHash();
 
