@@ -5,12 +5,13 @@ import chess.ChessGame;
 
 import java.util.ArrayList;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
 
 public class MemoryGameDAO implements GameDAO{
 
-    HashMap<Integer, GameData> allGameDataStorage;
+    private HashMap<Integer, GameData> allGameDataStorage;
 
     public MemoryGameDAO(){
         this.allGameDataStorage= new HashMap<>();
@@ -39,8 +40,8 @@ public class MemoryGameDAO implements GameDAO{
     }
 
     @Override
-    public ArrayList<ChessGame> listGames() {
-        return null;
+    public Collection<GameData> listGames() {
+        return allGameDataStorage.values();
     }
 
     @Override

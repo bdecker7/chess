@@ -17,8 +17,14 @@ public class GameService {
         this.gameData = gameData;
     }
 
-    public ListGameResult getListOfGames(ListGameRequest listOfGamesRequest)throws UnAuthorizedException, DataAccessException {
-        return null;
+    public ListGameResult getListOfGames(String authString)throws UnAuthorizedException, ServerMalfunctionException {
+        if(!authToken.authTokenExists(authString)){
+            throw new UnAuthorizedException("Error: not authorized");
+        }else if(authToken.authTokenExists(authString)){
+            return new ListGameResult(gameData.listGames());
+        }else{
+            throw new ServerMalfunctionException("Error: Server data error");
+        }
     }
 
     public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)throws UnAuthorizedException, DataAccessException{

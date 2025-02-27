@@ -31,6 +31,9 @@ public class Server {
         Spark.put("/game",((request, response) ->
                 new GameHandler(GamesMemory,AuthsMemory).handleJoinRequest(request,response)));
 
+        Spark.get("/game",((request, response) ->
+                new GameHandler(GamesMemory,AuthsMemory).handleListRequest(request,response)));
+
         Spark.init();
 
         Spark.awaitInitialization();

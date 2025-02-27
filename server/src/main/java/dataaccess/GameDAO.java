@@ -5,6 +5,7 @@ import chess.ChessGame;
 import chess.ChessPiece;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 //createGame: Create a new game.
@@ -16,7 +17,7 @@ public interface GameDAO {
     GameData createGame(String gameName);
     boolean checkIfGameExists(int gameID);
     GameData getGame(int gameID);
-    ArrayList<ChessGame> listGames();
+    Collection<GameData> listGames();
     void updateGame(ChessGame.TeamColor colorToUpdate,String usernameToInput,int gameID); //not sure if this returns anything
     void clear();
     HashMap<Integer, GameData> getGameHash();
