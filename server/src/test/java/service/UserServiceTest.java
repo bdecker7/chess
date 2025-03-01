@@ -104,7 +104,6 @@ class UserServiceTest {
         newService.logout(loggedIn.authToken());
         Assertions.assertEquals(1, authData.getAuthHash().size());
 
-        // get the "{}" status code
     }
 
     @Test
