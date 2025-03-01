@@ -1,6 +1,7 @@
 package Handler;
 
 
+import Service.ErrorRecordClass;
 import Service.RegisterResult;
 import Service.UserService;
 import com.google.gson.Gson;
@@ -19,19 +20,21 @@ public class LogOutHandler {
     public String handleLogOutRequest(Request req, Response res) throws UnAuthorizedException, ServerMalfunctionException{
 
         try{
-            String request = new Gson().fromJson(req.headers("authorization"), String.class);   //gets json to a request object
+            String request = req.headers("authorization");   //gets json to a request object
             UserService service = new UserService(memoryDAO,authDAO);
             service.logout(request);
             res.status(200);
             return "{}";
         }
         catch(UnAuthorizedException e){
-            res.status(400);
-            return new Gson().toJson(e.getMessage());
+            res.status(401);
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
         }
-        catch(ServerMalfunctionException e){
+        catch(Error e){
             res.status(500);
-            return new Gson().toJson(e.getMessage());
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
         }
 
     }

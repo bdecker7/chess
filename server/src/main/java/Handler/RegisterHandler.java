@@ -1,6 +1,7 @@
 package Handler;
 
 
+import Service.ErrorRecordClass;
 import Service.RegisterResult;
 import Service.UserService;
 import com.google.gson.Gson;
@@ -27,15 +28,18 @@ public class RegisterHandler{
         }
         catch(DataAccessException e){
             res.status(400);
-            return new Gson().toJson(e.getMessage());
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
         }
         catch(AlreadyTakenException e){
             res.status(403);
-            return new Gson().toJson(e.getMessage());
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
         }
-        catch(ServerMalfunctionException e){
+        catch(Error e){
             res.status(500);
-            return new Gson().toJson(e.getMessage());
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
         }
 
     }

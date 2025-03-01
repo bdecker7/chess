@@ -1,5 +1,6 @@
 package Handler;
 
+import Service.ErrorRecordClass;
 import Service.LoginResult;
 import Service.RegisterResult;
 import Service.UserService;
@@ -27,10 +28,12 @@ public class LoginHandler {
             return new Gson().toJson(result);
         } catch (UnAuthorizedException | AlreadyAuthorizedException e) {
             res.status(401);
-            return new Gson().toJson(e.getMessage());
-        } catch(ServerMalfunctionException e){
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
+        } catch(Error e){
             res.status(500);
-            return new Gson().toJson(e.getMessage());
+            ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
+            return new Gson().toJson(error);
         }
 
     }

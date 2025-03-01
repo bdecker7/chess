@@ -5,6 +5,9 @@ import Model.GameData;
 import chess.ChessGame;
 import dataaccess.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public class GameService {
@@ -21,7 +24,13 @@ public class GameService {
         if(!authToken.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: not authorized");
         }else if(authToken.authTokenExists(authString)){
-            return new ListGameResult(gameData.listGames());
+            Collection<GameData> allGameData = gameData.listGames();
+            ArrayList<SingleListedGame> gamesResultDataList = new ArrayList<SingleListedGame>();
+            for(GameData data: allGameData){
+                SingleListedGame gameListSingle = new SingleListedGame(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
+                gamesResultDataList.add(gameListSingle);
+            }
+            return new ListGameResult(gamesResultDataList);
         }else{
             throw new ServerMalfunctionException("Error: Server data error");
         }
@@ -39,15 +48,14 @@ public class GameService {
     public void joinGame(String authString, joinGameRequest joinGamesRequest) throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
-        }else if(!gameData.checkIfGameExists(joinGamesRequest.gameID())){
+        }else if(authString == null || joinGamesRequest.playerColor() == null){
+            throw new DataAccessException("Error: invalid input");
+        }
+        else if(!gameData.checkIfGameExists(joinGamesRequest.gameID())){
             throw new DataAccessException("Error: game doesn't exist");
         }
         else {
             String username = checkPlayerColor(joinGamesRequest.playerColor(), joinGamesRequest.gameID(),authString);
-            //This prevents a user from playing as both white and black. not sure if needed.
-            if(Objects.equals(gameData.getGame(joinGamesRequest.gameID()).blackUsername(), username) || Objects.equals(gameData.getGame(joinGamesRequest.gameID()).whiteUsername(), username)){
-                throw new AlreadyTakenException("Error: can't be both players!!");
-            }
             gameData.updateGame(joinGamesRequest.playerColor(),username, joinGamesRequest.gameID());
         }
 

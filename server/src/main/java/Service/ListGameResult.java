@@ -6,5 +6,5 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 //need to fix this return
-public record ListGameResult(Collection<GameData> games) {
+public record ListGameResult(ArrayList<SingleListedGame> games) {
 }

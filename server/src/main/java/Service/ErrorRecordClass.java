@@ -1,4 +1,4 @@
 package Service;
 
-public record ErrorRecordClass() {
+public record ErrorRecordClass(String message) {
 }

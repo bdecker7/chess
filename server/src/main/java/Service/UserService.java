@@ -42,8 +42,6 @@ public class UserService {
             throw new UnAuthorizedException("Error: Not Valid Username");
         }else if(!Objects.equals(userDAO.getUserData(loginRequest.username()).password(), loginRequest.password())){
             throw new UnAuthorizedException("Error: Not Authorized");
-        }else if(authDAO.usernameWithAuthExists(loginRequest.username())){
-            throw new AlreadyAuthorizedException("Error: Already authorized");
         }
         AuthData newAuthTokenAssignment = new AuthData(loginRequest.username());
         String newAuthToken = authDAO.createAuth(newAuthTokenAssignment.username());
