@@ -70,39 +70,31 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
-        ArrayList<ChessMove> movesList = new ArrayList<ChessMove>();
-        ArrayList<ChessMove> movesList2 = new ArrayList<ChessMove>();
+        ArrayList<ChessMove> movedList = new ArrayList<ChessMove>();
 
-        ChessPiece selectedPiece = board.getPiece(myPosition);
-
-        if(selectedPiece.getPieceType() == PieceType.PAWN && selectedPiece.getTeamColor() == ChessGame.TeamColor.WHITE){
-            PawnMoves pawn = new PawnMoves(board, myPosition, ChessGame.TeamColor.WHITE);
-            return pawn.validMove();
-        }else if(selectedPiece.getPieceType() == PieceType.PAWN && selectedPiece.getTeamColor() == ChessGame.TeamColor.BLACK){
-            PawnMoves pawn = new PawnMoves(board, myPosition, ChessGame.TeamColor.BLACK);
-            return pawn.validMove();
-        }else if (selectedPiece.getPieceType() == PieceType.BISHOP) {
+        if(board.getPiece(myPosition).getPieceType() == PieceType.BISHOP){
             BishopMoves bishop = new BishopMoves(board,myPosition);
-            return bishop.validMove();
-        }else if (board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT) {
-            KnightMoves knight = new KnightMoves(board, myPosition);
-            return knight.validMove();
-        }else if (board.getPiece(myPosition).getPieceType() == PieceType.ROOK) {
+            movedList.addAll(bishop.validMove());
+        }else if(board.getPiece(myPosition).getPieceType() == PieceType.ROOK){
             RookMoves rook = new RookMoves(board,myPosition);
-            return rook.validMove();
-        }else if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
+            movedList.addAll(rook.validMove());
+        }else if(board.getPiece(myPosition).getPieceType() == PieceType.QUEEN){
+            RookMoves queen1 = new RookMoves(board,myPosition);
+            BishopMoves queen2 = new BishopMoves(board,myPosition);
+            movedList.addAll(queen1.validMove());
+            movedList.addAll(queen2.validMove());
+        }else if(board.getPiece(myPosition).getPieceType() == PieceType.KNIGHT){
+            KnightMoves knight = new KnightMoves(board,myPosition);
+            movedList.addAll(knight.validMove());
+        }else if(board.getPiece(myPosition).getPieceType() == PieceType.KING){
             KingMoves king = new KingMoves(board,myPosition);
-            return king.validMove();
-        }else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
-            //Queen moves just use Bishop moves and Rook moves so this gets both and combines them in a list
-            BishopMoves queen1 = new BishopMoves(board,myPosition);
-            RookMoves queen2 = new RookMoves(board,myPosition);
-            movesList = queen1.validMove();
-            movesList2 = queen2.validMove();
-            movesList.addAll(movesList2);
-            return movesList;
+            movedList.addAll(king.validMove());
+        }else if(board.getPiece(myPosition).getPieceType() == PieceType.PAWN){
+            PawnMoves pawn = new PawnMoves(board,myPosition);
+            movedList.addAll(pawn.validMove());
         }
-        return null;
+
+        return movedList;
     }
 
     @Override

@@ -3,55 +3,59 @@ package chess;
 import java.util.ArrayList;
 
 public class KingMoves implements PieceMovesCalculator{
-    private ChessBoard board;
-    private ChessPosition currentPosition;
-    private int oneTileMove = 1;
+    ChessBoard board;
+    ChessPosition currentPosition;
 
     public KingMoves(ChessBoard board, ChessPosition currentPosition){
         this.board = board;
-        this.currentPosition = currentPosition;
+        this.currentPosition= currentPosition;
     }
-
-    private ChessMove moveOneTile(int x, int y){
+    public ArrayList<ChessMove> helperMoves(int x, int y) {
         ChessPiece ghostKing;
-        ChessMove movedPiece;
         ChessPosition listedPosition;
+        ChessMove movedPosition;
 
-        if(((currentPosition.getRow()+x) > 0 && (currentPosition.getRow()+x) <= 8) && (((currentPosition.getColumn()+y)> 0) && ((currentPosition.getColumn()+y)<=8))){
-            listedPosition = new ChessPosition(currentPosition.getRow()+x,currentPosition.getColumn()+y);
+        ArrayList<ChessMove> movedList = new ArrayList<ChessMove>();
+
+        if (currentPosition.getRow() + x <= 8 && currentPosition.getColumn() + y > 0 && currentPosition.getRow() + x > 0 && currentPosition.getColumn() + y <= 8) {
+            listedPosition = new ChessPosition(currentPosition.getRow() + x, currentPosition.getColumn() + y);
             ghostKing = board.getPiece(listedPosition);
-            if(ghostKing == null || ghostKing.getTeamColor() != board.getPiece(currentPosition).getTeamColor()){
-                movedPiece = new ChessMove(currentPosition,listedPosition,null);
-                return movedPiece;
+            if (ghostKing == null) {
+                movedPosition = new ChessMove(currentPosition, listedPosition, null);
+                movedList.add(movedPosition);
+            } else if (ghostKing.getTeamColor() != board.getPiece(currentPosition).getTeamColor()) {
+                movedPosition = new ChessMove(currentPosition, listedPosition, null);
+                movedList.add(movedPosition);
             }
-        }return null;
+        }
+        return movedList;
     }
-
     @Override
     public ArrayList<ChessMove> validMove() {
+        ArrayList<ChessMove> movedListFinal = new ArrayList<ChessMove>();
 
-        ArrayList<ChessMove> moveList = new ArrayList<ChessMove>();
+        if (helperMoves(1, 0) != null) {
+            movedListFinal.addAll(helperMoves(1, 0));
 
-        //moves in diagonal directions
-        if(moveOneTile(oneTileMove,oneTileMove) != null) {
-            moveList.add(moveOneTile(oneTileMove,oneTileMove));
-        }if(moveOneTile(oneTileMove,-oneTileMove) != null) {
-            moveList.add(moveOneTile(oneTileMove,-oneTileMove));
-        }if(moveOneTile(-oneTileMove,oneTileMove) != null) {
-            moveList.add(moveOneTile(-oneTileMove,oneTileMove));
-        }if(moveOneTile(-oneTileMove,-oneTileMove) != null) {
-            moveList.add(moveOneTile(-oneTileMove,-oneTileMove));
-
-            //moves up, down, left, right
-        }if(moveOneTile(oneTileMove,0) != null) {
-            moveList.add(moveOneTile(oneTileMove,0));
-        }if(moveOneTile(-oneTileMove,0) != null) {
-            moveList.add(moveOneTile(-oneTileMove,0));
-        }if(moveOneTile(0,-oneTileMove) != null) {
-            moveList.add(moveOneTile(0,-oneTileMove));
-        }if(moveOneTile(0,oneTileMove) != null) {
-            moveList.add(moveOneTile(0,oneTileMove));
+        }if (helperMoves(-1, 0) != null) {
+            movedListFinal.addAll(helperMoves(-1, 0));
+        }if (helperMoves(0, 1) != null) {
+            movedListFinal.addAll(helperMoves(0, 1));
+        }if (helperMoves(0, 1) != null) {
+            movedListFinal.addAll(helperMoves(0, -1));
         }
-        return moveList;
+
+        if (helperMoves(1, 1) != null) {
+            movedListFinal.addAll(helperMoves(1, 1));
+        }
+        if (helperMoves(-1, 1) != null) {
+            movedListFinal.addAll(helperMoves(-1, 1));
+        }if (helperMoves(-1, -1) != null) {
+            movedListFinal.addAll(helperMoves(-1, -1));
+        }if (helperMoves(1, -1) != null) {
+            movedListFinal.addAll(helperMoves(1, -1));
+        }
+
+        return movedListFinal;
     }
 }

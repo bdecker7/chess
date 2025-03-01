@@ -1,95 +1,60 @@
 package chess;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class KnightMoves implements PieceMovesCalculator{
-
-    private final ChessBoard board;
-    private final ChessPosition currentPosition;
-    private final int threeTile = 2;
-    private final int oneTile = 1;
-
+    private ChessBoard board;
+    private ChessPosition currentPosition;
     public KnightMoves(ChessBoard board, ChessPosition currentPosition){
         this.board = board;
         this.currentPosition = currentPosition;
     }
-
-    public ChessMove variedPosition(int row, int column) {
-        ChessPiece ghostKnight;
+    public ArrayList<ChessMove> horseMoves (int x, int y){
+        ChessPiece ghostBishop;
         ChessPosition listedPosition;
-        ChessMove movedPiece;
-        if (((currentPosition.getRow() + row) <= 8 && (currentPosition.getRow() + row) > 0) && ((currentPosition.getColumn() + column) <= 8) && (currentPosition.getColumn() + column) > 0) {
-            // make this the new position
-            listedPosition = new ChessPosition(currentPosition.getRow() + row, currentPosition.getColumn() + column);
-            ghostKnight = board.getPiece(listedPosition);
+        ChessMove movedPosition;
 
-            if (ghostKnight == null || (ghostKnight.getTeamColor() != board.getPiece(currentPosition).getTeamColor())) {
-                //add tuples to the list??
-                movedPiece = new ChessMove(currentPosition, listedPosition, null);
-                return movedPiece;
+        ArrayList<ChessMove> movedList = new ArrayList<ChessMove>();
 
+        if(currentPosition.getRow()+x > 0 && currentPosition.getColumn()+y >0 && currentPosition.getRow()+x <=8 & currentPosition.getColumn()+y <= 8) {
+            listedPosition = new ChessPosition(currentPosition.getRow() + x, currentPosition.getColumn() + y);
+            ghostBishop = board.getPiece(listedPosition);
+            if (ghostBishop == null) {
+                movedPosition = new ChessMove(currentPosition, listedPosition, null);
+                movedList.add(movedPosition);
+            } else if (ghostBishop.getTeamColor() != board.getPiece(currentPosition).getTeamColor()) {
+                movedPosition = new ChessMove(currentPosition, listedPosition, null);
+                movedList.add(movedPosition);
+            } else {
+                return null;
             }
         }
-        return null; // I can only have this return statement as null if I write it in the valid moves
+        return movedList;
     }
 
     @Override
     public ArrayList<ChessMove> validMove() {
-
-        ArrayList<ChessMove> validMovesList = new ArrayList<ChessMove>();
-
-
-        if(variedPosition(-threeTile,-oneTile) != null){
-            validMovesList.add(variedPosition(-threeTile,-oneTile));
-        }
-        if(variedPosition(-threeTile,oneTile) != null){
-            validMovesList.add(variedPosition(-threeTile,oneTile));
-        }
-        if(variedPosition(threeTile,-oneTile) != null){
-            validMovesList.add(variedPosition(threeTile,-oneTile));
-        }
-        if(variedPosition(threeTile,oneTile) != null){
-            validMovesList.add(variedPosition(threeTile,oneTile));
-        }
-        if(variedPosition(-oneTile,-threeTile) != null){
-            validMovesList.add(variedPosition(-oneTile,-threeTile));
-        }
-        if(variedPosition(-oneTile,threeTile) != null){
-            validMovesList.add(variedPosition(-oneTile,threeTile));
-        }
-        if(variedPosition(oneTile,-threeTile) != null){
-            validMovesList.add(variedPosition(oneTile,-threeTile));
-        }
-        if(variedPosition(oneTile,threeTile) != null){
-            validMovesList.add(variedPosition(oneTile,threeTile));
+        ArrayList<ChessMove> movedList = new ArrayList<ChessMove>();
+        if(horseMoves(1,2)!= null){
+            movedList.addAll(horseMoves(1,2));
+        }if(horseMoves(-1,2)!= null){
+            movedList.addAll(horseMoves(-1,2));
+        }if(horseMoves(1,-2)!= null){
+            movedList.addAll(horseMoves(1,-2));
+        }if(horseMoves(-1,-2)!= null){
+            movedList.addAll(horseMoves(-1,-2));
         }
 
-        return validMovesList;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
+        if(horseMoves(2,1)!= null){
+            movedList.addAll(horseMoves(2,1));
+        }if(horseMoves(-2,1)!= null){
+            movedList.addAll(horseMoves(-2,1));
+        }if(horseMoves(2,-1)!= null){
+            movedList.addAll(horseMoves(2,-1));
+        }if(horseMoves(-2,-1)!= null){
+            movedList.addAll(horseMoves(-2,-1));
         }
-        KnightMoves that = (KnightMoves) o;
-        return threeTile == that.threeTile && oneTile == that.oneTile && Objects.equals(board, that.board) && Objects.equals(currentPosition, that.currentPosition);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(board, currentPosition, threeTile, oneTile);
-    }
-
-    @Override
-    public String toString() {
-        return "KnightMoves{" +
-                "board=" + board +
-                ", currentPosition=" + currentPosition +
-                ", threeTile=" + threeTile +
-                ", oneTile=" + oneTile +
-                '}';
+        return movedList;
     }
 }
-
