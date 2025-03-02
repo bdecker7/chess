@@ -1,6 +1,6 @@
 package handler;
 
-import recordClasses.*;
+import records.*;
 import service.*;
 import com.google.gson.Gson;
 import dataaccess.*;

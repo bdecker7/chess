@@ -1,8 +1,8 @@
 package service;
 
-import recordClasses.LoginRequest;
-import recordClasses.RegisterRequest;
-import recordClasses.LoginResult;
+import records.LoginRequest;
+import records.RegisterRequest;
+import records.LoginResult;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -60,7 +60,8 @@ class UserServiceTest {
     @Test
     void registerSuccess() throws AlreadyTakenException, DataAccessException {
         //register user
-        RegisterRequest requestOther = new RegisterRequest("Bill","myPassword","bill.nye@gmail.com");
+        RegisterRequest requestOther =
+                new RegisterRequest("Bill","myPassword","bill.nye@gmail.com");
         Assertions.assertEquals(newService.register(requestOther).username(),"Bill");
 
     }

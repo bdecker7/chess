@@ -2,10 +2,10 @@ package service;
 import model.AuthData;
 import model.UserData;
 import dataaccess.*;
-import recordClasses.LoginRequest;
-import recordClasses.LoginResult;
-import recordClasses.RegisterRequest;
-import recordClasses.RegisterResult;
+import records.LoginRequest;
+import records.LoginResult;
+import records.RegisterRequest;
+import records.RegisterResult;
 
 import java.util.Objects;
 
@@ -27,7 +27,9 @@ public class UserService {
         }
         //if any of the data in register request is null, I should throw an exception.
         //currently not working right now
-        else if(registerRequest.username() == null || registerRequest.password() == null || registerRequest.email() == null){ //I dont think this works?
+        else if(registerRequest.username() == null
+                || registerRequest.password() == null
+                || registerRequest.email() == null){ //I dont think this works?
             throw new DataAccessException("Error: Bad request. Make sure username, password, or email is not empty.");
         }
         //creates a new user

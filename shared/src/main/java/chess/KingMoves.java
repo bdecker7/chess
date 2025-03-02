@@ -17,7 +17,8 @@ public class KingMoves implements PieceMovesCalculator{
 
         ArrayList<ChessMove> movedList = new ArrayList<ChessMove>();
 
-        if (currentPosition.getRow() + x <= 8 && currentPosition.getColumn() + y > 0 && currentPosition.getRow() + x > 0 && currentPosition.getColumn() + y <= 8) {
+        if (currentPosition.getRow() + x <= 8 && currentPosition.getColumn() + y > 0
+                && currentPosition.getRow() + x > 0 && currentPosition.getColumn() + y <= 8) {
             listedPosition = new ChessPosition(currentPosition.getRow() + x, currentPosition.getColumn() + y);
             ghostKing = board.getPiece(listedPosition);
             if (ghostKing == null) {

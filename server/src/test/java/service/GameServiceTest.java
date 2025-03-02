@@ -1,9 +1,9 @@
 package service;
 
-import recordClasses.CreateGameRequest;
-import recordClasses.JoinGameRequest;
-import recordClasses.RegisterRequest;
-import recordClasses.RegisterResult;
+import records.CreateGameRequest;
+import records.JoinGameRequest;
+import records.RegisterRequest;
+import records.RegisterResult;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -53,8 +53,8 @@ class GameServiceTest {
     void getListOfGames() throws DataAccessException {
         CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "GAME 1");
         newGameService.createGame(validUser.authToken(), createdGame);
-        CreateGameRequest OtherCreatedGame = new CreateGameRequest(validUser.authToken(), "GAME 2");
-        newGameService.createGame(validUser.authToken(), OtherCreatedGame);
+        CreateGameRequest otherCreatedGame = new CreateGameRequest(validUser.authToken(), "GAME 2");
+        newGameService.createGame(validUser.authToken(), otherCreatedGame);
 
         Assertions.assertTrue(gameDataOfUser.getGameHash().size() == 2);
 

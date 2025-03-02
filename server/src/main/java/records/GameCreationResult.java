@@ -1,4 +1,4 @@
-package recordClasses;
+package records;
 
 public record GameCreationResult(int gameID) {
 }

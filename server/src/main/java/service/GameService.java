@@ -2,7 +2,7 @@ package service;
 import model.GameData;
 import chess.ChessGame;
 import dataaccess.*;
-import recordClasses.*;
+import records.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,14 +17,16 @@ public class GameService {
         this.gameData = gameData;
     }
 
-    public ListGameResult getListOfGames(String authString)throws UnAuthorizedException, ServerMalfunctionException {
+    public ListGameResult getListOfGames(String authString)
+            throws UnAuthorizedException, ServerMalfunctionException {
         if(!authToken.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: not authorized");
         }else if(authToken.authTokenExists(authString)){
             Collection<GameData> allGameData = gameData.listGames();
             ArrayList<SingleListedGame> gamesResultDataList = new ArrayList<SingleListedGame>();
             for(GameData data: allGameData){
-                SingleListedGame gameListSingle = new SingleListedGame(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
+                SingleListedGame gameListSingle =
+                        new SingleListedGame(data.gameID(), data.whiteUsername(), data.blackUsername(), data.gameName());
                 gamesResultDataList.add(gameListSingle);
             }
             return new ListGameResult(gamesResultDataList);
@@ -33,7 +35,8 @@ public class GameService {
         }
     }
 
-    public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)throws UnAuthorizedException, DataAccessException{
+    public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)
+            throws UnAuthorizedException, DataAccessException{
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(createGameRequest.gameName() == null){
@@ -42,7 +45,8 @@ public class GameService {
         GameData currentGameData = gameData.createGame(createGameRequest.gameName());
         return new CreateGameResult(currentGameData.gameID());
     }
-    public void joinGame(String authString, JoinGameRequest joinGamesRequest) throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
+    public void joinGame(String authString, JoinGameRequest joinGamesRequest)
+            throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(authString == null || joinGamesRequest.playerColor() == null){
@@ -58,7 +62,8 @@ public class GameService {
 
     }
 
-    String checkPlayerColor(ChessGame.TeamColor requestedColor, int gameID, String authString) throws AlreadyTakenException, DataAccessException {
+    String checkPlayerColor(ChessGame.TeamColor requestedColor, int gameID, String authString)
+            throws AlreadyTakenException, DataAccessException {
         if(requestedColor == ChessGame.TeamColor.WHITE){
             if(gameData.getGame(gameID).whiteUsername() != null) {
                 throw new AlreadyTakenException("Error: White already taken");

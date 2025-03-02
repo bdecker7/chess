@@ -1,4 +1,4 @@
-package recordClasses;
+package records;
 
 public record LoginRequest(
         String username,

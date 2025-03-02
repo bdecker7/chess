@@ -44,12 +44,14 @@ public class MemoryGameDAO implements GameDAO{
 
     @Override
     public void updateGame(ChessGame.TeamColor colorToUpdate, String usernameToInput, int gameID) {
-        GameData currentGameData = allGameDataStorage.get(gameID);
+        GameData currentData = allGameDataStorage.get(gameID);
         if(colorToUpdate == ChessGame.TeamColor.WHITE){
-            GameData newGameData = new GameData(gameID,usernameToInput, currentGameData.blackUsername(), currentGameData.gameName(),currentGameData.game());
+            GameData newGameData =
+                    new GameData(gameID,usernameToInput, currentData.blackUsername(), currentData.gameName(),currentData.game());
             allGameDataStorage.replace(gameID,newGameData);
         }else if(colorToUpdate == ChessGame.TeamColor.BLACK){
-            GameData newGameData = new GameData(gameID, currentGameData.whiteUsername(), usernameToInput, currentGameData.gameName(),currentGameData.game());
+            GameData newGameData =
+                    new GameData(gameID, currentData.whiteUsername(), usernameToInput, currentData.gameName(),currentData.game());
             allGameDataStorage.replace(gameID,newGameData);
         }
     }

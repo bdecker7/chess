@@ -1,4 +1,4 @@
-package recordClasses;
+package records;
 
 import chess.ChessGame;
 
