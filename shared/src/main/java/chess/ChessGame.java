@@ -70,20 +70,20 @@ public class ChessGame {
                         ChessPiece ghostPiece =
                                 new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(),
                                 gameBoard.getPiece(element.getEndPosition()).getPieceType());
-                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition()));
                         gameBoard.addPiece(element.getStartPosition(), null);
                         if (!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())) {
                             finalMoves.add(element);
                         }
-                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition()));
                         gameBoard.addPiece(element.getEndPosition(), ghostPiece);
                     } else if (gameBoard.getPiece(element.getEndPosition()) == null) {
-                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition()));
                         gameBoard.addPiece(element.getStartPosition(), null);
                         if (!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())) {
                             finalMoves.add(element);
                         }
-                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition()));
                         gameBoard.addPiece(element.getEndPosition(), null);
                     }
 
@@ -100,20 +100,20 @@ public class ChessGame {
                                 new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(),
                                 gameBoard.getPiece(element.getEndPosition()).getPieceType());
 
-                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition()));
                         gameBoard.addPiece(element.getStartPosition(), null);
                         if(!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())){
                             finalMoves.add(element);
                         }
-                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition()));
                         gameBoard.addPiece(element.getEndPosition(), ghostPiece);
                     }else if(gameBoard.getPiece(element.getEndPosition())== null){
-                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition()));
                         gameBoard.addPiece(element.getStartPosition(), null);
                         if(!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())){
                             finalMoves.add(element);
                         }
-                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition())); //adds piece to desired end position
+                        gameBoard.addPiece(element.getStartPosition(), gameBoard.getPiece(element.getEndPosition()));
                         gameBoard.addPiece(element.getEndPosition(), null);
                     }
 
@@ -130,9 +130,6 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
 
-//    Receives a given move and executes it, provided it is a legal move.
-//    If the move is illegal, it throws an InvalidMoveException.
-//    A move is illegal if it is not a "valid" move for the piece at the starting location, or if it’s not the corresponding team's turn.
     public void makeMove(ChessMove move) throws InvalidMoveException {
 
         if(validMoves(move.getStartPosition()) == null
@@ -148,13 +145,14 @@ public class ChessGame {
                     gameBoard.addPiece(move.getEndPosition(), currentPiece); //adds piece to desired end position
                     gameBoard.addPiece(move.getStartPosition(), null);
                 }else {
-                    gameBoard.addPiece(move.getEndPosition(), gameBoard.getPiece(move.getStartPosition())); //adds piece to desired end position
+                    gameBoard.addPiece(move.getEndPosition(), gameBoard.getPiece(move.getStartPosition()));
                     gameBoard.addPiece(move.getStartPosition(), null); // sets previous position to null piece
                 }
 
                 // Change turns when move is executed
-                if(gameBoard.getPiece(move.getEndPosition()).getTeamColor() == TeamColor.WHITE)
+                if(gameBoard.getPiece(move.getEndPosition()).getTeamColor() == TeamColor.WHITE) {
                     setTeamTurn(TeamColor.BLACK);
+                }
                 else{setTeamTurn(TeamColor.WHITE);}
             }else{throw new InvalidMoveException("Invalid move!");}
 
@@ -182,7 +180,7 @@ public class ChessGame {
 
                 //grabs all the moves of the opposing side, and the position of the current kings team
                 if(currentGamePiece != null){
-                    if(currentGamePiece.getTeamColor() != teamColor){           //if it's not the same team, get collection of moves it can take
+                    if(currentGamePiece.getTeamColor() != teamColor){
                         otherTeamMoves.addAll(currentGamePiece.pieceMoves(gameBoard,currentPosition));
                     }
                     else if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING

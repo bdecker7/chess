@@ -21,14 +21,6 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean usernameWithAuthExists(String username) {
-        if(allAuthDataStorage != null){
-            return allAuthDataStorage.containsValue(username);
-        }
-        return false;
-    }
-
-    @Override
     public boolean authTokenExists(String authToken) {
         if(allAuthDataStorage != null){
             return allAuthDataStorage.containsKey(authToken);

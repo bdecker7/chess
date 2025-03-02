@@ -16,7 +16,8 @@ public class GameHandler {
         this.authDAO = authDAO;
     }
 
-    public String handleRequest(Request req, Response res) throws DataAccessException, UnAuthorizedException,ServerMalfunctionException {
+    public String handleRequest(Request req, Response res)
+            throws UnAuthorizedException,ServerMalfunctionException {
 
         try {
             CreateGameRequest request = new Gson().fromJson(req.body(), CreateGameRequest.class);
@@ -42,7 +43,7 @@ public class GameHandler {
     }
     public String handleJoinRequest(Request req, Response res) {
         try {
-            JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);   //this needs to change to get the authToken parameter not the body
+            JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);
             String authToken = req.headers("authorization");
             GameService service = new GameService(authDAO, gameDAO);
             service.joinGame(authToken, request);
