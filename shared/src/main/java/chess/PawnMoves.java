@@ -31,29 +31,11 @@ public class PawnMoves implements PieceMovesCalculator{
             ghostBishop = board.getPiece(listedPosition);
             if (ghostBishop == null && (x==0 || y == 0)) {
                 if(currentPiece.getTeamColor() == ChessGame.TeamColor.WHITE && listedPosition.getRow() == 8){
-                    movedPosition = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.KNIGHT);
-                    movedPosition2 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.BISHOP);
-                    movedPosition3 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.ROOK);
-                    movedPosition4 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.QUEEN);
-
-                    movedList.add(movedPosition);
-                    movedList.add(movedPosition2);
-                    movedList.add(movedPosition3);
-                    movedList.add(movedPosition4);
+                    moveAll(listedPosition, movedList);
 
                 }else if(currentPiece.getTeamColor() == ChessGame.TeamColor.BLACK && listedPosition.getRow() == 1){
-                    movedPosition = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.KNIGHT);
-                    movedPosition2 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.BISHOP);
-                    movedPosition3 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.ROOK);
-                    movedPosition4 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.QUEEN);
-
-                    movedList.add(movedPosition);
-                    movedList.add(movedPosition2);
-                    movedList.add(movedPosition3);
-                    movedList.add(movedPosition4);
-
+                    moveAll(listedPosition, movedList);
                 }
-
                 else{
                     movedPosition = new ChessMove(currentPosition, listedPosition, null);
                     movedList.add(movedPosition);
@@ -63,26 +45,10 @@ public class PawnMoves implements PieceMovesCalculator{
             else if(ghostBishop != null){
                 if (ghostBishop.getTeamColor() != board.getPiece(currentPosition).getTeamColor() && (y != 0)){
                     if(listedPosition.getRow() == 1){
-                        movedPosition = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.KNIGHT);
-                        movedPosition2 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.BISHOP);
-                        movedPosition3 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.ROOK);
-                        movedPosition4 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.QUEEN);
-
-                        movedList.add(movedPosition);
-                        movedList.add(movedPosition2);
-                        movedList.add(movedPosition3);
-                        movedList.add(movedPosition4);
+                        moveAll(listedPosition, movedList);
 
                     }else if(listedPosition.getRow() == 8){
-                        movedPosition = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.KNIGHT);
-                        movedPosition2 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.BISHOP);
-                        movedPosition3 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.ROOK);
-                        movedPosition4 = new ChessMove(currentPosition,listedPosition, ChessPiece.PieceType.QUEEN);
-
-                        movedList.add(movedPosition);
-                        movedList.add(movedPosition2);
-                        movedList.add(movedPosition3);
-                        movedList.add(movedPosition4);
+                        moveAll(listedPosition, movedList);
 
                     }else{
                         movedPosition = new ChessMove(currentPosition, listedPosition, null);
@@ -95,6 +61,22 @@ public class PawnMoves implements PieceMovesCalculator{
             }
         }
         return movedList;
+    }
+
+    private void moveAll(ChessPosition listedPosition, ArrayList<ChessMove> movedList) {
+        ChessMove movedPosition2;
+        ChessMove movedPosition4;
+        ChessMove movedPosition3;
+        ChessMove movedPosition;
+        movedPosition = new ChessMove(currentPosition, listedPosition, ChessPiece.PieceType.KNIGHT);
+        movedPosition2 = new ChessMove(currentPosition, listedPosition, ChessPiece.PieceType.BISHOP);
+        movedPosition3 = new ChessMove(currentPosition, listedPosition, ChessPiece.PieceType.ROOK);
+        movedPosition4 = new ChessMove(currentPosition, listedPosition, ChessPiece.PieceType.QUEEN);
+
+        movedList.add(movedPosition);
+        movedList.add(movedPosition2);
+        movedList.add(movedPosition3);
+        movedList.add(movedPosition4);
     }
 
     @Override
