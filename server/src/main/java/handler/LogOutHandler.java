@@ -1,9 +1,7 @@
-package Handler;
+package handler;
 
 
-import Service.ErrorRecordClass;
-import Service.RegisterResult;
-import Service.UserService;
+import service.UserService;
 import com.google.gson.Gson;
 import dataaccess.*;
 import spark.Request;

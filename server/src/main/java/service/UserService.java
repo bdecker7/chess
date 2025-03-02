@@ -1,5 +1,5 @@
-package Service;
-import Handler.*;
+package service;
+import handler.*;
 import Model.AuthData;
 import Model.UserData;
 import dataaccess.*;

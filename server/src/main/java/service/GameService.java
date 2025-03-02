@@ -1,14 +1,11 @@
-package Service;
-import Handler.*;
-import Model.AuthData;
+package service;
+import handler.*;
 import Model.GameData;
 import chess.ChessGame;
 import dataaccess.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 
 public class GameService {
 
@@ -45,7 +42,7 @@ public class GameService {
         GameData currentGameData = gameData.createGame(createGameRequest.gameName());
         return new CreateGameResult(currentGameData.gameID());
     }
-    public void joinGame(String authString, joinGameRequest joinGamesRequest) throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
+    public void joinGame(String authString, JoinGameRequest joinGamesRequest) throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(authString == null || joinGamesRequest.playerColor() == null){

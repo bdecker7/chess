@@ -1,4 +1,4 @@
-package Service;
+package handler;
 
 public record ErrorRecordClass(String message) {
 }

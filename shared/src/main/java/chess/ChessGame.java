@@ -63,8 +63,11 @@ public class ChessGame {
                 //checks if king not in check
                 for(ChessMove element: pieceMoves) {
 
-                    if (gameBoard.getPiece(element.getEndPosition()) != null && gameBoard.getPiece(element.getEndPosition()).getTeamColor() != gameBoard.getPiece(startPosition).getTeamColor()) {
-                        ChessPiece ghostPiece = new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(), gameBoard.getPiece(element.getEndPosition()).getPieceType());
+                    if (gameBoard.getPiece(element.getEndPosition()) != null
+                            && gameBoard.getPiece(element.getEndPosition()).getTeamColor()
+                            != gameBoard.getPiece(startPosition).getTeamColor()) {
+                        ChessPiece ghostPiece = new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(),
+                                gameBoard.getPiece(element.getEndPosition()).getPieceType());
                         gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
                         gameBoard.addPiece(element.getStartPosition(), null);
                         if (!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())) {
@@ -87,8 +90,10 @@ public class ChessGame {
                 //try out the area and see if it is in check. if in check, delete that from the list of moves
                 for(ChessMove element: pieceMoves){
 
-                    if(gameBoard.getPiece(element.getEndPosition()) != null && gameBoard.getPiece(element.getEndPosition()).getTeamColor() != gameBoard.getPiece(startPosition).getTeamColor()){
-                        ChessPiece ghostPiece = new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(),gameBoard.getPiece(element.getEndPosition()).getPieceType());
+                    if(gameBoard.getPiece(element.getEndPosition()) != null
+                            && gameBoard.getPiece(element.getEndPosition()).getTeamColor() != gameBoard.getPiece(startPosition).getTeamColor()){
+                        ChessPiece ghostPiece = new ChessPiece(gameBoard.getPiece(element.getEndPosition()).getTeamColor(),
+                                gameBoard.getPiece(element.getEndPosition()).getPieceType());
                         gameBoard.addPiece(element.getEndPosition(), gameBoard.getPiece(element.getStartPosition())); //adds piece to desired end position
                         gameBoard.addPiece(element.getStartPosition(), null);
                         if(!isInCheck(gameBoard.getPiece(element.getEndPosition()).getTeamColor())){
@@ -172,14 +177,16 @@ public class ChessGame {
                     if(currentGamePiece.getTeamColor() != teamColor){           //if it's not the same team, get collection of moves it can take
                         OtherTeamMoves.addAll(currentGamePiece.pieceMoves(gameBoard,currentPosition));
                     }
-                    else if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING && (currentGamePiece.getTeamColor() == teamColor)){
+                    else if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING
+                            && (currentGamePiece.getTeamColor() == teamColor)){
                         currentTeamsKingPosition = new ChessPosition(i,j);
                     }
                 }
             }
         }
         for(ChessMove element: OtherTeamMoves){
-            if(element.getEndPosition().getRow() == currentTeamsKingPosition.getRow() && element.getEndPosition().getColumn() == currentTeamsKingPosition.getColumn()){
+            if(element.getEndPosition().getRow() == currentTeamsKingPosition.getRow() && element.getEndPosition().getColumn()
+                    == currentTeamsKingPosition.getColumn()){
                 return true;
             }
         }

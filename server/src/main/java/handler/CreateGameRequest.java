@@ -1,4 +1,4 @@
-package Handler;
+package handler;
 
 public record CreateGameRequest(String authToken, String gameName) {
 }

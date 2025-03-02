@@ -1,12 +1,8 @@
 package service;
 
-import Handler.LoginRequest;
-import Handler.RegisterRequest;
-import Model.AuthData;
-import Model.UserData;
-import Service.LoginResult;
-import Service.RegisterResult;
-import Service.UserService;
+import handler.LoginRequest;
+import handler.RegisterRequest;
+import handler.LoginResult;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

@@ -1,12 +1,9 @@
 package service;
 
-import Handler.CreateGameRequest;
-import Handler.RegisterRequest;
-import Handler.joinGameRequest;
-import Service.GameService;
-import Service.ListGameResult;
-import Service.RegisterResult;
-import Service.UserService;
+import handler.CreateGameRequest;
+import handler.JoinGameRequest;
+import handler.RegisterRequest;
+import handler.RegisterResult;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -101,7 +98,7 @@ class GameServiceTest {
         CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "NEW GAME");
         newGameService.createGame(validUser.authToken(), createdGame);
         int testedGameID = newGameService.createGame(validUser.authToken(), createdGame).gameID();
-        joinGameRequest joinRequest = new joinGameRequest(WHITE, testedGameID);
+        JoinGameRequest joinRequest = new JoinGameRequest(WHITE, testedGameID);
         newGameService.joinGame(validUser.authToken(), joinRequest);
 
         Assertions.assertTrue(Objects.equals(gameDataOfUser.getGame(testedGameID).whiteUsername(), "Bill"));
@@ -111,7 +108,7 @@ class GameServiceTest {
         CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "NEW GAME");
         newGameService.createGame(validUser.authToken(), createdGame);
         int testedGameID = newGameService.createGame(validUser.authToken(), createdGame).gameID();
-        joinGameRequest joinRequest = new joinGameRequest(WHITE, testedGameID);
+        JoinGameRequest joinRequest = new JoinGameRequest(WHITE, testedGameID);
 
         UnAuthorizedException thrown = assertThrows(
                 UnAuthorizedException.class,

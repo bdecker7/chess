@@ -1,6 +1,6 @@
-package Handler;
+package handler;
 
-import Service.*;
+import service.*;
 import com.google.gson.Gson;
 import dataaccess.*;
 import spark.Request;
@@ -41,7 +41,7 @@ public class GameHandler {
     }
     public String handleJoinRequest(Request req, Response res) {
         try {
-            joinGameRequest request = new Gson().fromJson(req.body(), joinGameRequest.class);   //this needs to change to get the authToken parameter not the body
+            JoinGameRequest request = new Gson().fromJson(req.body(), JoinGameRequest.class);   //this needs to change to get the authToken parameter not the body
             String authToken = req.headers("authorization");
             GameService service = new GameService(authDAO, gameDAO);
             service.joinGame(authToken, request);
