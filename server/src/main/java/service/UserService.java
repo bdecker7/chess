@@ -1,8 +1,11 @@
 package service;
-import handler.*;
-import Model.AuthData;
-import Model.UserData;
+import model.AuthData;
+import model.UserData;
 import dataaccess.*;
+import recordClasses.LoginRequest;
+import recordClasses.LoginResult;
+import recordClasses.RegisterRequest;
+import recordClasses.RegisterResult;
 
 import java.util.Objects;
 

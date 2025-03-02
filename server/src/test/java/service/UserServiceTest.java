@@ -1,8 +1,8 @@
 package service;
 
-import handler.LoginRequest;
-import handler.RegisterRequest;
-import handler.LoginResult;
+import recordClasses.LoginRequest;
+import recordClasses.RegisterRequest;
+import recordClasses.LoginResult;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;

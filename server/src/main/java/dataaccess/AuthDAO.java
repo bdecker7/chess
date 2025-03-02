@@ -1,7 +1,5 @@
 package dataaccess;
 
-import Model.UserData;
-
 import java.util.HashMap;
 
 //createAuth: Create a new authorization.

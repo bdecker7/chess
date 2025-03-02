@@ -1,6 +1,9 @@
 package handler;
 
 
+import recordClasses.ErrorRecordClass;
+import recordClasses.RegisterRequest;
+import recordClasses.RegisterResult;
 import service.UserService;
 import com.google.gson.Gson;
 import dataaccess.*;

@@ -1,9 +1,9 @@
 package service;
 
-import handler.CreateGameRequest;
-import handler.JoinGameRequest;
-import handler.RegisterRequest;
-import handler.RegisterResult;
+import recordClasses.CreateGameRequest;
+import recordClasses.JoinGameRequest;
+import recordClasses.RegisterRequest;
+import recordClasses.RegisterResult;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -64,8 +64,8 @@ class GameServiceTest {
     void getListOfGamesFail() throws DataAccessException {
         CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "GAME 1");
         newGameService.createGame(validUser.authToken(), createdGame);
-        CreateGameRequest OtherCreatedGame = new CreateGameRequest(validUser.authToken(), "GAME 2");
-        newGameService.createGame(validUser.authToken(), OtherCreatedGame);
+        CreateGameRequest otherCreatedGame = new CreateGameRequest(validUser.authToken(), "GAME 2");
+        newGameService.createGame(validUser.authToken(), otherCreatedGame);
 
         UnAuthorizedException thrown = assertThrows(
                 UnAuthorizedException.class,

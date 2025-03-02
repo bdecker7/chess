@@ -125,7 +125,7 @@ public class RookMoves implements PieceMovesCalculator{
         this.currentPosition= currentPosition;
     }
 
-    public ArrayList<ChessMove> UpDownMoves(int x){
+    public ArrayList<ChessMove> upDownMoves(int x){
         ChessPiece ghostBishop;
         ChessPosition listedPosition;
         ChessMove movedPosition;
@@ -154,7 +154,7 @@ public class RookMoves implements PieceMovesCalculator{
 
         return movedList;
     }
-    public ArrayList<ChessMove> SideMoves(int x){
+    public ArrayList<ChessMove> sideMoves(int x){
         ChessPiece ghostBishop;
         ChessPosition listedPosition;
         ChessMove movedPosition;
@@ -189,14 +189,14 @@ public class RookMoves implements PieceMovesCalculator{
     public ArrayList<ChessMove> validMove() {
         ArrayList<ChessMove> movedListFinal = new ArrayList<ChessMove>();
 
-        if(UpDownMoves(1) != null) {
-            movedListFinal.addAll(UpDownMoves(1));
-        }if(UpDownMoves(-1) != null) {
-            movedListFinal.addAll(UpDownMoves(-1));
-        }if(SideMoves(1) != null) {
-            movedListFinal.addAll(SideMoves(1));
-        }if(SideMoves(-1) != null) {
-            movedListFinal.addAll(SideMoves(-1));
+        if(upDownMoves(1) != null) {
+            movedListFinal.addAll(upDownMoves(1));
+        }if(upDownMoves(-1) != null) {
+            movedListFinal.addAll(upDownMoves(-1));
+        }if(sideMoves(1) != null) {
+            movedListFinal.addAll(sideMoves(1));
+        }if(sideMoves(-1) != null) {
+            movedListFinal.addAll(sideMoves(-1));
         }
         return movedListFinal;
     }

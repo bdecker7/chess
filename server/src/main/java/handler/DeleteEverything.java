@@ -8,11 +8,11 @@ import dataaccess.UserDAO;
 import spark.Request;
 import spark.Response;
 
-public class deleteEverything {
+public class DeleteEverything {
     UserDAO userDAO;
     AuthDAO authDAO;
     GameDAO gameDAO;
-    public deleteEverything(UserDAO userDAO,AuthDAO authDAO, GameDAO gameDAO){
+    public DeleteEverything(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO){
         this.userDAO = userDAO;
         this.authDAO = authDAO;
         this.gameDAO = gameDAO;

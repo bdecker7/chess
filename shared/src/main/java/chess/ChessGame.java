@@ -165,7 +165,7 @@ public class ChessGame {
     //iterate through all the opposite colored pieces.
     // if the piece contains the same position as the king of current team color, return true
     public boolean isInCheck(TeamColor teamColor) {
-        Collection<ChessMove> OtherTeamMoves = new ArrayList<ChessMove>();
+        Collection<ChessMove> otherTeamMoves = new ArrayList<ChessMove>();
         ChessPosition currentTeamsKingPosition = null;
         for(int i = 1; i <= 8; i++){
             for(int j = 1; j <= 8; j++){
@@ -175,7 +175,7 @@ public class ChessGame {
                 //grabs all the moves of the opposing side, and the position of the current kings team
                 if(currentGamePiece != null){
                     if(currentGamePiece.getTeamColor() != teamColor){           //if it's not the same team, get collection of moves it can take
-                        OtherTeamMoves.addAll(currentGamePiece.pieceMoves(gameBoard,currentPosition));
+                        otherTeamMoves.addAll(currentGamePiece.pieceMoves(gameBoard,currentPosition));
                     }
                     else if(currentGamePiece.getPieceType() == ChessPiece.PieceType.KING
                             && (currentGamePiece.getTeamColor() == teamColor)){
@@ -184,7 +184,7 @@ public class ChessGame {
                 }
             }
         }
-        for(ChessMove element: OtherTeamMoves){
+        for(ChessMove element: otherTeamMoves){
             if(element.getEndPosition().getRow() == currentTeamsKingPosition.getRow() && element.getEndPosition().getColumn()
                     == currentTeamsKingPosition.getColumn()){
                 return true;
@@ -200,7 +200,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        Collection<ChessMove> OutOfCheckMoves = new ArrayList<ChessMove>();
+        Collection<ChessMove> outOfCheckMoves = new ArrayList<ChessMove>();
         ChessPosition currentTeamsKingPosition = null;
         for(int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
@@ -209,13 +209,13 @@ public class ChessGame {
                     ChessPiece currentGamePiece = gameBoard.getPiece(currentPosition);
                     if (currentGamePiece.getPieceType() == ChessPiece.PieceType.KING && (currentGamePiece.getTeamColor() == teamColor)){
                         currentTeamsKingPosition = currentPosition;
-                        OutOfCheckMoves.addAll(validMoves(currentTeamsKingPosition));
+                        outOfCheckMoves.addAll(validMoves(currentTeamsKingPosition));
                     }else if(currentGamePiece.getTeamColor() == teamColor){
-                        OutOfCheckMoves.addAll(validMoves(currentPosition));
+                        outOfCheckMoves.addAll(validMoves(currentPosition));
                     }
                 }
             }
-        }return OutOfCheckMoves.isEmpty();
+        }return outOfCheckMoves.isEmpty();
     }
 
     /**
@@ -226,7 +226,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        Collection<ChessMove> OutOfAllMoves = new ArrayList<ChessMove>();
+        Collection<ChessMove> outOfAllMoves = new ArrayList<ChessMove>();
         for(int i = 1; i <= 8; i++) {
             for (int j = 1; j <= 8; j++) {
                 ChessPosition currentPosition = new ChessPosition(i, j);
@@ -236,29 +236,13 @@ public class ChessGame {
                         return false;
                     }
                     else if(currentGamePiece.getTeamColor() == teamColor){
-                        OutOfAllMoves.addAll(validMoves(currentPosition));
+                        outOfAllMoves.addAll(validMoves(currentPosition));
                     }
                 }
             }
-        }return OutOfAllMoves.isEmpty();
+        }return outOfAllMoves.isEmpty();
     }
-
-    public boolean EnPassant(TeamColor teamColor){
-        return true;
-    }
-
-    public boolean canCastle(TeamColor teamColor){
-        if(teamColor == TeamColor.WHITE){
-            //check to see if king move or in check
-                //Checks if rooks are there
-            return false;
-        }else{
-            //check to see if king moved or in check
-                //Check if rooks are there
-            return false;
-        }
-
-    }
+    
     /**
      * Sets this game's chessboard with a given board
      *

@@ -1,8 +1,8 @@
 package service;
-import handler.*;
-import Model.GameData;
+import model.GameData;
 import chess.ChessGame;
 import dataaccess.*;
+import recordClasses.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
