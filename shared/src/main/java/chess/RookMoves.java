@@ -21,14 +21,9 @@ public class RookMoves implements PieceMovesCalculator{
         while(currentPosition.getRow()+x <= 8 && currentPosition.getRow()+x > 0){
             listedPosition = new ChessPosition(currentPosition.getRow()+x,currentPosition.getColumn());
             ghostBishop = board.getPiece(listedPosition);
-            if(ghostBishop == null){
-                movedPosition = new ChessMove(currentPosition,listedPosition,null);
-                movedList.add(movedPosition);
-            }else if(ghostBishop.getTeamColor() != board.getPiece(currentPosition).getTeamColor()){
-                movedPosition = new ChessMove(currentPosition,listedPosition,null);
-                movedList.add(movedPosition);
+            if (moves(ghostBishop, listedPosition, movedList)) {
                 break;
-            }else{break;}
+            }
 
 
             if (x>0){
@@ -40,6 +35,22 @@ public class RookMoves implements PieceMovesCalculator{
 
         return movedList;
     }
+
+    private boolean moves(ChessPiece ghostBishop, ChessPosition listedPosition, ArrayList<ChessMove> movedList) {
+        ChessMove movedPosition;
+        if(ghostBishop == null){
+            movedPosition = new ChessMove(currentPosition, listedPosition,null);
+            movedList.add(movedPosition);
+        }else if(ghostBishop.getTeamColor() != board.getPiece(currentPosition).getTeamColor()){
+            movedPosition = new ChessMove(currentPosition, listedPosition,null);
+            movedList.add(movedPosition);
+            return true;
+        }else{
+            return true;
+        }
+        return false;
+    }
+
     public ArrayList<ChessMove> sideMoves(int x){
         ChessPiece ghostBishop;
         ChessPosition listedPosition;
@@ -50,14 +61,9 @@ public class RookMoves implements PieceMovesCalculator{
         while(currentPosition.getColumn()+x <= 8 && currentPosition.getColumn()+x > 0){
             listedPosition = new ChessPosition(currentPosition.getRow(),currentPosition.getColumn()+x);
             ghostBishop = board.getPiece(listedPosition);
-            if(ghostBishop == null){
-                movedPosition = new ChessMove(currentPosition,listedPosition,null);
-                movedList.add(movedPosition);
-            }else if(ghostBishop.getTeamColor() != board.getPiece(currentPosition).getTeamColor()){
-                movedPosition = new ChessMove(currentPosition,listedPosition,null);
-                movedList.add(movedPosition);
+            if (moves(ghostBishop, listedPosition, movedList)) {
                 break;
-            }else{break;}
+            }
 
 
             if (x>0){
