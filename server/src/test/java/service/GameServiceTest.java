@@ -42,8 +42,9 @@ class GameServiceTest {
     }
     @AfterEach
     void clearData(){
-//        dataOfUser.clear();
+
         authData.clear();
+        gameDataOfUser.clear();
 
     }
     @Test
