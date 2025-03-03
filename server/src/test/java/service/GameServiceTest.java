@@ -1,9 +1,6 @@
 package service;
 
-import records.CreateGameRequest;
-import records.JoinGameRequest;
-import records.RegisterRequest;
-import records.RegisterResult;
+import records.*;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -45,16 +42,18 @@ class GameServiceTest {
     }
     @AfterEach
     void clearData(){
-        dataOfUser.clear();
+//        dataOfUser.clear();
         authData.clear();
 
     }
     @Test
     void getListOfGames() throws DataAccessException {
-        CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "GAME 1");
-        newGameService.createGame(validUser.authToken(), createdGame);
-        CreateGameRequest otherCreatedGame = new CreateGameRequest(validUser.authToken(), "GAME 2");
-        newGameService.createGame(validUser.authToken(), otherCreatedGame);
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "GAME 1");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        CreateGameRequest otherCreatedGame = new CreateGameRequest(validUserLogin.authToken(), "GAME 2");
+        newGameService.createGame(validUserLogin.authToken(), otherCreatedGame);
 
         Assertions.assertTrue(gameDataOfUser.getGameHash().size() == 2);
 
@@ -62,10 +61,12 @@ class GameServiceTest {
 
     @Test
     void getListOfGamesFail() throws DataAccessException {
-        CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "GAME 1");
-        newGameService.createGame(validUser.authToken(), createdGame);
-        CreateGameRequest otherCreatedGame = new CreateGameRequest(validUser.authToken(), "GAME 2");
-        newGameService.createGame(validUser.authToken(), otherCreatedGame);
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "GAME 1");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        CreateGameRequest otherCreatedGame = new CreateGameRequest(validUserLogin.authToken(), "GAME 2");
+        newGameService.createGame(validUserLogin.authToken(), otherCreatedGame);
 
         UnAuthorizedException thrown = assertThrows(
                 UnAuthorizedException.class,
@@ -77,9 +78,11 @@ class GameServiceTest {
 
     @Test
     void createGame() throws DataAccessException {
-        CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "NEW GAME");
-        newGameService.createGame(validUser.authToken(), createdGame);
-        int testedGameID = newGameService.createGame(validUser.authToken(), createdGame).gameID();
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        int testedGameID = newGameService.createGame(validUserLogin.authToken(), createdGame).gameID();
         Assertions.assertTrue(testedGameID > 1000);
     }
     @Test
@@ -95,19 +98,23 @@ class GameServiceTest {
 
     @Test
     void joinGame() throws DataAccessException, AlreadyTakenException {
-        CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "NEW GAME");
-        newGameService.createGame(validUser.authToken(), createdGame);
-        int testedGameID = newGameService.createGame(validUser.authToken(), createdGame).gameID();
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        int testedGameID = newGameService.createGame(validUserLogin.authToken(), createdGame).gameID();
         JoinGameRequest joinRequest = new JoinGameRequest(WHITE, testedGameID);
-        newGameService.joinGame(validUser.authToken(), joinRequest);
+        newGameService.joinGame(validUserLogin.authToken(), joinRequest);
 
         Assertions.assertTrue(Objects.equals(gameDataOfUser.getGame(testedGameID).whiteUsername(), "Bill"));
     }
     @Test
     void joinGameFail() throws DataAccessException, AlreadyTakenException {
-        CreateGameRequest createdGame = new CreateGameRequest(validUser.authToken(), "NEW GAME");
-        newGameService.createGame(validUser.authToken(), createdGame);
-        int testedGameID = newGameService.createGame(validUser.authToken(), createdGame).gameID();
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        int testedGameID = newGameService.createGame(validUserLogin.authToken(), createdGame).gameID();
         JoinGameRequest joinRequest = new JoinGameRequest(WHITE, testedGameID);
 
         UnAuthorizedException thrown = assertThrows(
