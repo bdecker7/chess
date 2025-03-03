@@ -122,4 +122,33 @@ class GameServiceTest {
                 () -> newGameService.joinGame("notValidAUTHTOKEN", joinRequest)
         );
     }
+    @Test
+    void checkPlayerColorTest() throws DataAccessException, AlreadyTakenException {
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        int testedGameID = newGameService.createGame(validUserLogin.authToken(), createdGame).gameID();
+        JoinGameRequest joinRequest = new JoinGameRequest(WHITE, testedGameID);
+
+        String testedUsername = newGameService.checkPlayerColor(joinRequest.playerColor(), joinRequest.gameID(), validUserLogin.authToken());
+        Assertions.assertEquals(testedUsername,username);
+
+    }
+    @Test
+    void checkPlayerColorTestFailure() throws DataAccessException, AlreadyTakenException {
+        LoginRequest newLogin = new LoginRequest(username,password);
+        LoginResult validUserLogin = newService.login(newLogin);
+        CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
+        newGameService.createGame(validUserLogin.authToken(), createdGame);
+        int testedGameID = newGameService.createGame(validUserLogin.authToken(), createdGame).gameID();
+        JoinGameRequest joinRequest = new JoinGameRequest(WHITE, testedGameID);
+        newGameService.joinGame(validUserLogin.authToken(),joinRequest);
+
+        AlreadyTakenException thrown = assertThrows(
+                AlreadyTakenException.class,
+                () -> newGameService.checkPlayerColor(joinRequest.playerColor(), joinRequest.gameID(), validUserLogin.authToken())
+        );
+
+    }
 }
