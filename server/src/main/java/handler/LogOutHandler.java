@@ -1,6 +1,8 @@
 package handler;
 
 
+import dataaccess.exceptions.ServerMalfunctionException;
+import dataaccess.exceptions.UnAuthorizedException;
 import records.ErrorRecordClass;
 import service.UserService;
 import com.google.gson.Gson;
@@ -16,7 +18,7 @@ public class LogOutHandler {
         this.authDAO = authDAO;
     }
 
-    public String handleLogOutRequest(Request req, Response res) throws UnAuthorizedException, ServerMalfunctionException{
+    public String handleLogOutRequest(Request req, Response res) throws UnAuthorizedException, ServerMalfunctionException {
 
         try{
             String request = req.headers("authorization");   //gets json to a request object

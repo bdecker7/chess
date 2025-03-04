@@ -3,7 +3,7 @@ package handler;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
-import dataaccess.ServerMalfunctionException;
+import dataaccess.exceptions.ServerMalfunctionException;
 import dataaccess.UserDAO;
 import spark.Request;
 import spark.Response;

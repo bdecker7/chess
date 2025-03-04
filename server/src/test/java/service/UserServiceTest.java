@@ -1,5 +1,8 @@
 package service;
 
+import dataaccess.exceptions.AlreadyTakenException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UnAuthorizedException;
 import records.LoginRequest;
 import records.RegisterRequest;
 import records.LoginResult;

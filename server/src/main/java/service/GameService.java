@@ -1,4 +1,8 @@
 package service;
+import dataaccess.exceptions.AlreadyTakenException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.ServerMalfunctionException;
+import dataaccess.exceptions.UnAuthorizedException;
 import model.GameData;
 import chess.ChessGame;
 import dataaccess.*;
@@ -36,7 +40,7 @@ public class GameService {
     }
 
     public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)
-            throws UnAuthorizedException, DataAccessException{
+            throws UnAuthorizedException, DataAccessException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(createGameRequest.gameName() == null){

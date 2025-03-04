@@ -1,4 +1,4 @@
-package dataaccess;
+package dataaccess.exceptions;
 
 public class ServerMalfunctionException extends RuntimeException {
     public ServerMalfunctionException(String message) {

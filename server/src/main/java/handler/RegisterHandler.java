@@ -1,6 +1,9 @@
 package handler;
 
 
+import dataaccess.exceptions.AlreadyTakenException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.ServerMalfunctionException;
 import records.ErrorRecordClass;
 import records.RegisterRequest;
 import records.RegisterResult;
@@ -18,7 +21,7 @@ public class RegisterHandler{
         this.authDAO = authDAO;
     }
 
-    public String handleRequest(Request req, Response res) throws DataAccessException, AlreadyTakenException,ServerMalfunctionException {
+    public String handleRequest(Request req, Response res) throws DataAccessException, AlreadyTakenException, ServerMalfunctionException {
 
         try{
             RegisterRequest request = new Gson().fromJson(req.body(), RegisterRequest.class);   //gets json to a request object

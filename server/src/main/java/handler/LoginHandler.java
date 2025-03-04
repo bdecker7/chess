@@ -1,5 +1,8 @@
 package handler;
 
+import dataaccess.exceptions.AlreadyAuthorizedException;
+import dataaccess.exceptions.ServerMalfunctionException;
+import dataaccess.exceptions.UnAuthorizedException;
 import records.ErrorRecordClass;
 import records.LoginRequest;
 import records.LoginResult;

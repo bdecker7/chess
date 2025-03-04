@@ -1,5 +1,8 @@
 package service;
 
+import dataaccess.exceptions.AlreadyTakenException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.UnAuthorizedException;
 import records.*;
 import dataaccess.*;
 import org.junit.jupiter.api.AfterEach;

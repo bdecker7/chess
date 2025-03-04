@@ -1,5 +1,9 @@
 package handler;
 
+import dataaccess.exceptions.AlreadyTakenException;
+import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.ServerMalfunctionException;
+import dataaccess.exceptions.UnAuthorizedException;
 import records.*;
 import service.*;
 import com.google.gson.Gson;
@@ -17,7 +21,7 @@ public class GameHandler {
     }
 
     public String handleRequest(Request req, Response res)
-            throws UnAuthorizedException,ServerMalfunctionException {
+            throws UnAuthorizedException, ServerMalfunctionException {
 
         try {
             CreateGameRequest request = new Gson().fromJson(req.body(), CreateGameRequest.class);
