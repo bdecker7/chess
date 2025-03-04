@@ -13,8 +13,6 @@ public class Main {
         Server server = new Server();
         server.run(8080);
 
-
-
         // Add a shutdown hook to stop the server when the application is terminated
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             server.stop();
