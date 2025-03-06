@@ -6,12 +6,13 @@ package dataaccess;
 
 import model.UserData;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public interface UserDAO {
     HashMap<String,UserData> getUserHashMap();
     void clear();
-    void createUser(UserData data);
+    void createUser(UserData data) throws SQLException;
     boolean checkUser(String username);
     UserData getUserData(String username);
 }

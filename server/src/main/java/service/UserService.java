@@ -21,6 +21,7 @@ public class UserService {
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }
+//This is where the password hashing should be used.
 
     public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException, AlreadyTakenException {
 
@@ -32,7 +33,7 @@ public class UserService {
         //currently not working right now
         else if(registerRequest.username() == null
                 || registerRequest.password() == null
-                || registerRequest.email() == null){ //I dont think this works?
+                || registerRequest.email() == null){
             throw new DataAccessException("Error: Bad request. Make sure username, password, or email is not empty.");
         }
         //creates a new user

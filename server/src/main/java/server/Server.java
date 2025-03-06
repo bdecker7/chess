@@ -1,21 +1,33 @@
 package server;
 
+import dataaccess.exceptions.DataAccessException;
 import handler.*;
 import dataaccess.*;
 import handler.LogOutHandler;
 import spark.*;
+import java.sql.*;
+import dataaccess.DatabaseManager.*;
+
+import javax.xml.crypto.Data;
+
+import static java.sql.DriverManager.getConnection;
+
 
 public class Server {
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort) throws SQLException, DataAccessException {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-        UserDAO usersMemory = new MemoryUserDAO();
-        AuthDAO authsMemory = new MemoryAuthDAO();
-        GameDAO gamesMemory = new MemoryGameDAO();
+//        UserDAO usersMemory = new MemoryUserDAO();
+//        AuthDAO authsMemory = new MemoryAuthDAO();
+//        GameDAO gamesMemory = new MemoryGameDAO();
 
-        //does registering also log in a user?
+        UserDAO usersMemory = new UserSQL();
+        AuthDAO authsMemory = new AuthSQL();
+        GameDAO gamesMemory = new GameSQL();
+
+
         Spark.post("/user", (req, res) ->
                 new RegisterHandler(usersMemory,authsMemory).handleRequest(req,res));
         Spark.post("/session",(req,res)->

@@ -44,11 +44,14 @@ public class DatabaseManager {
             var conn = DriverManager.getConnection(CONNECTION_URL, USER, PASSWORD);
             try (var preparedStatement = conn.prepareStatement(statement)) {
                 preparedStatement.executeUpdate();
-                //*Create tables as a separate method,
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
+    }
+
+    private static void createTables() {
+
     }
 
     /**
