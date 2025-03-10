@@ -5,6 +5,7 @@ import dataaccess.exceptions.UnAuthorizedException;
 import model.AuthData;
 import model.UserData;
 import dataaccess.*;
+import org.mindrot.jbcrypt.BCrypt;
 import records.LoginRequest;
 import records.LoginResult;
 import records.RegisterRequest;
@@ -37,8 +38,10 @@ public class UserService {
                 || registerRequest.email() == null){
             throw new DataAccessException("Error: Bad request. Make sure username, password, or email is not empty.");
         }
+        //creates hashed password of current password
+        String hashedPassword = BCrypt.hashpw(registerRequest.password(), BCrypt.gensalt());
         //creates a new user
-        UserData newUser = new UserData(registerRequest.username(), registerRequest.password(), registerRequest.email());
+        UserData newUser = new UserData(registerRequest.username(), hashedPassword, registerRequest.email());
         //puts new user in the database
         userDAO.createUser(newUser);
         //creates an authorization Token for the new user

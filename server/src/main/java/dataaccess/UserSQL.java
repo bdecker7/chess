@@ -3,6 +3,7 @@ package dataaccess;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.SQLERROR;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -50,6 +51,8 @@ public class UserSQL implements UserDAO{
     @Override
     public UserData getUserData(String username) {
         //calls execute query function
+        var statement = "SELECT username FROM userData";
+        BCrypt.checkpw(providedClearTextPassword, hashedPassword);
         return null;
     }
 
