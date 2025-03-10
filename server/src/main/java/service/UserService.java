@@ -10,6 +10,7 @@ import records.LoginResult;
 import records.RegisterRequest;
 import records.RegisterResult;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class UserService {
@@ -23,7 +24,7 @@ public class UserService {
     }
 //This is where the password hashing should be used.
 
-    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException, AlreadyTakenException {
+    public RegisterResult register(RegisterRequest registerRequest) throws DataAccessException, AlreadyTakenException, SQLException {
 
         //checks if username is already taken
         if(userDAO.checkUser(registerRequest.username())){

@@ -1,5 +1,6 @@
 package dataaccess;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -34,7 +35,7 @@ public class MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public String createAuth(String newUser) {
+    public String createAuth(String newUser) throws SQLException {
         String authToken = UUID.randomUUID().toString();;
         allAuthDataStorage.put(authToken, newUser);
         return authToken;

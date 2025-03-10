@@ -35,12 +35,13 @@ public class UserSQL implements UserDAO{
 
     @Override
     public boolean checkUser(String username) {
+        //calls execute query function
         return false;
     }
 
     @Override
     public UserData getUserData(String username) {
-        //calls execute querie function
+        //calls execute query function
         return null;
     }
 
@@ -53,7 +54,7 @@ public class UserSQL implements UserDAO{
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-
+// I dont think I need this because we are not indexing.
 //                var rs = ps.getGeneratedKeys();
 //                if (rs.next()) {
 //                    return rs.getInt(1);

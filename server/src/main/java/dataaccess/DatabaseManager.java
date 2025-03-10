@@ -1,9 +1,13 @@
 package dataaccess;
 
 import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.SQLERROR;
 
 import java.sql.*;
 import java.util.Properties;
+
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 
 public class DatabaseManager {
     private static final String DATABASE_NAME;
@@ -50,9 +54,6 @@ public class DatabaseManager {
         }
     }
 
-    private static void createTables() {
-
-    }
 
     /**
      * Create a connection to the database and sets the catalog based upon the
@@ -73,6 +74,39 @@ public class DatabaseManager {
             return conn;
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    private void executeUpdate(String statement, Object... params) throws SQLException,SQLERROR {
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
+                for (var i = 0; i < params.length; i++) {
+                    var param = params[i];
+                    if (param instanceof String p) ps.setString(i + 1, p);
+                    else if (param == null) ps.setNull(i + 1, NULL);
+                }
+                ps.executeUpdate();
+// I dont think I need this because we are not indexing.
+//                var rs = ps.getGeneratedKeys();
+//                if (rs.next()) {
+//                    return rs.getInt(1);
+//                }
+
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
+    }
+    private void configureDatabase(String [] table_to_create) throws SQLException, DataAccessException {
+        DatabaseManager.createDatabase();
+        try (var conn = DatabaseManager.getConnection()) {
+            for (var statement : table_to_create) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException ex) {
+            throw new SQLERROR(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }
