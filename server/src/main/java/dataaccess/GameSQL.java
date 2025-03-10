@@ -54,7 +54,14 @@ public class GameSQL implements GameDAO{
 
     @Override
     public void clear() {
-
+        var statement = "DELETE FROM gameData";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
     }
 
     @Override

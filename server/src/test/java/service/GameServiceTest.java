@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 import static chess.ChessGame.TeamColor.WHITE;
@@ -28,7 +29,7 @@ class GameServiceTest {
     static GameService newGameService;
 
     @BeforeAll
-    static void setUp() throws DataAccessException, AlreadyTakenException {
+    static void setUp() throws DataAccessException, AlreadyTakenException, SQLException {
         username = "Bill";
         password = "myPassword";
         email = "bill.nye@gmail.com";
@@ -51,7 +52,7 @@ class GameServiceTest {
 
     }
     @Test
-    void getListOfGames() throws DataAccessException {
+    void getListOfGames() throws DataAccessException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "GAME 1");
@@ -64,7 +65,7 @@ class GameServiceTest {
     }
 
     @Test
-    void getListOfGamesFail() throws DataAccessException {
+    void getListOfGamesFail() throws DataAccessException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "GAME 1");
@@ -81,7 +82,7 @@ class GameServiceTest {
     }
 
     @Test
-    void createGame() throws DataAccessException {
+    void createGame() throws DataAccessException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
@@ -101,7 +102,7 @@ class GameServiceTest {
 
 
     @Test
-    void joinGame() throws DataAccessException, AlreadyTakenException {
+    void joinGame() throws DataAccessException, AlreadyTakenException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
@@ -113,7 +114,7 @@ class GameServiceTest {
         Assertions.assertTrue(Objects.equals(gameDataOfUser.getGame(testedGameID).whiteUsername(), "Bill"));
     }
     @Test
-    void joinGameFail() throws DataAccessException, AlreadyTakenException {
+    void joinGameFail() throws DataAccessException, AlreadyTakenException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
@@ -127,7 +128,7 @@ class GameServiceTest {
         );
     }
     @Test
-    void checkPlayerColorTest() throws DataAccessException, AlreadyTakenException {
+    void checkPlayerColorTest() throws DataAccessException, AlreadyTakenException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");
@@ -140,7 +141,7 @@ class GameServiceTest {
 
     }
     @Test
-    void checkPlayerColorTestFailure() throws DataAccessException, AlreadyTakenException {
+    void checkPlayerColorTestFailure() throws DataAccessException, AlreadyTakenException, SQLException {
         LoginRequest newLogin = new LoginRequest(username,password);
         LoginResult validUserLogin = newService.login(newLogin);
         CreateGameRequest createdGame = new CreateGameRequest(validUserLogin.authToken(), "NEW GAME");

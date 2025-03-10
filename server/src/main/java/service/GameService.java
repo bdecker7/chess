@@ -8,6 +8,7 @@ import chess.ChessGame;
 import dataaccess.*;
 import records.*;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -40,7 +41,7 @@ public class GameService {
     }
 
     public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)
-            throws UnAuthorizedException, DataAccessException {
+            throws UnAuthorizedException, DataAccessException, SQLException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(createGameRequest.gameName() == null){

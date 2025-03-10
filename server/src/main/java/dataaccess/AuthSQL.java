@@ -37,6 +37,14 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
 
     @Override
     public void clear() {
+        var statement = "DELETE FROM authData";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
 
     }
 
@@ -68,12 +76,6 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-// I dont think I need this because we are not indexing.
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
-
             }
         } catch (SQLException | DataAccessException e) {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));

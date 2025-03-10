@@ -22,8 +22,15 @@ public class UserSQL implements UserDAO{
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws SQLException, DataAccessException {
+        var statement = "DELETE FROM userData";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var ps = conn.prepareStatement(statement)){
+                ps.executeUpdate();
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
+        }
     }
 
     @Override
@@ -54,11 +61,6 @@ public class UserSQL implements UserDAO{
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-// I dont think I need this because we are not indexing.
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
 
             }
         } catch (SQLException | DataAccessException e) {

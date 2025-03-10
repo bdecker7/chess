@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserServiceTest {
@@ -39,13 +41,13 @@ class UserServiceTest {
         newService = new UserService(dataOfUser,authData);
     }
     @AfterEach
-    void clearData(){
+    void clearData() throws SQLException, DataAccessException {
         dataOfUser.clear();
         authData.clear();
     }
 
     @Test
-    void registerFail() throws AlreadyTakenException, DataAccessException {
+    void registerFail() throws AlreadyTakenException, DataAccessException, SQLException {
         //register user
         //register user again
         //assert already taken exception
@@ -61,7 +63,7 @@ class UserServiceTest {
         );
     }
     @Test
-    void registerSuccess() throws AlreadyTakenException, DataAccessException {
+    void registerSuccess() throws AlreadyTakenException, DataAccessException, SQLException {
         //register user
         RegisterRequest requestOther =
                 new RegisterRequest("Bill","myPassword","bill.nye@gmail.com");
@@ -71,7 +73,7 @@ class UserServiceTest {
 
 
     @Test
-    void loginSuccess() throws DataAccessException, AlreadyTakenException {
+    void loginSuccess() throws DataAccessException, AlreadyTakenException, SQLException {
         //register user
         newService.register(request);
 
@@ -80,7 +82,7 @@ class UserServiceTest {
         Assertions.assertEquals(newService.login(loginOther).username(),username);
     }
     @Test
-    void loginFail() throws DataAccessException, AlreadyTakenException {
+    void loginFail() throws DataAccessException, AlreadyTakenException, SQLException {
         //Login User W/out valid username
         //assert Data access exception
         newService.register(request);
@@ -94,7 +96,7 @@ class UserServiceTest {
     }
 
     @Test
-    void logoutSuccess() throws DataAccessException, AlreadyTakenException {
+    void logoutSuccess() throws DataAccessException, AlreadyTakenException, SQLException {
         //register user
         newService.register(request);
         //Login User
@@ -107,7 +109,7 @@ class UserServiceTest {
     }
 
     @Test
-    void logoutFail() throws UnAuthorizedException, DataAccessException, AlreadyTakenException {
+    void logoutFail() throws UnAuthorizedException, DataAccessException, AlreadyTakenException, SQLException {
         //register user
         newService.register(request);
         //Login User
