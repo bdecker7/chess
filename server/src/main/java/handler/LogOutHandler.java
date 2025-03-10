@@ -10,6 +10,8 @@ import dataaccess.*;
 import spark.Request;
 import spark.Response;
 
+import java.sql.SQLException;
+
 public class LogOutHandler {
     UserDAO memoryDAO;
     AuthDAO authDAO;
@@ -36,6 +38,8 @@ public class LogOutHandler {
             res.status(500);
             ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
             return new Gson().toJson(error);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
     }

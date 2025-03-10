@@ -48,13 +48,24 @@ public class GameSQL implements GameDAO{
     }
 
     @Override
-    public void updateGame(ChessGame.TeamColor colorToUpdate, String usernameToInput, int gameID) {
+    public void updateGame(ChessGame.TeamColor colorToUpdate, String usernameToInput, int gameID) throws SQLException {
 
+        if(colorToUpdate == ChessGame.TeamColor.WHITE){
+            var statement = "UPDATE gameData SET whiteUsername = ?, gameObject = ? WHERE = ?";
+            GameData newGameData =
+                    new GameData(gameID,usernameToInput, currentData.blackUsername(), currentData.gameName(),currentData.game());
+            executeUpdate(statement,newGameData.whiteUsername(),newGameData, gameID);
+        }else if(colorToUpdate == ChessGame.TeamColor.BLACK){
+            var statement = "UPDATE gameData SET blackUsername = ?, gameObject = ?  WHERE = ?";
+            GameData newGameData =
+                    new GameData(gameID, currentData.whiteUsername(), usernameToInput, currentData.gameName(),currentData.game());
+            executeUpdate(statement,newGameData.blackUsername(),newGameData, gameID);
+        }
     }
 
     @Override
     public void clear() {
-        var statement = "DELETE FROM gameData";
+        var statement = "DROP TABLE gameData";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
@@ -78,12 +89,6 @@ public class GameSQL implements GameDAO{
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
                 ps.executeUpdate();
-// I dont think I need this because we are not indexing.
-//                var rs = ps.getGeneratedKeys();
-//                if (rs.next()) {
-//                    return rs.getInt(1);
-//                }
-
             }
         } catch (SQLException | DataAccessException e) {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
@@ -96,6 +101,7 @@ public class GameSQL implements GameDAO{
               `gameID` int(4) NOT NULL,
               `whiteUsername` varchar(256) NULL,
               `blackUsername` varchar(256) NULL,
+              'gameName' varchar(256) NOT NULL,
               `gameObject` varchar(256) NOT NULL,
               PRIMARY KEY (`gameID`)
             )

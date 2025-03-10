@@ -13,7 +13,7 @@ public interface GameDAO {
     boolean checkIfGameExists(int gameID);
     GameData getGame(int gameID);
     Collection<GameData> listGames();
-    void updateGame(ChessGame.TeamColor colorToUpdate,String usernameToInput,int gameID);
+    void updateGame(ChessGame.TeamColor colorToUpdate,String usernameToInput,int gameID) throws SQLException;
     void clear();
     HashMap<Integer, GameData> getGameHash();
 

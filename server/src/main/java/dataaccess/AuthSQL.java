@@ -27,17 +27,31 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
 
     @Override
     public String getAuthUsername(String auth) {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT username FROM authData WHERE authToken= ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+
+                    if (rs.next()) {
+                        return readUsername(rs);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new SQLERROR(String.format("Unable to read data: %s", e.getMessage()));
+        }
         return "";
     }
 
     @Override
-    public void deleteAuth(String auth) {
-
+    public void deleteAuth(String auth) throws SQLException {
+        var statement = "DELETE FROM authData WHERE authToken= ?";
+        executeUpdate(statement,auth);
     }
 
     @Override
     public void clear() {
-        var statement = "DELETE FROM authData";
+        var statement = "DROP TABLE authData";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();

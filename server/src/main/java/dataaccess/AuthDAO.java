@@ -9,7 +9,7 @@ import java.util.HashMap;
 public interface AuthDAO {
     String createAuth(String currentUser) throws SQLException;
     String getAuthUsername(String auth);
-    void deleteAuth(String auth);
+    void deleteAuth(String auth) throws SQLException;
     void clear();
     boolean usernameInAuthDatabase(String authToken);
     HashMap<String,String> grabHash();

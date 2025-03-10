@@ -57,7 +57,7 @@ public class UserService {
         String newAuthToken = authDAO.createAuth(newAuthTokenAssignment.username());
         return new LoginResult(newAuthTokenAssignment.username(), newAuthToken);
     }
-    public void logout(String authString) {
+    public void logout(String authString) throws SQLException {
         if(!authDAO.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized logout. Check Auth Token.");
         }
