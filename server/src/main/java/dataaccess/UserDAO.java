@@ -14,6 +14,7 @@ public interface UserDAO {
     HashMap<String,UserData> getUserHashMap();
     void clear() throws SQLException, DataAccessException;
     void createUser(UserData data) throws SQLException;
-    boolean checkUser(String username);
+    boolean checkUser(String username) throws SQLException;
+
     UserData getUserData(String username) throws DataAccessException, SQLException;
 }

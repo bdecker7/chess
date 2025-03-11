@@ -3,11 +3,11 @@ package dataaccess;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.SQLERROR;
 import model.UserData;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Objects;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -44,10 +44,24 @@ public class UserSQL implements UserDAO{
     }
 
     @Override
-    public boolean checkUser(String username) {
+    public boolean checkUser(String username) throws SQLException {
         //calls execute query function
+        ResultSet rs;
+        var statement = "SELECT username FROM userData WHERE username = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,username);
+                rs = ps.executeQuery();
+                if(rs.next()){
+                    return Objects.equals(rs.getNString("username"), username);
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
+
 
     @Override
     public UserData getUserData(String username) throws DataAccessException, SQLException {
