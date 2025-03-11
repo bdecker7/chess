@@ -5,6 +5,7 @@ import dataaccess.exceptions.SQLERROR;
 import model.UserData;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -49,11 +50,19 @@ public class UserSQL implements UserDAO{
     }
 
     @Override
-    public UserData getUserData(String username) {
+    public UserData getUserData(String username) throws DataAccessException, SQLException {
         //calls execute query function
+        ResultSet rs;
         var statement = "SELECT username FROM userData";
-
-        return null;
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                rs = ps.executeQuery();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return new UserData(rs.getNString("username"),rs.getNString("password"),
+                                                rs.getNString("email"));
     }
 
     private void executeUpdate(String statement, Object... params) throws SQLException,SQLERROR {

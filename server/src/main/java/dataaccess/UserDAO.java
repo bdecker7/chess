@@ -15,5 +15,5 @@ public interface UserDAO {
     void clear() throws SQLException, DataAccessException;
     void createUser(UserData data) throws SQLException;
     boolean checkUser(String username);
-    UserData getUserData(String username);
+    UserData getUserData(String username) throws DataAccessException, SQLException;
 }
