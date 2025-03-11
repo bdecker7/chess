@@ -3,8 +3,10 @@ package dataaccess;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.SQLERROR;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.UUID;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -74,6 +76,19 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
 
     @Override
     public boolean authTokenExists(String authToken) {
+        ResultSet rs;
+        var statement = "SELECT authToken FROM authData WHERE authToken = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,authToken);
+                rs = ps.executeQuery();
+                if(rs.next()){
+                    return Objects.equals(rs.getNString("authToken"), authToken);
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
         return false;
     }
 
@@ -89,7 +104,7 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
-                ps.executeUpdate(); //duplicate
+                ps.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
@@ -101,7 +116,7 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
             CREATE TABLE IF NOT EXISTS  authData (
               `username` varchar(256) NOT NULL,
               `authToken` varchar(256) NOT NULL,
-              PRIMARY KEY (`username`)
+              PRIMARY KEY (`authToken`)
             )
             """
     };
