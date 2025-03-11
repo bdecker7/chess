@@ -89,7 +89,7 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
                     if (param instanceof String p) ps.setString(i + 1, p);
                     else if (param == null) ps.setNull(i + 1, NULL);
                 }
-                ps.executeUpdate();
+                ps.executeUpdate(); //duplicate
             }
         } catch (SQLException | DataAccessException e) {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));

@@ -67,16 +67,25 @@ public class UserSQL implements UserDAO{
     public UserData getUserData(String username) throws DataAccessException, SQLException {
         //calls execute query function
         ResultSet rs;
-        var statement = "SELECT username FROM userData";
+        var statement = "SELECT * FROM userData WHERE username = ?";
         try(var conn = DatabaseManager.getConnection()){
             try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,username);
                 rs = ps.executeQuery();
+                if(rs.next()){
+                    String usernameFromSQL = rs.getString("username");
+                    String password = rs.getString("password");
+                    String email = rs.getString("email");
+                    return new UserData(usernameFromSQL,password, email);
+                }else{
+                    throw new DataAccessException("can't access data");
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }catch(DataAccessException e){
+            throw new DataAccessException("couldn't get user data");
         }
-        return new UserData(rs.getNString("username"),rs.getNString("password"),
-                                                rs.getNString("email"));
     }
 
     private void executeUpdate(String statement, Object... params) throws SQLException,SQLERROR {

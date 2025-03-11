@@ -50,7 +50,8 @@ public class UserService {
     }
 
     public LoginResult login(LoginRequest loginRequest) throws SQLException, DataAccessException {
-
+        var userPasswordHashed = userDAO.getUserData(loginRequest.username()).password();
+        boolean is = BCrypt.checkpw(loginRequest.password(), userDAO.getUserData(loginRequest.username()).password());
         if(!userDAO.checkUser(loginRequest.username())){
             throw new UnAuthorizedException("Error: Not Valid Username");
         } else if (!BCrypt.checkpw(loginRequest.password(), userDAO.getUserData(loginRequest.username()).password())){
