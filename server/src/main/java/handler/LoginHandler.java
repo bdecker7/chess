@@ -1,6 +1,7 @@
 package handler;
 
 import dataaccess.exceptions.AlreadyAuthorizedException;
+import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.ServerMalfunctionException;
 import dataaccess.exceptions.UnAuthorizedException;
 import records.ErrorRecordClass;
@@ -40,7 +41,7 @@ public class LoginHandler {
             res.status(500);
             ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
             return new Gson().toJson(error);
-        } catch (SQLException e) {
+        } catch (SQLException | DataAccessException e) {
             throw new RuntimeException(e);
         }
 

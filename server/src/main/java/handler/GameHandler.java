@@ -74,6 +74,8 @@ public class GameHandler {
             res.status(500);
             ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
             return new Gson().toJson(error);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
     public String handleListRequest(Request req, Response res){

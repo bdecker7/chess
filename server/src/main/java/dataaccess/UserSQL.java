@@ -26,7 +26,7 @@ public class UserSQL implements UserDAO{
 
     @Override
     public void clear() throws SQLException, DataAccessException {
-        var statement = "DROP TABLE userData";
+        var statement = "TRUNCATE TABLE userData";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();

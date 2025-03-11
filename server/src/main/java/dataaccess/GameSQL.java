@@ -65,7 +65,7 @@ public class GameSQL implements GameDAO{
 
     @Override
     public void clear() {
-        var statement = "DROP TABLE gameData";
+        var statement = "TRUNCATE TABLE gameData";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)){
                 ps.executeUpdate();
@@ -102,7 +102,7 @@ public class GameSQL implements GameDAO{
               `gameID` int(4) NOT NULL,
               `whiteUsername` varchar(256) NULL,
               `blackUsername` varchar(256) NULL,
-              'gameName' varchar(256) NOT NULL,
+              `gameName` varchar(256) NOT NULL,
               `gameObject` varchar(256) NOT NULL,
               PRIMARY KEY (`gameID`)
             )

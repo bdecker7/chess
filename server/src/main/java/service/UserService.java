@@ -49,7 +49,7 @@ public class UserService {
         return new RegisterResult(registerRequest.username(), newAuthToken);
     }
 
-    public LoginResult login(LoginRequest loginRequest) throws SQLException {
+    public LoginResult login(LoginRequest loginRequest) throws SQLException, DataAccessException {
 
         if(!userDAO.checkUser(loginRequest.username())){
             throw new UnAuthorizedException("Error: Not Valid Username");

@@ -51,7 +51,7 @@ public class GameService {
         return new CreateGameResult(currentGameData.gameID());
     }
     public void joinGame(String authString, JoinGameRequest joinGamesRequest)
-            throws AlreadyTakenException,UnAuthorizedException,ServerMalfunctionException,DataAccessException {
+            throws AlreadyTakenException, UnAuthorizedException, ServerMalfunctionException, DataAccessException, SQLException {
         if(!authToken.usernameInAuthDatabase(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(authString == null || joinGamesRequest.playerColor() == null){
