@@ -52,7 +52,7 @@ public class UserSQL implements UserDAO{
     public UserData getUserData(String username) {
         //calls execute query function
         var statement = "SELECT username FROM userData";
-        BCrypt.checkpw(providedClearTextPassword, hashedPassword);
+
         return null;
     }
 

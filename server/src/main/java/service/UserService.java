@@ -53,7 +53,7 @@ public class UserService {
 
         if(!userDAO.checkUser(loginRequest.username())){
             throw new UnAuthorizedException("Error: Not Valid Username");
-        }else if(!Objects.equals(userDAO.getUserData(loginRequest.username()).password(), loginRequest.password())){
+        } else if (!BCrypt.checkpw(loginRequest.password(), userDAO.getUserData(loginRequest.username()).password())){
             throw new UnAuthorizedException("Error: Not Authorized");
         }
         AuthData newAuthTokenAssignment = new AuthData(loginRequest.username());
