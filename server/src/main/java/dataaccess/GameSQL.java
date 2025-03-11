@@ -2,6 +2,7 @@ package dataaccess;
 
 import chess.ChessGame;
 import dataaccess.exceptions.DataAccessException;
+import dataaccess.exceptions.InvalidColorException;
 import dataaccess.exceptions.SQLERROR;
 import model.GameData;
 
@@ -48,19 +49,18 @@ public class GameSQL implements GameDAO{
     }
 
     @Override
-    public void updateGame(ChessGame.TeamColor colorToUpdate, String usernameToInput, int gameID) throws SQLException {
+    public void updateGame(ChessGame.TeamColor colorToUpdate, String usernameToInput, int gameID) throws SQLException, InvalidColorException {
 
+        String statement;
         if(colorToUpdate == ChessGame.TeamColor.WHITE){
-            var statement = "UPDATE gameData SET whiteUsername = ?, gameObject = ? WHERE = ?";
-            GameData newGameData =
-                    new GameData(gameID,usernameToInput, currentData.blackUsername(), currentData.gameName(),currentData.game());
-            executeUpdate(statement,newGameData.whiteUsername(),newGameData, gameID);
+            statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
         }else if(colorToUpdate == ChessGame.TeamColor.BLACK){
-            var statement = "UPDATE gameData SET blackUsername = ?, gameObject = ?  WHERE = ?";
-            GameData newGameData =
-                    new GameData(gameID, currentData.whiteUsername(), usernameToInput, currentData.gameName(),currentData.game());
-            executeUpdate(statement,newGameData.blackUsername(),newGameData, gameID);
+            statement = "UPDATE gameData SET blackUsername = ?, gameObject = ?  WHERE gameID = ?";
         }
+        else{
+            throw new InvalidColorException("Invalid color");
+        }
+        executeUpdate(statement,usernameToInput, gameID);
     }
 
     @Override
