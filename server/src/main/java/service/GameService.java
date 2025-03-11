@@ -42,7 +42,7 @@ public class GameService {
 
     public CreateGameResult createGame(String authString, CreateGameRequest createGameRequest)
             throws UnAuthorizedException, DataAccessException, SQLException {
-        if(!authToken.usernameInAuthDatabase(authString)){
+        if(!authToken.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(createGameRequest.gameName() == null){
             throw new DataAccessException("Error: Incorrect Body Format");
@@ -52,7 +52,7 @@ public class GameService {
     }
     public void joinGame(String authString, JoinGameRequest joinGamesRequest)
             throws AlreadyTakenException, UnAuthorizedException, ServerMalfunctionException, DataAccessException, SQLException {
-        if(!authToken.usernameInAuthDatabase(authString)){
+        if(!authToken.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: UnAuthorized");
         }else if(authString == null || joinGamesRequest.playerColor() == null){
             throw new DataAccessException("Error: invalid input");

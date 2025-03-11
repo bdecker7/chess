@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.InvalidColorException;
 import dataaccess.exceptions.SQLERROR;
@@ -28,8 +29,26 @@ public class GameSQL implements GameDAO{
         ChessGame game = new ChessGame();
         GameData newGameData = new GameData(newGameID,null,null,gameName,game);
 
-        var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, gameObject) VALUES (? , ? , ?, ?, ?)";
-        executeUpdate(statement,newGameID,newGameData.whiteUsername(),newGameData.blackUsername(),newGameData);
+        try(var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement("INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, gameObject) VALUES (? , ? , ?, ?, ?)")) {
+                preparedStatement.setInt(1, newGameID);
+                preparedStatement.setString(2, null);
+                preparedStatement.setString(3,null);
+                preparedStatement.setString(4,gameName);
+
+                // Serialize and store the friend JSON.
+                var gameDataJson = new Gson().toJson(game);
+                preparedStatement.setString(5, gameDataJson);
+
+                preparedStatement.executeUpdate();
+            }
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+//        var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, gameObject) VALUES (? , ? , ?, ?, ?)";
+//        statement.setString(3, json);
+//        executeUpdate(statement,newGameID,newGameData.whiteUsername(),newGameData.blackUsername(),gameName,gameDataJson);
         return newGameData;
     }
 
@@ -103,7 +122,7 @@ public class GameSQL implements GameDAO{
               `whiteUsername` varchar(256) NULL,
               `blackUsername` varchar(256) NULL,
               `gameName` varchar(256) NOT NULL,
-              `gameObject` varchar(256) NOT NULL,
+              `gameObject` longtext NOT NULL,
               PRIMARY KEY (`gameID`)
             )
             """
