@@ -7,11 +7,9 @@ import dataaccess.exceptions.InvalidColorException;
 import dataaccess.exceptions.SQLERROR;
 import model.GameData;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
@@ -36,7 +34,7 @@ public class GameSQL implements GameDAO{
                 preparedStatement.setString(3,null);
                 preparedStatement.setString(4,gameName);
 
-                // Serialize and store the friend JSON.
+                // Serialize and store the gameDataObject as JSON.
                 var gameDataJson = new Gson().toJson(game);
                 preparedStatement.setString(5, gameDataJson);
 
@@ -45,16 +43,27 @@ public class GameSQL implements GameDAO{
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-
-//        var statement = "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, gameObject) VALUES (? , ? , ?, ?, ?)";
-//        statement.setString(3, json);
-//        executeUpdate(statement,newGameID,newGameData.whiteUsername(),newGameData.blackUsername(),gameName,gameDataJson);
         return newGameData;
     }
 
     @Override
     public boolean checkIfGameExists(int gameID) {
-        return false;
+        //calls execute query function
+        ResultSet rs;
+        var statement = "SELECT gameID FROM gameData WHERE gameID = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setInt(1,gameID);
+                rs = ps.executeQuery();
+                if(rs.next()){
+                    return Objects.equals(rs.getInt("gameID"), gameID);
+                }else{
+                    return false;
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
