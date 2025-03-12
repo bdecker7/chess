@@ -115,9 +115,6 @@ public class GameSQL implements GameDAO{
                     GameData individualGameData = new GameData(gameIDNumber,whiteUsername,blackUsername,gameName,gameDataObject);
                     allGames.add(individualGameData);
                 }
-//                else{
-//                    throw new DataAccessException("can't access data");
-//                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -155,10 +152,6 @@ public class GameSQL implements GameDAO{
         }
     }
 
-    @Override
-    public HashMap<Integer, GameData> getGameHash() {
-        return null;
-    }
 
     private void executeUpdate(String statement, Object... params) throws SQLException, SQLERROR {
         try (var conn = DatabaseManager.getConnection()) {

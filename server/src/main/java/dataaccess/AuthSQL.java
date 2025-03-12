@@ -72,16 +72,6 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public boolean usernameInAuthDatabase(String authToken) {
-        return false;
-    }
-
-    @Override
-    public HashMap<String, String> grabHash() {
-        return null;
-    }
-
-    @Override
     public boolean authTokenExists(String authToken) {
         ResultSet rs;
         var statement = "SELECT authToken FROM authData WHERE authToken = ?";

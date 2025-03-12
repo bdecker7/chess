@@ -18,12 +18,6 @@ public class UserSQL implements UserDAO{
         configureDatabase();
     }
 
-
-    @Override
-    public HashMap<String, UserData> getUserHashMap() {
-        return null;
-    }
-
     @Override
     public void clear() throws SQLException, DataAccessException {
         var statement = "TRUNCATE TABLE userData";

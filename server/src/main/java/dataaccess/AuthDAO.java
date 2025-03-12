@@ -13,8 +13,6 @@ public interface AuthDAO {
     String getAuthUsername(String auth) throws DataAccessException;
     void deleteAuth(String auth) throws SQLException;
     void clear();
-    boolean usernameInAuthDatabase(String authToken);
-    HashMap<String,String> grabHash();
     boolean authTokenExists(String authToken);
     HashMap<String, String> getAuthHash();
 }
