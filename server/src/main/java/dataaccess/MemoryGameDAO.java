@@ -15,8 +15,6 @@ public class MemoryGameDAO implements GameDAO{
         this.allGameDataStorage= new HashMap<>();
     }
 
-
-
     @Override
     public GameData createGame(String gameName) {
         Random random = new Random();
@@ -61,8 +59,4 @@ public class MemoryGameDAO implements GameDAO{
         allGameDataStorage.clear();
     }
 
-    @Override
-    public HashMap<Integer, GameData> getGameHash() {
-        return allGameDataStorage;
-    }
 }

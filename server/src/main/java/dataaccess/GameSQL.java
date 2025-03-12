@@ -17,8 +17,20 @@ import static java.sql.Types.NULL;
 
 public class GameSQL implements GameDAO{
 
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS  gameData (
+              `gameID` int(4) NOT NULL,
+              `whiteUsername` varchar(256) NULL,
+              `blackUsername` varchar(256) NULL,
+              `gameName` varchar(256) NOT NULL,
+              `gameObject` longtext NOT NULL,
+              PRIMARY KEY (`gameID`)
+            )
+            """
+    };
     public GameSQL() throws SQLException, DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
@@ -167,33 +179,6 @@ public class GameSQL implements GameDAO{
             }
         } catch (SQLException | DataAccessException e) {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
-
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  gameData (
-              `gameID` int(4) NOT NULL,
-              `whiteUsername` varchar(256) NULL,
-              `blackUsername` varchar(256) NULL,
-              `gameName` varchar(256) NOT NULL,
-              `gameObject` longtext NOT NULL,
-              PRIMARY KEY (`gameID`)
-            )
-            """
-    };
-
-
-    private void configureDatabase() throws SQLException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new SQLERROR(String.format("Unable to configure database: %s", ex.getMessage()));
         }
     }
 }

@@ -14,8 +14,18 @@ import static java.sql.Types.NULL;
 
 public class UserSQL implements UserDAO{
 
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS  userData (
+              `username` varchar(256) NOT NULL,
+              `password` varchar(256) NOT NULL,
+              `email` varchar(256) NOT NULL,
+              PRIMARY KEY (`username`)
+            )
+            """
+    };
     public UserSQL() throws SQLException, DataAccessException {
-        configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
@@ -95,28 +105,4 @@ public class UserSQL implements UserDAO{
         }
     }
 
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  userData (
-              `username` varchar(256) NOT NULL,
-              `password` varchar(256) NOT NULL,
-              `email` varchar(256) NOT NULL,
-              PRIMARY KEY (`username`)
-            )
-            """
-    };
-
-
-    private void configureDatabase() throws SQLException, DataAccessException {
-        DatabaseManager.createDatabase();
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException ex) {
-            throw new SQLERROR(String.format("Unable to configure database: %s", ex.getMessage()));
-        }
-    }
 }

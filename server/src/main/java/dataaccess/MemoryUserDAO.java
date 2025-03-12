@@ -11,10 +11,7 @@ public class MemoryUserDAO implements UserDAO{
     public MemoryUserDAO(){
         this.allUsersDataStorage= new HashMap<>();
     }
-    @Override
-    public HashMap<String,UserData> getUserHashMap(){
-        return allUsersDataStorage;
-    }
+
     @Override
     public void clear() {
         allUsersDataStorage.clear();

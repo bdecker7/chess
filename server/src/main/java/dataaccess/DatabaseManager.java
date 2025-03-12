@@ -92,7 +92,7 @@ public class DatabaseManager {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
-    private void configureDatabase(String [] table_to_create) throws SQLException, DataAccessException {
+    static void configureDatabase(String[] table_to_create) throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
             for (var statement : table_to_create) {

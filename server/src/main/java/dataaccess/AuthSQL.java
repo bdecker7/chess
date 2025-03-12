@@ -15,9 +15,18 @@ import static java.sql.Types.NULL;
 
 public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
 
+    private final String[] createStatements = {
+            """
+            CREATE TABLE IF NOT EXISTS  authData (
+              `username` varchar(256) NOT NULL,
+              `authToken` varchar(256) NOT NULL,
+              PRIMARY KEY (`authToken`)
+            )
+            """
+    };
 
     public AuthSQL() throws SQLException, DataAccessException {
-        DatabaseManager.configureDatabase();
+        DatabaseManager.configureDatabase(createStatements);
     }
 
     @Override
@@ -108,15 +117,6 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
         }
     }
 
-    private final String[] createStatements = {
-            """
-            CREATE TABLE IF NOT EXISTS  authData (
-              `username` varchar(256) NOT NULL,
-              `authToken` varchar(256) NOT NULL,
-              PRIMARY KEY (`authToken`)
-            )
-            """
-    };
 
 
     private void configureDatabase() throws SQLException, DataAccessException {

@@ -15,13 +15,6 @@ public class MemoryAuthDAO implements AuthDAO{
         this.allAuthDataStorage= new HashMap<>();
     }
 
-    public HashMap<String,String> getAuthHashMap(){
-        return allAuthDataStorage;
-    }
-    @Override
-    public HashMap<String,String> grabHash(){
-        return allAuthDataStorage;
-    }
 
     @Override
     public boolean authTokenExists(String authToken) {
@@ -56,14 +49,6 @@ public class MemoryAuthDAO implements AuthDAO{
     @Override
     public void clear() {
         allAuthDataStorage.clear();
-    }
-
-    @Override
-    public boolean usernameInAuthDatabase(String authToken) {
-        if(allAuthDataStorage != null){
-            return allAuthDataStorage.containsKey(authToken);
-        }
-        return false;
     }
 
 
