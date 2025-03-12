@@ -1,5 +1,7 @@
 package dataaccess;
 
+import dataaccess.exceptions.DataAccessException;
+
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -8,7 +10,7 @@ import java.util.HashMap;
 //deleteAuth: Delete an authorization so that it is no longer valid.
 public interface AuthDAO {
     String createAuth(String currentUser) throws SQLException;
-    String getAuthUsername(String auth);
+    String getAuthUsername(String auth) throws DataAccessException;
     void deleteAuth(String auth) throws SQLException;
     void clear();
     boolean usernameInAuthDatabase(String authToken);

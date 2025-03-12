@@ -6,6 +6,7 @@ import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.InvalidColorException;
 import dataaccess.exceptions.SQLERROR;
 import model.GameData;
+import model.UserData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -67,8 +68,31 @@ public class GameSQL implements GameDAO{
     }
 
     @Override
-    public GameData getGame(int gameID) {
-        return null;
+    public GameData getGame(int gameID) throws DataAccessException {
+        //calls execute query function
+        ResultSet rs;
+        var statement = "SELECT * FROM gameData WHERE gameID = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setInt(1,gameID);
+                rs = ps.executeQuery();
+                if(rs.next()){
+                    Integer gameIDNumber = rs.getInt("gameID");
+                    String whiteUsername = rs.getString("whiteUsername");
+                    String blackUsername = rs.getString("blackUsername");
+                    String gameName = rs.getString("gameName");
+                    String jsonGameData = rs.getString("gameObject");
+                    var gameDataObject = new Gson().fromJson(jsonGameData,ChessGame.class);
+                    return new GameData(gameIDNumber,whiteUsername,blackUsername,gameName,gameDataObject);
+                }else{
+                    throw new DataAccessException("can't access data");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }catch(DataAccessException e){
+            throw new DataAccessException("couldn't get user data");
+        }
     }
 
     @Override
@@ -83,7 +107,7 @@ public class GameSQL implements GameDAO{
         if(colorToUpdate == ChessGame.TeamColor.WHITE){
             statement = "UPDATE gameData SET whiteUsername = ? WHERE gameID = ?";
         }else if(colorToUpdate == ChessGame.TeamColor.BLACK){
-            statement = "UPDATE gameData SET blackUsername = ?, gameObject = ?  WHERE gameID = ?";
+            statement = "UPDATE gameData SET blackUsername = ?  WHERE gameID = ?";
         }
         else{
             throw new InvalidColorException("Invalid color");

@@ -2,6 +2,7 @@ package dataaccess;
 
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.SQLERROR;
+import model.UserData;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -28,21 +29,27 @@ public class AuthSQL extends MemoryAuthDAO implements AuthDAO{
     }
 
     @Override
-    public String getAuthUsername(String auth) {
-//        try (var conn = DatabaseManager.getConnection()) {
-//            var statement = "SELECT username FROM authData WHERE authToken= ?";
-//            try (var ps = conn.prepareStatement(statement)) {
-//                try (var rs = ps.executeQuery()) {
-//
-//                    if (rs.next()) {
-//                        return readUsername(rs);
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            throw new SQLERROR(String.format("Unable to read data: %s", e.getMessage()));
-//        }
-        return "";
+    public String getAuthUsername(String auth) throws DataAccessException {
+        //calls execute query function
+        ResultSet rs;
+        var statement = "SELECT * FROM authData WHERE authToken = ?";
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                ps.setString(1,auth);
+                rs = ps.executeQuery();
+                if(rs.next()){
+                    String usernameFromSQL = rs.getString("username");
+                    String authToken = rs.getString("authToken");
+                    return usernameFromSQL;
+                }else{
+                    throw new DataAccessException("can't access data");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }catch(DataAccessException e){
+            throw new DataAccessException("couldn't get user data");
+        }
     }
 
     @Override
