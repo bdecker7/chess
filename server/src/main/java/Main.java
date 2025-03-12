@@ -16,13 +16,8 @@ public class Main {
         System.out.println("♕ 240 Chess Server: " + piece);
         Server server = new Server();
 
-        try{
-            server.run(8080);
-        }
-        catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-        ;
+
+        server.run(8080);
 
         // Add a shutdown hook to stop the server when the application is terminated
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

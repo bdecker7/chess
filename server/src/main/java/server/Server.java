@@ -15,7 +15,7 @@ import static java.sql.DriverManager.getConnection;
 
 public class Server {
 
-    public int run(int desiredPort) throws SQLException, DataAccessException {
+    public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -23,10 +23,10 @@ public class Server {
 //        AuthDAO authsMemory = new MemoryAuthDAO();
 //        GameDAO gamesMemory = new MemoryGameDAO();
 
-        UserDAO usersMemory = new UserSQL();
-        AuthDAO authsMemory = new AuthSQL();
-        GameDAO gamesMemory = new GameSQL();
-
+        try{
+            UserDAO usersMemory = new UserSQL();
+            AuthDAO authsMemory = new AuthSQL();
+            GameDAO gamesMemory = new GameSQL();
 
         Spark.post("/user", (req, res) ->
                 new RegisterHandler(usersMemory,authsMemory).handleRequest(req,res));
@@ -49,6 +49,10 @@ public class Server {
 
         Spark.awaitInitialization();
         return Spark.port();
+    }catch (SQLException|DataAccessException e){
+        throw new RuntimeException("Can't access data");
+    }
+
     }
 
     public void stop() {
