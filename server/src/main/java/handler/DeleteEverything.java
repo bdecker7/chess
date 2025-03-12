@@ -24,22 +24,13 @@ public class DeleteEverything {
     private void deleteAuth() throws ServerMalfunctionException {
 
         authDAO.clear();
-//        if(!authDAO.grabHash().isEmpty()){
-//            throw new ServerMalfunctionException("Error: AuthData was not emptied");
-//        }
 
     }
     private void deleteUser() throws SQLException, DataAccessException {
         userDAO.clear();
-//        if(!userDAO.getUserHashMap().isEmpty()){
-//            throw new ServerMalfunctionException("Error: UserData was not emptied");
-//        }
     }
     private void deleteGame(){
         gameDAO.clear();
-//        if(!gameDAO.getGameHash().isEmpty()){
-//            throw new ServerMalfunctionException("Error: GameData was not emptied");
-//        }
     }
 
     public String deleteAllData(Request req, Response res){

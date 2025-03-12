@@ -29,13 +29,14 @@ public class GameSQL implements GameDAO{
         GameData newGameData = new GameData(newGameID,null,null,gameName,game);
 
         try(var conn = DatabaseManager.getConnection()) {
-            try (var preparedStatement = conn.prepareStatement("INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, gameObject) VALUES (? , ? , ?, ?, ?)")) {
+            try (var preparedStatement = conn.prepareStatement(
+                    "INSERT INTO gameData (gameID, whiteUsername, blackUsername, gameName, gameObject) " +
+                            "VALUES (? , ? , ?, ?, ?)")) {
                 preparedStatement.setInt(1, newGameID);
                 preparedStatement.setString(2, null);
                 preparedStatement.setString(3,null);
                 preparedStatement.setString(4,gameName);
 
-                // Serialize and store the gameDataObject as JSON.
                 var gameDataJson = new Gson().toJson(game);
                 preparedStatement.setString(5, gameDataJson);
 
@@ -49,7 +50,7 @@ public class GameSQL implements GameDAO{
 
     @Override
     public boolean checkIfGameExists(int gameID) {
-        //calls execute query function
+
         ResultSet rs;
         var statement = "SELECT gameID FROM gameData WHERE gameID = ?";
         try(var conn = DatabaseManager.getConnection()){
@@ -69,7 +70,7 @@ public class GameSQL implements GameDAO{
 
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
-        //calls execute query function
+
         ResultSet rs;
         var statement = "SELECT * FROM gameData WHERE gameID = ?";
         try(var conn = DatabaseManager.getConnection()){
@@ -158,9 +159,9 @@ public class GameSQL implements GameDAO{
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
-                    if (param instanceof String p) ps.setString(i + 1, p);
-                    else if (param instanceof Integer p) ps.setInt(i + 1, p);
-                    else if (param == null) ps.setNull(i + 1, NULL);
+                    if (param instanceof String p){ ps.setString(i + 1, p);}
+                    else if (param instanceof Integer p) {ps.setInt(i + 1, p);}
+                    else if (param == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
             }

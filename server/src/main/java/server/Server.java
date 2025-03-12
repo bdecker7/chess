@@ -19,9 +19,7 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
-//        UserDAO usersMemory = new MemoryUserDAO();
-//        AuthDAO authsMemory = new MemoryAuthDAO();
-//        GameDAO gamesMemory = new MemoryGameDAO();
+
 
         try{
             UserDAO usersMemory = new UserSQL();
