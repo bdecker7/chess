@@ -24,10 +24,6 @@ public class MemoryAuthDAO implements AuthDAO{
         return false;
     }
 
-    @Override
-    public HashMap<String, String> getAuthHash() {
-        return allAuthDataStorage;
-    }
 
     @Override
     public String createAuth(String newUser) throws SQLException {
