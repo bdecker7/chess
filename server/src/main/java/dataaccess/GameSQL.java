@@ -96,8 +96,36 @@ public class GameSQL implements GameDAO{
     }
 
     @Override
-    public Collection<GameData> listGames() {
-        return List.of();
+    public Collection<GameData> listGames() throws DataAccessException {
+
+        ArrayList<GameData> allGames = new ArrayList<GameData>();
+
+        ResultSet rs;
+        var statement = "SELECT * FROM gameData";
+        try(var conn = DatabaseManager.getConnection()){
+            try(var ps = conn.prepareStatement(statement)){
+                rs = ps.executeQuery();
+                while(rs.next()){
+                    Integer gameIDNumber = rs.getInt("gameID");
+                    String whiteUsername = rs.getString("whiteUsername");
+                    String blackUsername = rs.getString("blackUsername");
+                    String gameName = rs.getString("gameName");
+                    String jsonGameData = rs.getString("gameObject");
+                    var gameDataObject = new Gson().fromJson(jsonGameData,ChessGame.class);
+                    GameData individualGameData = new GameData(gameIDNumber,whiteUsername,blackUsername,gameName,gameDataObject);
+                    allGames.add(individualGameData);
+                }
+//                else{
+//                    throw new DataAccessException("can't access data");
+//                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }catch(DataAccessException e){
+            throw new DataAccessException("couldn't get user data");
+        }
+
+        return allGames;
     }
 
     @Override

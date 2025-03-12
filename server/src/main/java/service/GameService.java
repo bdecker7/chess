@@ -23,7 +23,7 @@ public class GameService {
     }
 
     public ListGameResult getListOfGames(String authString)
-            throws UnAuthorizedException, ServerMalfunctionException {
+            throws UnAuthorizedException, ServerMalfunctionException, DataAccessException {
         if(!authToken.authTokenExists(authString)){
             throw new UnAuthorizedException("Error: not authorized");
         }else if(authToken.authTokenExists(authString)){
