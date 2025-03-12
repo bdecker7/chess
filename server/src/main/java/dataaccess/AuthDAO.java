@@ -14,5 +14,4 @@ public interface AuthDAO {
     void deleteAuth(String auth) throws SQLException;
     void clear();
     boolean authTokenExists(String authToken);
-    HashMap<String, String> getAuthHash();
 }

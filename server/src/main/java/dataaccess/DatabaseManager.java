@@ -77,12 +77,13 @@ public class DatabaseManager {
         }
     }
 
-    private void executeUpdate(String statement, Object... params) throws SQLException,SQLERROR {
+    static void executeUpdate(String statement, Object... params) throws SQLException,SQLERROR {
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
                 for (var i = 0; i < params.length; i++) {
                     var param = params[i];
                     if (param instanceof String p) {ps.setString(i + 1, p);}
+                    else if (param instanceof Integer p) {ps.setInt(i + 1, p);}
                     else if (param == null) {ps.setNull(i + 1, NULL);}
                 }
                 ps.executeUpdate();
@@ -92,10 +93,10 @@ public class DatabaseManager {
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
-    static void configureDatabase(String[] table_to_create) throws SQLException, DataAccessException {
+    static void configureDatabase(String[] tableToCreate) throws SQLException, DataAccessException {
         DatabaseManager.createDatabase();
         try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : table_to_create) {
+            for (var statement : tableToCreate) {
                 try (var preparedStatement = conn.prepareStatement(statement)) {
                     preparedStatement.executeUpdate();
                 }

@@ -150,7 +150,7 @@ public class GameSQL implements GameDAO{
         else{
             throw new InvalidColorException("Invalid color");
         }
-        executeUpdate(statement,usernameToInput, gameID);
+        DatabaseManager.executeUpdate(statement,usernameToInput, gameID);
     }
 
     @Override
@@ -158,23 +158,6 @@ public class GameSQL implements GameDAO{
         var statement = "TRUNCATE TABLE gameData";
         try (var conn = DatabaseManager.getConnection()) {
             try (var ps = conn.prepareStatement(statement)){
-                ps.executeUpdate();
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
-        }
-    }
-
-
-    private void executeUpdate(String statement, Object... params) throws SQLException, SQLERROR {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p){ ps.setString(i + 1, p);}
-                    else if (param instanceof Integer p) {ps.setInt(i + 1, p);}
-                    else if (param == null) {ps.setNull(i + 1, NULL);}
-                }
                 ps.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {

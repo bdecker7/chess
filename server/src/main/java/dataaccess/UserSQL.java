@@ -44,7 +44,7 @@ public class UserSQL implements UserDAO{
     public void createUser(UserData data) throws SQLException {
         //this calls executeUpdate()
         var statement = "INSERT INTO userData (username, password,email) VALUES (? , ? , ?)";
-        executeUpdate(statement,data.username(),data.password(),data.email());
+        DatabaseManager.executeUpdate(statement,data.username(),data.password(),data.email());
     }
 
     @Override
@@ -86,22 +86,6 @@ public class UserSQL implements UserDAO{
                 }
             }
 
-        }
-    }
-
-    private void executeUpdate(String statement, Object... params) throws SQLException,SQLERROR {
-        try (var conn = DatabaseManager.getConnection()) {
-            try (var ps = conn.prepareStatement(statement, RETURN_GENERATED_KEYS)) {
-                for (var i = 0; i < params.length; i++) {
-                    var param = params[i];
-                    if (param instanceof String p){ ps.setString(i + 1, p);}
-                    else if (param == null){ ps.setNull(i + 1, NULL);}
-                }
-                ps.executeUpdate();
-
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
 
