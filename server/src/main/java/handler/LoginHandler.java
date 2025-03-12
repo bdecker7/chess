@@ -37,12 +37,10 @@ public class LoginHandler {
             res.status(401);
             ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
             return new Gson().toJson(error);
-        } catch(Error e){
+        } catch(Error | DataAccessException | SQLException e){
             res.status(500);
             ErrorRecordClass error = new ErrorRecordClass(e.getMessage());
             return new Gson().toJson(error);
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
         }
 
     }

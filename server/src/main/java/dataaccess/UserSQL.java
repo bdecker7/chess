@@ -81,10 +81,7 @@ public class UserSQL implements UserDAO{
                     throw new DataAccessException("can't access data");
                 }
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }catch(DataAccessException e){
-            throw new DataAccessException("couldn't get user data");
+
         }
     }
 
