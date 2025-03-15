@@ -31,9 +31,9 @@ public class DrawChessBoard {
 
         for(int i = NumOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
-                drawEvenRow(out, Integer.toString(i),playerMove,pieceType) ;
+                drawEvenRow(out, i,playerMove,pieceType) ;
             }else{
-                drawOddRow(out,Integer.toString(i),playerMove,pieceType);
+                drawOddRow(out,i,playerMove,pieceType);
             }
         }
     }
@@ -42,23 +42,21 @@ public class DrawChessBoard {
 
         for(int i = 1; i < NumOfGameRows + 1 ; i++){
             if(i % 2 == 0){
-                drawEvenRow(out, Integer.toString(i),playerMove,pieceType) ;
+                drawOddRow(out, i ,playerMove,pieceType) ;
             }else{
-                drawOddRow(out,Integer.toString(i),playerMove, pieceType);
+                drawEvenRow(out, i ,playerMove, pieceType);
             }
         }
     }
 
-    private static void drawOddRow(PrintStream out, String rowNumber, String[] playerInput, ChessPiece.PieceType chessPiece){
+    private static void drawOddRow(PrintStream out, Integer rowNumber, String[] playerInput, ChessPiece.PieceType chessPiece){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < NumOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column);
             if(column%2 == 0) {
-//                out.print(SET_TEXT_COLOR_WHITE);
                 out.print(SET_BG_COLOR_BLACK);
                 out.print(checkrow);
             }else{
-//                out.print(SET_TEXT_COLOR_WHITE);
                 out.print(SET_BG_COLOR_LIGHT_GREY);
                 out.print(checkrow);
 
@@ -69,13 +67,12 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
-    private static void drawEvenRow(PrintStream out, String rowNumber, String[] playerMove, ChessPiece.PieceType pieceType){
+    private static void drawEvenRow(PrintStream out, Integer rowNumber, String[] playerMove, ChessPiece.PieceType pieceType){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < NumOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column);
             if(column%2 == 0) {
                 out.print(SET_BG_COLOR_LIGHT_GREY);
-
                 out.print(checkrow);
 
             }else{
@@ -88,31 +85,26 @@ public class DrawChessBoard {
         out.println();
     }
 
-    private static String checkRow(PrintStream out, String rowNumber, int column) {
+    private static String checkRow(PrintStream out, Integer rowNumber, int column) {
         if(isNewGame){
-            if(Objects.equals(rowNumber, "1")){
+            if(rowNumber == 1){
                     out.print(SET_TEXT_COLOR_YELLOW);
                     return startingPieces(column);
-
-            }else if(Objects.equals(rowNumber, "8")){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return startingPieces(column);
-
-            }else if(Objects.equals(rowNumber, "8")){
+            }else if(rowNumber == 8){
                 out.print(SET_TEXT_COLOR_RED);
                 return startingPieces(column);
             }
-
-
-            else if(Objects.equals(rowNumber, "2")){
+            else if(rowNumber == 2){
                 out.print(SET_TEXT_COLOR_YELLOW);
                 return " P ";
-            } else if (Objects.equals(rowNumber, "7")) {
+            } else if (rowNumber == 7) {
                 out.print(SET_TEXT_COLOR_RED);
                 return " P ";
 
             }
         }else{
+            // probably have the logic for checking and
+            // executing moves here since not a new game
             return "   ";
         }
         return "   ";
