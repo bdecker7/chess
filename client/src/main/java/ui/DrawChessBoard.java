@@ -14,25 +14,32 @@ public class DrawChessBoard {
 
     public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        drawBlankBoard(out);
+        drawBlankBoardWhiteSide(out);
+        //drawBlankBoardBlackSide(out);
 
     }
-    private static void drawBlankPlayablePart(PrintStream out){
+    private static void drawBlankPlayablePartWhite(PrintStream out){
 
-        for(int i = 1; i < NumOfGameRows + 1; i++){
+        for(int i = NumOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
-                drawOddRow(out,Integer.toString(i));
+                drawEvenRowWhite(out, Integer.toString(i)) ;
             }else{
-                drawEvenRow(out, Integer.toString(i)) ;
+                drawOddRowWhite(out,Integer.toString(i));
             }
-
         }
+    }
+    private static void drawBlankPlayablePartBlack(PrintStream out){
 
-
-
+        for(int i = 1; i < NumOfGameRows + 1 ; i++){
+            if(i % 2 == 0){
+                drawOddRowWhite(out,Integer.toString(i));
+            }else{
+                drawEvenRowWhite(out, Integer.toString(i)) ;
+            }
+        }
     }
 
-    private static void drawOddRow(PrintStream out, String rowNumber){
+    private static void drawOddRowWhite(PrintStream out, String rowNumber){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int i = 0; i < NumOfGameRows; i++){
             if(i%2 == 0) {
@@ -51,7 +58,7 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
-    private static void drawEvenRow(PrintStream out, String rowNumber){
+    private static void drawEvenRowWhite(PrintStream out, String rowNumber){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int i = 0; i < NumOfGameRows; i++){
             if(i%2 == 0) {
@@ -68,15 +75,24 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
-    private static void drawBlankBoard(PrintStream out){
+    private static void drawBlankBoardWhiteSide(PrintStream out){
 
         out.print(ERASE_SCREEN);
         drawHeadersWhiteSide(out);
 
-        drawBlankPlayablePart(out);
-
+        drawBlankPlayablePartWhite(out);
 
         drawHeadersWhiteSide(out);
+
+    }
+    private static void drawBlankBoardBlackSide(PrintStream out){
+
+        out.print(ERASE_SCREEN);
+        drawHeadersBlackSide(out);
+
+        drawBlankPlayablePartBlack(out);
+
+        drawHeadersBlackSide(out);
 
     }
 
@@ -86,6 +102,16 @@ public class DrawChessBoard {
         setBlack(out);
 
         String[] headers = {"   "," a ", " b ", " c "," d "," e "," f "," g "," h ", "   " };
+        for (int boardCol = 0; boardCol < HEADERLENGTH ; ++boardCol) {
+            printHeaderText(out, headers[boardCol]);
+        }
+        out.println();
+    }
+    private static void drawHeadersBlackSide(PrintStream out) {
+
+        setBlack(out);
+
+        String[] headers = {"   "," h ", " g ", " f "," e "," d "," c "," b "," a ", "   " };
         for (int boardCol = 0; boardCol < HEADERLENGTH ; ++boardCol) {
             printHeaderText(out, headers[boardCol]);
         }
