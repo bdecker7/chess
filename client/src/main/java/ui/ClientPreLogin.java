@@ -14,9 +14,9 @@ public class ClientPreLogin {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "register" -> register(params);
-                case "login" -> login(params);
-                case "quit" -> "quit";
+                case "1" -> register(params);
+                case "2" -> login(params);
+                case "3" -> "quit";
                 default -> help();
             };
         } catch (InvalidRequest ex) {
@@ -34,7 +34,13 @@ public class ClientPreLogin {
     }
 
     String help() {
-        return "here_help";
+
+        return "Type the number you wish that coorelates with what you would like to do: \n \n" +
+                "1. Register\n" +
+                "2. Login\n" +
+                "3. Quit\n" +
+                "\n" +
+                "Request: ";
     }
 
 }
