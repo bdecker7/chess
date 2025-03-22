@@ -36,10 +36,8 @@ public class Server {
                 new GameHandler(gamesMemory,authsMemory).handleRequest(request,response)));
         Spark.delete("/db",((request, response) ->
                 new DeleteEverything(usersMemory,authsMemory,gamesMemory).deleteAllData(request,response)));
-        // Works, but username can be black and white player. Probably not what I want to happen.
         Spark.put("/game",((request, response) ->
                 new GameHandler(gamesMemory,authsMemory).handleJoinRequest(request,response)));
-
         Spark.get("/game",((request, response) ->
                 new GameHandler(gamesMemory,authsMemory).handleListRequest(request,response)));
 
