@@ -13,9 +13,8 @@ public class ClientGame {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-//                case "1" -> ;
-//                case "2" -> login(params);
-//                case "3" -> "quit";
+//                case "1" -> new DrawChessBoard();
+                case "2" -> "quit";
                 default -> help();
             };
         } catch (InvalidRequest ex) {

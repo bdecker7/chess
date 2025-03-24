@@ -16,17 +16,17 @@ public class DrawChessBoard {
     private static final boolean isNewGame = true;
 
 
-    public static void main(String[] args) {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        String[] moveLocation = {"1","2"};
-        //displays white pov
-        drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
-        out.println();
-        //displays black pov
-        drawEntireBoardBlackSide(out,moveLocation,ChessPiece.PieceType.KING);
-
-
-    }
+//    public static void main(String[] args) {
+//        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+//        String[] moveLocation = {"1","2"};
+//        //displays white pov
+//        drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
+//        out.println();
+//        //displays black pov
+//        drawEntireBoardBlackSide(out,moveLocation,ChessPiece.PieceType.KING);
+//
+//
+//    }
     private static void drawBlankPlayablePartWhite(PrintStream out, String [] playerMove, ChessPiece.PieceType pieceType){
 
         for(int i = NumOfGameRows; i > 0 ; i--){

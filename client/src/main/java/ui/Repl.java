@@ -39,13 +39,13 @@ public class Repl {
                     postResult = clientPostLogin.evalPost(line, preLoginResult);
                     System.out.println(postResult);
 
-                    if(Objects.equals(result, "logout")){
+                    if(Objects.equals(postResult, "logout")){
                         status = 0;
-                    }else if(Objects.equals(result, "Successful Join")){
+                    }else if(Objects.equals(postResult, "Successful Join")){
                         status = 2;
-                    }else if(Objects.equals(result, "Successful Play")){
+                    }else if(Objects.equals(postResult, "Successful Play")){
                         status = 2;
-                    }else if(Objects.equals(result, "Successful Observe")){
+                    }else if(Objects.equals(postResult, "Successful Observe")){
                         status = 2;
                     }
 

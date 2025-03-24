@@ -1,17 +1,20 @@
 package ui;
 
 import ServerFacade.ServerFacade;
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
 import records.*;
 
 import javax.naming.AuthenticationException;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 public class ClientPostLogin {
 
     Scanner scanner = new Scanner(System.in);
     ServerFacade serverFacade = new ServerFacade();
     String authToken = "";
+    private Map<Integer,Integer> gameIdList;
 
     public ClientPostLogin(String serverUrl, Repl repl) {
     }
@@ -27,9 +30,8 @@ public class ClientPostLogin {
                 case "1" -> create_game(params);
                 case "2" -> list_game(params);
                 case "3" -> join_game(params);
-                case "4" -> play_game(params);
-                case "5" -> observe_game(params);
-                case "6" -> logout(params);
+                case "4" -> observe_game(params);
+                case "5" -> logout(params);
 
                 default -> help();
             };
@@ -45,7 +47,6 @@ public class ClientPostLogin {
         System.out.println("Game Name: ");
         String gameName = scanner.nextLine();
         CreateGameRequest request = new CreateGameRequest(authToken,gameName);
-
         CreateGameResult result = serverFacade.createGame(request);
 
         if(result != null){
@@ -64,7 +65,11 @@ public class ClientPostLogin {
         try{
             ListGameResult result = serverFacade.listGames(request);
             for(int i = 0; i < result.games().size(); i++){
-                listOfGamesString = listOfGamesString + Integer.toString(i+1) + ". " + result.games().get(i) + "\n" ;
+                gameIdList.put(i+1,result.games().get(i).gameID());
+                listOfGamesString = listOfGamesString + (i + 1) + ". "
+                        + "Game Name: " + result.games().get(i).gameName() + "\n   "
+                        + "White Player: " + result.games().get(i).whiteUsername() + "\n   "
+                        + "Black Player: " + result.games().get(i).blackUsername() + "\n\n";
             }
             return listOfGamesString;
         }catch (Exception ex){
@@ -73,14 +78,50 @@ public class ClientPostLogin {
 
     }
 
-    private String join_game(String[] params){
-        return "here_joinGame";
-    }
-    private String play_game(String[] params){
-        return "here_playGame";
+    private String join_game(String[] params) {
+
+        System.out.println("Game Number: ");
+        String gameNumber = scanner.nextLine();
+        System.out.println("WHITE/BLACK: ");
+        String color = scanner.nextLine();
+        ChessGame.TeamColor teamColor = null;
+
+        if (color == "WHITE") {
+            teamColor = ChessGame.TeamColor.WHITE;
+        }else if(color == "BLACK"){
+            teamColor = ChessGame.TeamColor.BLACK;
+        }else{
+            return "Invalid Color Input";
+        }
+        JoinGameRequest request = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
+
+        try{
+            if (serverFacade.joinGame(request) == 200){
+                return "Successful Join";
+            }else {
+                throw new Exception("Unable to Join");
+            }
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
+
     }
     private String observe_game(String[] params){
-        return "here_observeGame";
+        System.out.println("Game Number: ");
+        String gameNumber = scanner.nextLine();
+
+        ChessGame.TeamColor teamColor = null;
+        JoinGameRequest request = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
+
+        try{
+            if (serverFacade.joinGame(request) == 200){
+                return "Successful Observe";
+            }else {
+                throw new Exception("Unable to Observe");
+            }
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
     }
     private String logout(String[] params) throws Exception {
 
