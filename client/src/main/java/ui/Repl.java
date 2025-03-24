@@ -9,6 +9,8 @@ public class Repl {
     private final ClientPostLogin clientPostLogin;
     private final ClientGame clientGame;
     private static Integer status = 0;
+    private String preLoginResult = null;
+    private String postResult = null;
 
     public Repl(String serverUrl) {
         clientPreLogin = new ClientPreLogin(serverUrl, this);
@@ -28,15 +30,15 @@ public class Repl {
 
             try {
                 if(status == 0){
-                    result = clientPreLogin.eval(line);
-                    if(Objects.equals(result, "Successful Register")){
-                        status = 1;
-                    }else if(Objects.equals(result, "Successful Login")){
+                    preLoginResult = clientPreLogin.eval(line);
+                    if(preLoginResult != null){
                         status = 1;
                     }
 
                 }else if(status == 1) {
-                    result = clientPostLogin.evalPost(line);
+                    postResult = clientPostLogin.evalPost(line, preLoginResult);
+                    System.out.println(postResult);
+
                     if(Objects.equals(result, "logout")){
                         status = 0;
                     }else if(Objects.equals(result, "Successful Join")){
@@ -49,9 +51,9 @@ public class Repl {
 
                 }else if(status == 2){
                     result = clientGame.eval(line);
-
+                    System.out.println(result);
                 }
-                System.out.print(result);
+//                System.out.print(postResult);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

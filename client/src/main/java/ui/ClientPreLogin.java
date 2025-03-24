@@ -12,7 +12,7 @@ import records.RegisterResult;
 public class ClientPreLogin {
 
     ServerFacade serverFacade = new ServerFacade();
-
+    private String authToken;
     public ClientPreLogin(String serverUrl, Repl repl) {
 
     }
@@ -49,11 +49,12 @@ public class ClientPreLogin {
 
         if(result != null){
             System.out.println("Welcome "+ result.username() + "!");
-            System.out.println("Your Authorization Token is "+ result.authToken());
-            return "Successful Login";
+            authToken = result.authToken();
+//            System.out.println("Your Authorization Token is "+ result.authToken());
+            return result.authToken();
         }
 
-        return "Not Successful";
+        return null;
         //        System.out.print(result);
 
     }
@@ -72,12 +73,12 @@ public class ClientPreLogin {
         RegisterResult result = serverFacade.register(request);
         if(result != null){
             System.out.println("Welcome "+ result.username() + "!");
-            System.out.println("Your Authorization Token is "+ result.authToken()+"\n");
-            return "Successful Register??";
+//            System.out.println("Your Authorization Token is "+ result.authToken()+"\n");
+            return result.authToken();
         }
 //        System.out.print(result);
 
-        return "Not Successful";
+        return null;
     }
 
     String help() {

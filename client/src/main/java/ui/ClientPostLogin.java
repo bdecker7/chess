@@ -1,7 +1,7 @@
 package ui;
 
 import ServerFacade.ServerFacade;
-import records.LogOutRequest;
+import records.*;
 
 import javax.naming.AuthenticationException;
 import java.util.Arrays;
@@ -11,12 +11,14 @@ public class ClientPostLogin {
 
     Scanner scanner = new Scanner(System.in);
     ServerFacade serverFacade = new ServerFacade();
+    String authToken = "";
 
     public ClientPostLogin(String serverUrl, Repl repl) {
     }
 
-    public String evalPost(String input ) {
+    public String evalPost(String input, String preLoginResult) {
 
+        authToken = preLoginResult;
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -38,13 +40,37 @@ public class ClientPostLogin {
         }
     }
 
-    private String create_game(String[] params) {
+    private String create_game(String[] params) throws Exception {
         //call serverfacade class
-        return "here_createGame";
+        System.out.println("Game Name: ");
+        String gameName = scanner.nextLine();
+        CreateGameRequest request = new CreateGameRequest(authToken,gameName);
+
+        CreateGameResult result = serverFacade.createGame(request);
+
+        if(result != null){
+            System.out.println("Game successfully created!");
+
+            return "Successful Game Creation";
+        }
+
+        return "Not Successful";
     }
 
     private String list_game(String[] params) {
-        return "here_listGame";
+
+        ListGameRequest request = new ListGameRequest(authToken);
+        String listOfGamesString = "";
+        try{
+            ListGameResult result = serverFacade.listGames(request);
+            for(int i = 0; i < result.games().size(); i++){
+                listOfGamesString = listOfGamesString + Integer.toString(i+1) + ". " + result.games().get(i) + "\n" ;
+            }
+            return listOfGamesString;
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
+
     }
 
     private String join_game(String[] params){

@@ -43,7 +43,8 @@ public class ServerFacade {
     }
     public CreateGameResult createGame(CreateGameRequest request) throws Exception {
 
-        HttpURLConnection http = this.makeRequest("PUT","/game",request, both, request.authToken());
+        CreateGameRequest bodyRequest = new CreateGameRequest(null,request.gameName());
+        HttpURLConnection http = this.makeRequest("POST","/game",bodyRequest, both, request.authToken());
         return readBody(http, CreateGameResult.class);
 
     }
@@ -69,9 +70,8 @@ public class ServerFacade {
             }
 
             http.connect();
-//            status = throwIfNotSuccessful(http);
             return http;
-//            return readBody(http, responseClass);
+
         } catch (Exception ex) {
             throw new Exception(ex);
         }
@@ -95,6 +95,13 @@ public class ServerFacade {
 
     private <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
+        if (http.getResponseCode() != HttpURLConnection.HTTP_OK) {
+            try (InputStream respBody = http.getErrorStream()) {
+                InputStreamReader reader = new InputStreamReader(respBody);
+                ErrorRecordClass error = new Gson().fromJson(reader, ErrorRecordClass.class);
+                System.out.println(error.message());
+            }
+        }
         if (http.getContentLength() < 0) {
             try (InputStream respBody = http.getInputStream()) {
                 InputStreamReader reader = new InputStreamReader(respBody);
