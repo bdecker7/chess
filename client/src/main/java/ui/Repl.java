@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Repl {
@@ -28,11 +29,23 @@ public class Repl {
             try {
                 if(status == 0){
                     result = clientPreLogin.eval(line);
-                    String nextLine = scanner.nextLine();
-
+                    if(Objects.equals(result, "Successful Register")){
+                        status = 1;
+                    }else if(Objects.equals(result, "Successful Login")){
+                        status = 1;
+                    }
 
                 }else if(status == 1) {
                     result = clientPostLogin.evalPost(line);
+                    if(Objects.equals(result, "logout")){
+                        status = 0;
+                    }else if(Objects.equals(result, "Successful Join")){
+                        status = 2;
+                    }else if(Objects.equals(result, "Successful Play")){
+                        status = 2;
+                    }else if(Objects.equals(result, "Successful Observe")){
+                        status = 2;
+                    }
 
                 }else if(status == 2){
                     result = clientGame.eval(line);

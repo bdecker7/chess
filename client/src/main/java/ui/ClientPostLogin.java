@@ -1,8 +1,16 @@
 package ui;
 
+import ServerFacade.ServerFacade;
+import records.LogOutRequest;
+
+import javax.naming.AuthenticationException;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class ClientPostLogin {
+
+    Scanner scanner = new Scanner(System.in);
+    ServerFacade serverFacade = new ServerFacade();
 
     public ClientPostLogin(String serverUrl, Repl repl) {
     }
@@ -25,6 +33,8 @@ public class ClientPostLogin {
             };
         } catch (InvalidRequest ex) {
             return ex.getMessage();
+        }catch (Exception ex){
+            return ex.getMessage();
         }
     }
 
@@ -46,8 +56,20 @@ public class ClientPostLogin {
     private String observe_game(String[] params){
         return "here_observeGame";
     }
-    private String logout(String[] params){
-        return "here_logout";
+    private String logout(String[] params) throws Exception {
+
+        System.out.println("Authoriazation Token: ");
+        String authString = scanner.nextLine();
+        LogOutRequest request = new LogOutRequest(authString);
+        try{
+            if (serverFacade.logout(request) == 200){
+                return "logout";
+            }else {
+                throw new AuthenticationException("Incorrect AuthToken, not Authorized");
+            }
+        }catch (Exception ex){
+            return ex.getMessage();
+        }
     }
 
     String help() {

@@ -45,12 +45,21 @@ public class ClientPreLogin {
         String password = scanner.nextLine();
 
         LoginRequest request = new LoginRequest(username,password);
-        LoginResult test = serverFacade.login(request);
-        System.out.print(test);
-        return "here_login";
+        LoginResult result = serverFacade.login(request);
+
+        if(result != null){
+            System.out.println("Welcome "+ result.username() + "!");
+            System.out.println("Your Authorization Token is "+ result.authToken());
+            return "Successful Login";
+        }
+
+        return "Not Successful";
+        //        System.out.print(result);
+
     }
 
     private String register(String[] params) throws Exception {
+
         Scanner scanner = new Scanner(System.in);
         System.out.println("Username: ");
         String username = scanner.nextLine();
@@ -59,12 +68,16 @@ public class ClientPreLogin {
         System.out.println("Email: ");
         String email = scanner.nextLine();
 
-
         RegisterRequest request = new RegisterRequest(username,password,email);
-        RegisterResult test = serverFacade.register(request);
-        System.out.print(test);
+        RegisterResult result = serverFacade.register(request);
+        if(result != null){
+            System.out.println("Welcome "+ result.username() + "!");
+            System.out.println("Your Authorization Token is "+ result.authToken()+"\n");
+            return "Successful Register??";
+        }
+//        System.out.print(result);
 
-        return "here_register";
+        return "Not Successful";
     }
 
     String help() {
