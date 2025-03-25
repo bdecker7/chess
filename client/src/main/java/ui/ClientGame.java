@@ -14,24 +14,23 @@ public class ClientGame {
     public ClientGame(String serverUrl, Repl repl) {
     }
 
-//    public String eval(String input ) {
-//
-//        try {
-//            var tokens = input.toLowerCase().split(" ");
-//            var cmd = (tokens.length > 0) ? tokens[0] : "help";
-//            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-//            return switch (cmd) {
-//                case "observer" -> drawChessBoard("observer");
-//                case "WHITE" -> drawChessBoard("WHITE");
-//                case "BLACK" -> drawChessBoard("BLACK");
-//                case "exit" -> "quit";
-//                default -> help();
-//            };
-//        } catch (InvalidRequest ex) {
-//            return ex.getMessage();
-//        }
-//
-//    }
+    public String eval(String input ) {
+
+        try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "move" -> "do move function here";
+                case "exit" -> "exit";
+
+                default -> help();
+            };
+        } catch (InvalidRequest ex) {
+            return ex.getMessage();
+        }
+
+    }
 
     public void drawChessBoard(String color) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);

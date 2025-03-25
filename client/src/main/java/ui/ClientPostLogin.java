@@ -33,12 +33,11 @@ public class ClientPostLogin {
                 case "3" -> join_game(params);
                 case "4" -> observe_game(params);
                 case "5" -> logout(params);
+                case "6" -> help();
 
                 default -> help();
             };
-        } catch (InvalidRequest ex) {
-            return ex.getMessage();
-        }catch (Exception ex){
+        } catch (Exception ex){
             return ex.getMessage();
         }
     }
@@ -82,21 +81,25 @@ public class ClientPostLogin {
 
     private String join_game(String[] params) {
 
+        if(gameIdList.isEmpty()){
+            return "Check list of Games first";
+        }
+
         System.out.println("Game Number: ");
         String gameNumber = scanner.nextLine();
+        try {
+            int gameNum = Integer.parseInt(gameNumber);
+            if (!gameIdList.containsKey(gameNum)) {
+                return "Invalid Game number";
+            }
+        } catch (NumberFormatException e) {
+            return "Invalid input: Game number must be an integer";
+        }
+
         System.out.println("WHITE/BLACK: ");
         String color = scanner.nextLine();
         ChessGame.TeamColor teamColor = null;
 
-        ListGameRequest request = new ListGameRequest(authToken);
-        try {
-            ListGameResult result = serverFacade.listGames(request);
-            for (int i = 0; i < result.games().size(); i++) {
-                gameIdList.put(i + 1, result.games().get(i).gameID());
-            }
-        }catch(Exception ex){
-            return "Can't get list of Games";
-        }
         if (Objects.equals(color, "WHITE")) {
             teamColor = ChessGame.TeamColor.WHITE;
         }else if(Objects.equals(color, "BLACK")){
@@ -104,7 +107,6 @@ public class ClientPostLogin {
         }else{
             return "Invalid Color Input";
         }
-
 
         if(gameIdList != null) {
             JoinGameRequest joinRequest = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
@@ -122,34 +124,29 @@ public class ClientPostLogin {
         }
     }
     private String observe_game(String[] params){
+
+        int gameNumberInteger;
+        if(gameIdList.isEmpty()){
+            return "Check list of Games first";
+        }
+
         System.out.println("Game Number: ");
         String gameNumber = scanner.nextLine();
-
-        ListGameRequest request = new ListGameRequest(authToken);
         try {
-            ListGameResult result = serverFacade.listGames(request);
-            for (int i = 0; i < result.games().size(); i++) {
-                gameIdList.put(i + 1, result.games().get(i).gameID());
+            int gameNum = Integer.parseInt(gameNumber);
+            if (!gameIdList.containsKey(gameNum)) {
+                return "Invalid Game number";
+            }else{
+                gameNumberInteger = gameIdList.get(gameNum);
+                return "observer";
             }
-        }catch(Exception ex){
-            return "Can't get list of Games";
+        } catch (NumberFormatException e) {
+            return "Invalid input: Game number must be an integer";
         }
 
-        ChessGame.TeamColor teamColor = null;
-        if(gameIdList != null){
-            JoinGameRequest request2 = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
-            try{
-                if (serverFacade.joinGame(request2,authToken) == 200){
-                    return "Successful Observe";
-                }else {
-                    throw new Exception("Unable to Observe");
-                }
-            }catch (Exception ex){
-                return "Unable to Observe";
-            }
-        }else{
-            return "No games to observe";
-        }
+        //validate that it is a number
+        // print the board
+
 
     }
     private String logout(String[] params) throws Exception {
@@ -173,7 +170,8 @@ public class ClientPostLogin {
                 "2. List Games\n" +
                 "3. Join Game\n" +
                 "4. Observe Game\n" +
-                "5. Logout\n\n" +
+                "5. Logout\n" +
+                "6. Help\n\n" +
                 "Request: ";
     }
 
