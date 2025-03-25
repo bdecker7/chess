@@ -34,11 +34,13 @@ public class Repl {
                     preLoginResult = clientPreLogin.eval(line);
                     if(preLoginResult.length() == 36){
                         status = 1;
-                    }else{
+                    }else if(preLoginResult.equals("quit")){
+                        result = "quit";
+                    }
+                    else{
                         status = 0;
                         System.out.print(preLoginResult);
                     }
-                    //what do do after log out.
 
                 }else if(status == 1) {
                     postResult = clientPostLogin.evalPost(line, preLoginResult);
@@ -46,7 +48,7 @@ public class Repl {
 
                     if(Objects.equals(postResult, "logged out")){
                         status = 0;
-                    }else if(postResult == "WHITE" || postResult == "BLACK"){
+                    }else if(Objects.equals(postResult, "WHITE") || Objects.equals(postResult, "BLACK")){
                         status = 2;
                         playerColor = postResult;
                     }else if(Objects.equals(postResult, "Successful Play")){
@@ -56,16 +58,16 @@ public class Repl {
                     }
 
                 }else if(status == 2){
-//                    result = clientGame.eval(line);
-//                    System.out.println(result);
+
                     if(playerColor == null){
                         clientGame.drawChessBoard("observer");
                     }else{
-                        clientGame.drawChessBoard(playerColor);
+                        clientGame.drawChessBoard(playerColor.toString());
                     }
 
+
                 }
-//                System.out.print(postResult);
+
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);

@@ -5,6 +5,7 @@ import chess.ChessGame;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ClientGame {
 
@@ -15,38 +16,35 @@ public class ClientGame {
 
 //    public String eval(String input ) {
 //
-////        try {
-////            var tokens = input.toLowerCase().split(" ");
-////            var cmd = (tokens.length > 0) ? tokens[0] : "help";
-////            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
-////            return switch (cmd) {
-////                case "1" -> drawChessBoard();
-////                case "2" -> "quit";
-////                default -> help();
-////            };
-////        } catch (InvalidRequest ex) {
-////            return ex.getMessage();
-////        }
+//        try {
+//            var tokens = input.toLowerCase().split(" ");
+//            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+//            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+//            return switch (cmd) {
+//                case "observer" -> drawChessBoard("observer");
+//                case "WHITE" -> drawChessBoard("WHITE");
+//                case "BLACK" -> drawChessBoard("BLACK");
+//                case "exit" -> "quit";
+//                default -> help();
+//            };
+//        } catch (InvalidRequest ex) {
+//            return ex.getMessage();
+//        }
 //
 //    }
 
     public void drawChessBoard(String color) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-        if(color == "WHITE"){
-            DrawChessBoard.drawEntireBoardWhiteSide(out,null,null);
-        }else if(color == "BLACK"){
-            DrawChessBoard.drawEntireBoardBlackSide(out,null,null);
-        }else if(color == "observer"){
-
-            DrawChessBoard.drawEntireBoardWhiteSide(out,null,null);
-        }else{
-            System.out.println("can't access game");
+        switch (color) {
+            case "WHITE" -> DrawChessBoard.drawEntireBoardWhiteSide(out, null, null);
+            case "BLACK" -> DrawChessBoard.drawEntireBoardBlackSide(out, null, null);
+            case "observer" -> DrawChessBoard.drawEntireBoardWhiteSide(out, null, null);
+            case null, default -> System.out.println("can't access game");
         }
 
     }
 
-
     private String help() {
-        return "game_help";
+        return "Type 'exit' to leave game";
     }
 }

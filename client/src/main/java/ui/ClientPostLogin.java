@@ -16,6 +16,7 @@ public class ClientPostLogin {
     String authToken = "";
     public HashMap<Integer,Integer> gameIdList = new HashMap<>();
 
+
     public ClientPostLogin(String serverUrl, Repl repl) {
     }
 
@@ -87,43 +88,69 @@ public class ClientPostLogin {
         String color = scanner.nextLine();
         ChessGame.TeamColor teamColor = null;
 
-        if (color == "WHITE") {
+        ListGameRequest request = new ListGameRequest(authToken);
+        try {
+            ListGameResult result = serverFacade.listGames(request);
+            for (int i = 0; i < result.games().size(); i++) {
+                gameIdList.put(i + 1, result.games().get(i).gameID());
+            }
+        }catch(Exception ex){
+            return "Can't get list of Games";
+        }
+        if (Objects.equals(color, "WHITE")) {
             teamColor = ChessGame.TeamColor.WHITE;
-        }else if(color == "BLACK"){
+        }else if(Objects.equals(color, "BLACK")){
             teamColor = ChessGame.TeamColor.BLACK;
         }else{
             return "Invalid Color Input";
         }
-        JoinGameRequest request = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
 
-        try{
-            if (serverFacade.joinGame(request) == 200){
-                return color;
-            }else {
+
+        if(gameIdList != null) {
+            JoinGameRequest joinRequest = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
+            try {
+                if (serverFacade.joinGame(joinRequest, authToken) == 200) {
+                    return color;
+                } else {
+                    return "Unable to Join game";
+                }
+            } catch (Exception ex) {
                 return "Unable to Join game";
-//                throw new Exception("Unable to Join");
             }
-        }catch (Exception ex){
-            return "Unable to Join game";
+        }else{
+            return "No games to Join";
         }
-
     }
     private String observe_game(String[] params){
         System.out.println("Game Number: ");
         String gameNumber = scanner.nextLine();
 
-        ChessGame.TeamColor teamColor = null;
-        JoinGameRequest request = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
-
-        try{
-            if (serverFacade.joinGame(request) == 200){
-                return "Successful Observe";
-            }else {
-                throw new Exception("Unable to Observe");
+        ListGameRequest request = new ListGameRequest(authToken);
+        try {
+            ListGameResult result = serverFacade.listGames(request);
+            for (int i = 0; i < result.games().size(); i++) {
+                gameIdList.put(i + 1, result.games().get(i).gameID());
             }
-        }catch (Exception ex){
-            return "Unable to Observe";
+        }catch(Exception ex){
+            return "Can't get list of Games";
         }
+
+        ChessGame.TeamColor teamColor = null;
+        if(gameIdList != null){
+            JoinGameRequest request2 = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
+            try{
+                if (serverFacade.joinGame(request2,authToken) == 200){
+                    return "Successful Observe";
+                }else {
+                    throw new Exception("Unable to Observe");
+                }
+            }catch (Exception ex){
+                return "Unable to Observe";
+            }
+        }else{
+            return "No games to observe";
+        }
+
     }
     private String logout(String[] params) throws Exception {
 

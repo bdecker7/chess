@@ -51,9 +51,9 @@ public class ServerFacade {
         return readBody(http, CreateGameResult.class);
 
     }
-    public Integer joinGame(JoinGameRequest request) throws Exception{
+    public Integer joinGame(JoinGameRequest request,String authToken) throws Exception{
         // not sure where the auth token is for the request
-        HttpURLConnection http = this.makeRequest("PUT","/game", request, both, null);
+        HttpURLConnection http = this.makeRequest("PUT","/game", request, both, authToken);
         return http.getResponseCode();
     }
 
