@@ -9,6 +9,8 @@ import records.LoginRequest;
 import records.RegisterRequest;
 import server.Server;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -41,19 +43,19 @@ public class ServerFacadeTests {
     }
     @Test
     public void registerTest() throws Exception {
-        RegisterRequest request = new RegisterRequest("player1", "password", "p1@email.com");
+        RegisterRequest request = new RegisterRequest("player", "password", "p1@email.com");
         var authData = facade.register(request);
         Assertions.assertTrue(authData.authToken().length() > 10);
     }
     @Test
     public void registerTestFail() throws Exception {
-        RegisterRequest request = new RegisterRequest("player1", "password", "p1@email.com");
+        RegisterRequest request = new RegisterRequest("playTEST", "password", "p1@email.com");
         facade.register(request);
-        RegisterRequest request2 = new RegisterRequest("player1", "pass", "p1@email.com");
+        RegisterRequest request2 = new RegisterRequest("playTEST", "pass", "p1@email.com");
 
-        AlreadyTakenException thrown = assertThrows(
-                AlreadyTakenException.class,
-                () -> facad.register(request2)
+        IOException thrown = assertThrows(
+                IOException.class,
+                () -> facade.register(request2)
         );
     }
     @Test
@@ -65,10 +67,9 @@ public class ServerFacadeTests {
     @Test
     public void loginTestFail() throws Exception {
         LoginRequest request = new LoginRequest("player1", "WRONG_PASSWORD");
-        var authData = facade.login(request);
-        AlreadyTakenException thrown = assertThrows(
-                AlreadyTakenException.class,
-                () -> facad.login(request)
+        IOException thrown = assertThrows(
+                IOException.class,
+                () -> facade.login(request)
         );
     }
     @Test
@@ -76,6 +77,7 @@ public class ServerFacadeTests {
         RegisterRequest request = new RegisterRequest("player1", "password", "p1@email.com");
         var authData = facade.register(request);
         LogOutRequest request2 = new LogOutRequest(authData.authToken());
+
 
     }
     @Test
