@@ -32,15 +32,19 @@ public class Repl {
             try {
                 if(status == 0){
                     preLoginResult = clientPreLogin.eval(line);
-                    if(preLoginResult != null){                 //fix this part in the code. Dont move on until you have auth token
+                    if(preLoginResult.length() == 36){
                         status = 1;
+                    }else{
+                        status = 0;
+                        System.out.print(preLoginResult);
                     }
+                    //what do do after log out.
 
                 }else if(status == 1) {
                     postResult = clientPostLogin.evalPost(line, preLoginResult);
                     System.out.println(postResult);
 
-                    if(Objects.equals(postResult, "logout")){
+                    if(Objects.equals(postResult, "logged out")){
                         status = 0;
                     }else if(postResult == "WHITE" || postResult == "BLACK"){
                         status = 2;

@@ -76,7 +76,6 @@ public class ClientPreLogin {
 //            System.out.println("Your Authorization Token is "+ result.authToken()+"\n");
             return result.authToken();
         }
-//        System.out.print(result);
 
         return null;
     }

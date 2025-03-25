@@ -43,7 +43,7 @@ public class ClientPostLogin {
     }
 
     private String create_game(String[] params) throws Exception {
-        //call serverfacade class
+
         System.out.println("Game Name: ");
         String gameName = scanner.nextLine();
         CreateGameRequest request = new CreateGameRequest(authToken,gameName);
@@ -65,7 +65,6 @@ public class ClientPostLogin {
         try{
             ListGameResult result = serverFacade.listGames(request);
             for(int i = 0; i < result.games().size(); i++){
-//                System.out.println(result.games().get(i).gameID());
                 gameIdList.put(i+1,result.games().get(i).gameID());
 
                 listOfGamesString = listOfGamesString + (i + 1) + ". "
@@ -128,12 +127,10 @@ public class ClientPostLogin {
     }
     private String logout(String[] params) throws Exception {
 
-        System.out.println("Authoriazation Token: ");
-        String authString = scanner.nextLine();
-        LogOutRequest request = new LogOutRequest(authString);
+        LogOutRequest request = new LogOutRequest(authToken);
         try{
             if (serverFacade.logout(request) == 200){
-                return "logout";
+                return "logged out";
             }else {
                 throw new AuthenticationException("Incorrect AuthToken, not Authorized");
             }
