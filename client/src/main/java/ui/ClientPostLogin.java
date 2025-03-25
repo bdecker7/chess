@@ -12,9 +12,9 @@ import java.util.*;
 public class ClientPostLogin {
 
     Scanner scanner = new Scanner(System.in);
-    ServerFacade serverFacade = new ServerFacade();
+    ServerFacade serverFacade = new ServerFacade(8080);
     String authToken = "";
-    private Map<Integer,Integer> gameIdList;
+    public HashMap<Integer,Integer> gameIdList = new HashMap<>();
 
     public ClientPostLogin(String serverUrl, Repl repl) {
     }
@@ -65,7 +65,9 @@ public class ClientPostLogin {
         try{
             ListGameResult result = serverFacade.listGames(request);
             for(int i = 0; i < result.games().size(); i++){
+//                System.out.println(result.games().get(i).gameID());
                 gameIdList.put(i+1,result.games().get(i).gameID());
+
                 listOfGamesString = listOfGamesString + (i + 1) + ". "
                         + "Game Name: " + result.games().get(i).gameName() + "\n   "
                         + "White Player: " + result.games().get(i).whiteUsername() + "\n   "
@@ -73,7 +75,7 @@ public class ClientPostLogin {
             }
             return listOfGamesString;
         }catch (Exception ex){
-            return ex.getMessage();
+            return "Unable to List game";
         }
 
     }
@@ -97,12 +99,13 @@ public class ClientPostLogin {
 
         try{
             if (serverFacade.joinGame(request) == 200){
-                return "Successful Join";
+                return color;
             }else {
-                throw new Exception("Unable to Join");
+                return "Unable to Join game";
+//                throw new Exception("Unable to Join");
             }
         }catch (Exception ex){
-            return ex.getMessage();
+            return "Unable to Join game";
         }
 
     }
@@ -120,7 +123,7 @@ public class ClientPostLogin {
                 throw new Exception("Unable to Observe");
             }
         }catch (Exception ex){
-            return ex.getMessage();
+            return "Unable to Observe";
         }
     }
     private String logout(String[] params) throws Exception {
@@ -145,9 +148,8 @@ public class ClientPostLogin {
                 "1. Create Game\n" +
                 "2. List Games\n" +
                 "3. Join Game\n" +
-                "4. Play Game\n" +
-                "5. Observe Game\n" +
-                "6. Logout\n\n" +
+                "4. Observe Game\n" +
+                "5. Logout\n\n" +
                 "Request: ";
     }
 

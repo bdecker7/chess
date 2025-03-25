@@ -27,7 +27,8 @@ public class DrawChessBoard {
 //
 //
 //    }
-    private static void drawBlankPlayablePartWhite(PrintStream out, String [] playerMove, ChessPiece.PieceType pieceType){
+
+    public static void drawBlankPlayablePartWhite(PrintStream out, String [] playerMove, ChessPiece.PieceType pieceType){
 
         for(int i = NumOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
@@ -38,7 +39,7 @@ public class DrawChessBoard {
         }
     }
 
-    private static void drawBlankPlayablePartBlack(PrintStream out,String [] playerMove, ChessPiece.PieceType pieceType){
+    public static void drawBlankPlayablePartBlack(PrintStream out,String [] playerMove, ChessPiece.PieceType pieceType){
 
         for(int i = 1; i < NumOfGameRows + 1 ; i++){
             if(i % 2 == 0){
@@ -129,7 +130,7 @@ public class DrawChessBoard {
     }
 
 
-    private static void drawEntireBoardWhiteSide(PrintStream out, String[] movingPiece, ChessPiece.PieceType pieceType){
+    public static void drawEntireBoardWhiteSide(PrintStream out, String[] movingPiece, ChessPiece.PieceType pieceType){
 
         out.print(ERASE_SCREEN);
 
@@ -141,7 +142,7 @@ public class DrawChessBoard {
         drawHeaders(out, headers);
 
     }
-    private static void drawEntireBoardBlackSide(PrintStream out, String[] playerMove, ChessPiece.PieceType pieceType){
+    public static void drawEntireBoardBlackSide(PrintStream out, String[] playerMove, ChessPiece.PieceType pieceType){
 
         out.print(ERASE_SCREEN);
         String[] headers = {"   "," h ", " g ", " f "," e "," d "," c "," b "," a ", "   " };

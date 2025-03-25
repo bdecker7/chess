@@ -11,7 +11,7 @@ import records.RegisterResult;
 
 public class ClientPreLogin {
 
-    ServerFacade serverFacade = new ServerFacade();
+    ServerFacade serverFacade = new ServerFacade(8080);
     private String authToken;
     public ClientPreLogin(String serverUrl, Repl repl) {
 
@@ -91,8 +91,5 @@ public class ClientPreLogin {
                 "Request: ";
     }
 
-    private Integer statusChange(){
-        return 0;
-    }
 
 }

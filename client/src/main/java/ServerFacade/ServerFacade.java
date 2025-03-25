@@ -14,12 +14,15 @@ import java.util.Objects;
 
 public class ServerFacade {
     private Integer status;
-    private String serverUrl = "http://localhost:8080";
+    private String serverUrl = "http://localhost:";
+    private Integer portNumber;
     private String body = "body";
     private String header = "header";
     private String both = "both";
-    // make a seperate variable for the server address.
 
+    public ServerFacade(Integer portNumber){
+        this.portNumber = portNumber;
+    }
     public RegisterResult register(RegisterRequest request) throws Exception {
 
         HttpURLConnection http = this.makeRequest("POST", "/user",request, body,null);
@@ -56,7 +59,7 @@ public class ServerFacade {
 
     private <T> HttpURLConnection makeRequest(String method, String path, Object request, String dataRequestPath, String authToken) throws Exception {
         try {
-            URL url = (new URI(serverUrl + path)).toURL();
+            URL url = (new URI(serverUrl + portNumber + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
