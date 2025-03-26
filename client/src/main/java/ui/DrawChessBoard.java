@@ -29,31 +29,31 @@ public class DrawChessBoard {
 //    }
 
     public static void drawBlankPlayablePartWhite(PrintStream out, String [] playerMove, ChessPiece.PieceType pieceType){
-
+        String color = "white";
         for(int i = NumOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
-                drawEvenRow(out, i,playerMove,pieceType) ;
+                drawEvenRow(out, i,playerMove,pieceType,color) ;
             }else{
-                drawOddRow(out,i,playerMove,pieceType);
+                drawOddRow(out,i,playerMove,pieceType,color);
             }
         }
     }
 
     public static void drawBlankPlayablePartBlack(PrintStream out,String [] playerMove, ChessPiece.PieceType pieceType){
-
+        String color = "black";
         for(int i = 1; i < NumOfGameRows + 1 ; i++){
             if(i % 2 == 0){
-                drawOddRow(out, i ,playerMove,pieceType) ;
+                drawOddRow(out, i ,playerMove,pieceType,color) ;
             }else{
-                drawEvenRow(out, i ,playerMove, pieceType);
+                drawEvenRow(out, i ,playerMove, pieceType,color);
             }
         }
     }
 
-    private static void drawOddRow(PrintStream out, Integer rowNumber, String[] playerInput, ChessPiece.PieceType chessPiece){
+    private static void drawOddRow(PrintStream out, Integer rowNumber, String[] playerInput, ChessPiece.PieceType chessPiece, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < NumOfGameRows; column++){
-            String checkrow = checkRow(out, rowNumber,column);
+            String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
                 out.print(SET_BG_COLOR_BLACK);
                 out.print(checkrow);
@@ -68,10 +68,10 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
-    private static void drawEvenRow(PrintStream out, Integer rowNumber, String[] playerMove, ChessPiece.PieceType pieceType){
+    private static void drawEvenRow(PrintStream out, Integer rowNumber, String[] playerMove, ChessPiece.PieceType pieceType, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < NumOfGameRows; column++){
-            String checkrow = checkRow(out, rowNumber,column);
+            String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
                 out.print(SET_BG_COLOR_LIGHT_GREY);
                 out.print(checkrow);
@@ -86,14 +86,14 @@ public class DrawChessBoard {
         out.println();
     }
 
-    private static String checkRow(PrintStream out, Integer rowNumber, int column) {
+    private static String checkRow(PrintStream out, Integer rowNumber, int column, String color) {
         if(isNewGame){
             if(rowNumber == 1){
                     out.print(SET_TEXT_COLOR_YELLOW);
-                    return startingPieces(column);
+                    return startingPieces(column, color);
             }else if(rowNumber == 8){
                 out.print(SET_TEXT_COLOR_RED);
-                return startingPieces(column);
+                return startingPieces(column, color);
             }
             else if(rowNumber == 2){
                 out.print(SET_TEXT_COLOR_YELLOW);
@@ -111,7 +111,7 @@ public class DrawChessBoard {
         return "   ";
     }
 
-    private static String startingPieces(int column) {
+    private static String startingPieces(int column, String color) {
         if(column == 0 || column == 7){
             return " R ";
         } else if(column == 1 || column == 6){
@@ -119,8 +119,15 @@ public class DrawChessBoard {
         } else if(column == 2 || column == 5){
             return " B ";
         } else if(column == 3){
-            return " Q ";
+            if (Objects.equals(color, "black")){
+                return " K ";
+            }else{
+                return " Q ";
+            }
         } else if(column == 4){
+            if(Objects.equals(color, "black")){
+                return " Q ";
+            }
             return " K ";
         }
         else{

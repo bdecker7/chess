@@ -32,7 +32,7 @@ public class ClientPreLogin {
         } catch (InvalidRequest ex) {
             return ex.getMessage();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return "";
         }
     }
 
@@ -86,6 +86,7 @@ public class ClientPreLogin {
                 "1. Register\n" +
                 "2. Login\n" +
                 "3. Quit\n" +
+                "4. Help\n" +
                 "\n" +
                 "Request: ";
     }
