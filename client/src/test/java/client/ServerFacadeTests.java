@@ -1,8 +1,6 @@
 package client;
 
-import ServerFacade.ServerFacade;
-import dataaccess.UserSQL;
-import dataaccess.exceptions.AlreadyTakenException;
+import serverFacade.ServerFacade;
 import org.junit.jupiter.api.*;
 import records.LogOutRequest;
 import records.LoginRequest;

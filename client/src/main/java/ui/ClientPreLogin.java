@@ -4,7 +4,7 @@ import records.LoginRequest;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import ServerFacade.ServerFacade;
+import serverFacade.ServerFacade;
 import records.LoginResult;
 import records.RegisterRequest;
 import records.RegisterResult;

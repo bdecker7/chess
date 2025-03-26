@@ -1,9 +1,7 @@
 package ui;
 
-import ServerFacade.ServerFacade;
-import chess.ChessBoard;
+import serverFacade.ServerFacade;
 import chess.ChessGame;
-import chess.ChessPiece;
 import records.*;
 
 import javax.naming.AuthenticationException;
@@ -28,10 +26,10 @@ public class ClientPostLogin {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "1" -> create_game(params);
-                case "2" -> list_game(params);
-                case "3" -> join_game(params);
-                case "4" -> observe_game(params);
+                case "1" -> createGame(params);
+                case "2" -> listGame(params);
+                case "3" -> joinGame(params);
+                case "4" -> observeGame(params);
                 case "5" -> logout(params);
                 case "6" -> help();
 
@@ -42,7 +40,7 @@ public class ClientPostLogin {
         }
     }
 
-    private String create_game(String[] params) throws Exception {
+    private String createGame(String[] params) throws Exception {
 
         System.out.println("Game Name: ");
         String gameName = scanner.nextLine();
@@ -58,7 +56,7 @@ public class ClientPostLogin {
         return "Not Successful";
     }
 
-    private String list_game(String[] params) {
+    private String listGame(String[] params) {
 
         ListGameRequest request = new ListGameRequest(authToken);
         String listOfGamesString = "";
@@ -79,7 +77,7 @@ public class ClientPostLogin {
 
     }
 
-    private String join_game(String[] params) {
+    private String joinGame(String[] params) {
 
         if(gameIdList.isEmpty()){
             return "Check list of Games first";
@@ -123,7 +121,7 @@ public class ClientPostLogin {
             return "No games to Join";
         }
     }
-    private String observe_game(String[] params){
+    private String observeGame(String[] params){
 
         int gameNumberInteger;
         if(gameIdList.isEmpty()){

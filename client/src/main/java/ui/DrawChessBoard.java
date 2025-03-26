@@ -12,25 +12,26 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 public class DrawChessBoard {
 
     private static final int HEADERLENGTH = 10;
-    private static final int NumOfGameRows = 8;
+    private static final int numOfGameRows = 8;
     private static final boolean isNewGame = true;
 
 
-//    public static void main(String[] args) {
-//        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-//        String[] moveLocation = {"1","2"};
-//        //displays white pov
-//        drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
-//        out.println();
-//        //displays black pov
-//        drawEntireBoardBlackSide(out,moveLocation,ChessPiece.PieceType.KING);
-//
-//
-//    }
+
+    public static void testMain(String[] args) {
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+        String[] moveLocation = {"1","2"};
+        //displays white pov
+        drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
+        out.println();
+        //displays black pov
+        drawEntireBoardBlackSide(out,moveLocation,ChessPiece.PieceType.KING);
+
+
+    }
 
     public static void drawBlankPlayablePartWhite(PrintStream out, String [] playerMove, ChessPiece.PieceType pieceType){
         String color = "white";
-        for(int i = NumOfGameRows; i > 0 ; i--){
+        for(int i = numOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
                 drawEvenRow(out, i,playerMove,pieceType,color) ;
             }else{
@@ -41,7 +42,7 @@ public class DrawChessBoard {
 
     public static void drawBlankPlayablePartBlack(PrintStream out,String [] playerMove, ChessPiece.PieceType pieceType){
         String color = "black";
-        for(int i = 1; i < NumOfGameRows + 1 ; i++){
+        for(int i = 1; i < numOfGameRows + 1 ; i++){
             if(i % 2 == 0){
                 drawOddRow(out, i ,playerMove,pieceType,color) ;
             }else{
@@ -52,7 +53,7 @@ public class DrawChessBoard {
 
     private static void drawOddRow(PrintStream out, Integer rowNumber, String[] playerInput, ChessPiece.PieceType chessPiece, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        for(int column = 0; column < NumOfGameRows; column++){
+        for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
                 out.print(SET_BG_COLOR_BLACK);
@@ -70,7 +71,7 @@ public class DrawChessBoard {
     }
     private static void drawEvenRow(PrintStream out, Integer rowNumber, String[] playerMove, ChessPiece.PieceType pieceType, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        for(int column = 0; column < NumOfGameRows; column++){
+        for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
                 out.print(SET_BG_COLOR_LIGHT_GREY);
