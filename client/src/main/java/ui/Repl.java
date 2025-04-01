@@ -64,7 +64,7 @@ public class Repl {
                     }
 
                 }else if(status == 2){
-                    gameResult = clientGame.eval(line);
+                    gameResult = clientGame.eval(line, playerColor);
                     System.out.println(gameResult);
                     if(Objects.equals(gameResult, "exit")){
                         status = 1;
@@ -72,7 +72,9 @@ public class Repl {
                     else if(playerColor == null || Objects.equals(gameResult, "observer")){
                         clientGame.drawChessBoard("observer");
                     }else{
-                        clientGame.drawChessBoard(playerColor.toString());
+
+                        status = 2;
+//                        clientGame.drawChessBoard(playerColor.toString());
                     }
 
 
