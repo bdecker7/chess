@@ -1,8 +1,6 @@
 package ui;
 
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -22,12 +20,18 @@ public class DrawChessBoard {
         this.board = board;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InvalidMoveException {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         String[] moveLocation = {"1","2"};
         //displays white pov
+        ChessPosition positionStart = new ChessPosition(2,1);
+        ChessPosition positionEnd = new ChessPosition(4,1);
+        ChessMove move = new ChessMove(positionStart,positionEnd,null);
         ChessGame testBoard = new ChessGame();
+        testBoard.makeMove(move);
+
         DrawChessBoard drawTest = new DrawChessBoard(testBoard);
+
         drawTest.drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
         out.println();
         //displays black pov
@@ -94,23 +98,65 @@ public class DrawChessBoard {
     }
 
     private static String checkRow(PrintStream out, Integer rowNumber, int column, String color) {
-        if(isNewGame){
-            if(rowNumber == 1){
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return startingPieces(column, color);
-            }else if(rowNumber == 8){
-                out.print(SET_TEXT_COLOR_RED);
-                return startingPieces(column, color);
-            }
-            else if(rowNumber == 2){
-                out.print(SET_TEXT_COLOR_YELLOW);
-                return " P ";
-            } else if (rowNumber == 7) {
-                out.print(SET_TEXT_COLOR_RED);
-                return " P ";
+        if(Objects.equals(color, "black")){
+            column = mirroredColumn(column);
 
+            ChessPosition position = new ChessPosition(rowNumber,column);
+            ChessPiece piece = board.getBoard().getPiece(position);
+            if(piece == null){
+                return "   ";
+            } else if(piece.getPieceType() == ChessPiece.PieceType.KING){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " K ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " K ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " Q ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " Q ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.PAWN){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " P ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " P ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " N ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " N ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " R ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " R ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " B ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " B ";
+                }
             }
-        }else{
+
+        }
+        if(Objects.equals(color, "white")){
 
             ChessPosition position = new ChessPosition(rowNumber,column+1);
             ChessPiece piece = board.getBoard().getPiece(position);
@@ -169,6 +215,28 @@ public class DrawChessBoard {
             }
             return "   ";
         }
+
+    private static int mirroredColumn(int column) {
+        column = column +1;
+        if(column == 1){
+            column = 8;
+        }else if(column == 2){
+            column = 7;
+        }else if(column == 3){
+            column = 6;
+        }else if(column == 4){
+            column = 5;
+        }else if (column == 5){
+            column = 4;
+        }else if (column == 6){
+            column = 3;
+        }else if(column == 7){
+            column = 2;
+        }else if(column == 8){
+            column = 1;
+        }
+        return column;
+    }
 
 
     private static String startingPieces(int column, String color) {
