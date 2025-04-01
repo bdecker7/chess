@@ -8,11 +8,13 @@ import serverFacade.ServerFacade;
 import records.LoginResult;
 import records.RegisterRequest;
 import records.RegisterResult;
+import serverFacade.WebsocketCommunicator;
 
 public class ClientPreLogin {
 
     ServerFacade serverFacade = new ServerFacade(8080);
     private String authToken;
+    WebsocketCommunicator websocket = new WebsocketCommunicator();
     public ClientPreLogin(String serverUrl, Repl repl) {
 
     }
