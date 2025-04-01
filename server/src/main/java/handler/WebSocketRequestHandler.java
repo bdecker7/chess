@@ -1,19 +1,24 @@
 package handler;
 
+import com.google.gson.Gson;
+import dataaccess.AuthDAO;
+import dataaccess.exceptions.UnAuthorizedException;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import websocket.commands.UserGameCommand;
 import javax.websocket.*;
+import dataaccess.AuthSQL.*;
 
 @WebSocket
 public class WebSocketRequestHandler {
+    AuthDAO authdata;
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
         try {
-            UserGameCommand command = Serializer.fromJson(message, UserGameCommand.class);
+            UserGameCommand command = new Gson().fromJson(message,UserGameCommand.class);
 
             // Throws a custom UnauthorizedException. Yours may work differently.
-            String username = getUsername(command.getAuthToken());
+            String username = authdata.getAuthUsername(command.getAuthToken());
 
             saveSession(command.getGameID(), session);
 
@@ -23,12 +28,12 @@ public class WebSocketRequestHandler {
                 case LEAVE -> leaveGame(session, username, UserGameCommand.CommandType.LEAVE);
                 case RESIGN -> resign(session, username, UserGameCommand.CommandType.RESIGN);
             }
-        } catch (UnauthorizedException ex) {
+        } catch (UnAuthorizedException ex) {
             // Serializes and sends the error message
-            sendMessage(session.getRemote(), new ErrorMessage("Error: unauthorized"));
+//            sendMessage(session.getRemote(), new ErrorMessage("Error: unauthorized"));
         } catch (Exception ex) {
             ex.printStackTrace();
-            sendMessage(session.getRemote(), new ErrorMessage("Error: " + ex.getMessage()));
+//            sendMessage(session.getRemote(), new ErrorMessage("Error: " + ex.getMessage()));
         }
     }
 

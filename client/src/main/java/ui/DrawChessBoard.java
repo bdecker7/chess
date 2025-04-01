@@ -1,6 +1,8 @@
 package ui;
 
+import chess.ChessGame;
 import chess.ChessPiece;
+import chess.ChessPosition;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -13,19 +15,23 @@ public class DrawChessBoard {
 
     private static final int HEADERLENGTH = 10;
     private static final int numOfGameRows = 8;
-    private static final boolean isNewGame = true;
+    private static final boolean isNewGame = false;
+    public static ChessGame board;
 
+    public DrawChessBoard(ChessGame board){
+        this.board = board;
+    }
 
-
-    public static void testMain(String[] args) {
+    public static void main(String[] args) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         String[] moveLocation = {"1","2"};
         //displays white pov
-        drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
+        ChessGame testBoard = new ChessGame();
+        DrawChessBoard drawTest = new DrawChessBoard(testBoard);
+        drawTest.drawEntireBoardWhiteSide(out, moveLocation , ChessPiece.PieceType.KING);
         out.println();
         //displays black pov
-        drawEntireBoardBlackSide(out,moveLocation,ChessPiece.PieceType.KING);
-
+        drawTest.drawEntireBoardBlackSide(out,moveLocation,ChessPiece.PieceType.KING);
 
     }
 
@@ -105,12 +111,65 @@ public class DrawChessBoard {
 
             }
         }else{
-            // probably have the logic for checking and
-            // executing moves here since not a new game
+
+            ChessPosition position = new ChessPosition(rowNumber,column+1);
+            ChessPiece piece = board.getBoard().getPiece(position);
+            if(piece == null){
+                return "   ";
+            } else if(piece.getPieceType() == ChessPiece.PieceType.KING){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " K ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " K ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " Q ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " Q ";
+                    }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.PAWN){
+                    if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                        out.print(SET_TEXT_COLOR_RED);
+                        return " P ";
+                    }else{
+                        out.print(SET_TEXT_COLOR_YELLOW);
+                        return " P ";
+                    }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " N ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " N ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " R ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " R ";
+                }
+            }else if(piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                    out.print(SET_TEXT_COLOR_RED);
+                    return " B ";
+                }else{
+                    out.print(SET_TEXT_COLOR_YELLOW);
+                    return " B ";
+                }
+            }
+
+            }
             return "   ";
         }
-        return "   ";
-    }
+
 
     private static String startingPieces(int column, String color) {
         if(column == 0 || column == 7){

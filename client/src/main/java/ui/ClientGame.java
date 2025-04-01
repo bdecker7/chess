@@ -10,8 +10,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class ClientGame {
-
-//    DrawChessBoard board = new DrawChessBoard();
+    ChessGame gameBoard = new ChessGame();
+    DrawChessBoard board = new DrawChessBoard(gameBoard);
     WebsocketCommunicator ws = new WebsocketCommunicator();
 
     public ClientGame(String serverUrl, Repl repl) {
@@ -25,8 +25,12 @@ public class ClientGame {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "move" -> "do move function here";
-                case "exit" -> "exit";
+                case "1" -> reDrawBoard();
+                case "2" -> "exit";
+                case "3" -> makeMove(params);
+                case "4" -> resignGame();
+                case "5" -> highlightLegalMoves();
+                case "6" -> help();
 
                 default -> help();
             };
@@ -34,6 +38,22 @@ public class ClientGame {
             return ex.getMessage();
         }
 
+    }
+
+    private String highlightLegalMoves() {
+        return "highlight legal moves";
+    }
+
+    private String resignGame() {
+        return "resign game";
+    }
+
+    private String makeMove(String[] params) {
+        return "make moves";
+    }
+
+    private String reDrawBoard() {
+        return "redraw that board sonnnnn";
     }
 
     public void drawChessBoard(String color) {
@@ -60,12 +80,16 @@ public class ClientGame {
         }
 
 
-        DrawChessBoard.drawEntireBoardWhiteSide(out, null, null);
-
 
     }
 
     private String help() {
-        return "Type 'exit' to leave game";
+        return "1. Re-draw chessboard\n" +
+                "2. Leave\n" +
+                "3. Make Move\n" +
+                "4. Resign\n" +
+                "5. Highlight Legal Moves\n" +
+                "6. Help\n\n" +
+                "Selection: ";
     }
 }
