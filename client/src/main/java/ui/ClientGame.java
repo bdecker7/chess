@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessPosition;
+import model.GameData;
 import serverFacade.WebsocketCommunicator;
 
 import java.io.PrintStream;
@@ -31,7 +32,7 @@ public class ClientGame {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "1" -> reDrawBoard(out, playerColor);
-                case "2" -> "exit";
+                case "2" -> leaveGame(out,playerColor);
                 case "3" -> makeMove(params);
                 case "4" -> resignGame(out);
                 case "5" -> highlightLegalMoves(playerColor,out);
@@ -45,6 +46,22 @@ public class ClientGame {
 
     }
 
+    private String leaveGame(PrintStream out, String playerColor) {
+
+        System.out.println("Are you sure you want to leave? (yes/no) ");
+        String responseString = scanner.nextLine();
+        if(Objects.equals(responseString, "yes")){
+            if(Objects.equals(playerColor, "WHITE")){
+                //delete the player from this and bring them back to null.
+                // call the update game from the GameSQL class in Server?
+            }else if(Objects.equals(playerColor, "BLACK")){
+                //delete the black player from game
+            }
+            return "exit";
+        }
+        return "Press 'Enter' for game menu options" ;
+    }
+
     private String highlightLegalMoves(String playerColor, PrintStream out) {
 
         System.out.println("Row: ");
@@ -55,7 +72,6 @@ public class ClientGame {
             int row = Integer.parseInt(rowString);
             int col = Integer.parseInt(columnString);
             ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
-            // figure out how to draw the highlighted colors
             board.changeHighlightRequest(true);
             if(Objects.equals(playerColor, "WHITE")){
                 board.drawEntireBoardWhiteSide(out,null,requestedCurrentPosition);
@@ -70,7 +86,7 @@ public class ClientGame {
         }
 
 
-        return " ";
+        return "Moveable places are highlighted in blue or magenta";
     }
 
     private String resignGame(PrintStream out) {
@@ -90,7 +106,7 @@ public class ClientGame {
             board.drawEntireBoardWhiteSide(out,null,null);
         }
 
-        return " ";
+        return "Press 'Enter' for game menu";
     }
 
     public void drawChessBoard(String color) {
