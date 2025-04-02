@@ -3,8 +3,6 @@ package ui;
 import chess.*;
 
 import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -47,53 +45,60 @@ public class DrawChessBoard {
     public void changeHighlightRequest(boolean request){
         highlightRequest = request;
     }
-    public boolean isHighlightPlayerMoves(Integer row, Integer column, ChessPiece piece){
+    public boolean isHighlightPlayerMoves(Integer row, Integer column, ChessPosition requestedCurrentPosition){
+
         ChessPosition position = new ChessPosition(row,column+1);
-//        board.validMoves()
-        Collection movesList = piece.pieceMoves(board.getBoard(),position);
-        return movesList.contains(position);
+        Collection<ChessMove> movesList = board.validMoves(requestedCurrentPosition);
+
+        for(ChessMove moves : movesList){
+            if (Objects.equals(moves.getEndPosition(), position)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void drawBlankPlayablePartWhite(PrintStream out, ChessMove playerMove, ChessPiece pieceType){
+    public void drawBlankPlayablePartWhite(PrintStream out, ChessMove playerMove, ChessPosition requestedCurrentPosition){
         String color = "white";
         for(int i = numOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
-                drawEvenRow(out, i,playerMove,pieceType,color) ;
+                drawEvenRow(out, i,playerMove,requestedCurrentPosition,color) ;
             }else{
-                drawOddRow(out,i,playerMove,pieceType,color);
+                drawOddRow(out,i,playerMove,requestedCurrentPosition,color);
             }
         }
     }
 
-    public void drawBlankPlayablePartBlack(PrintStream out,ChessMove playerMove, ChessPiece pieceType){
+    public void drawBlankPlayablePartBlack(PrintStream out,ChessMove playerMove, ChessPosition requestedCurrentPosition){
         String color = "black";
         for(int i = 1; i < numOfGameRows + 1 ; i++){
             if(i % 2 == 0){
-                drawOddRow(out, i ,playerMove,pieceType,color) ;
+                drawOddRow(out, i ,playerMove,requestedCurrentPosition,color) ;
             }else{
-                drawEvenRow(out, i ,playerMove, pieceType,color);
+                drawEvenRow(out, i ,playerMove, requestedCurrentPosition,color);
             }
         }
     }
 
-    private void drawOddRow(PrintStream out, Integer rowNumber, ChessMove playerMove, ChessPiece chessPiece, String color){
+    private void drawOddRow(PrintStream out, Integer rowNumber, ChessMove playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
-                if(isHighlightPlayerMoves(rowNumber,column,chessPiece)){
-                    out.print(SET_BG_COLOR_DARK_GREEN);
-                }else {
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+
+                    out.print(SET_BG_COLOR_BLUE);
+                } else {
                     out.print(SET_BG_COLOR_BLACK);
                 }
                 out.print(checkrow);
             }else{
-                if(isHighlightPlayerMoves(rowNumber,column,chessPiece)){
-                    out.print(SET_BG_COLOR_GREEN);
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                    out.print(SET_BG_COLOR_MAGENTA);
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
                 }
-
+                out.print(checkrow);
             }
 
         }
@@ -101,21 +106,21 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
-    private void drawEvenRow(PrintStream out, Integer rowNumber, ChessMove playerMove, ChessPiece chessPiece, String color){
+    private void drawEvenRow(PrintStream out, Integer rowNumber, ChessMove playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
-                if(isHighlightPlayerMoves(rowNumber,column,chessPiece)){
-                    out.print(SET_BG_COLOR_GREEN);
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                    out.print(SET_BG_COLOR_MAGENTA);
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
                 }
                 out.print(checkrow);
 
             }else{
-                if(isHighlightPlayerMoves(rowNumber,column,chessPiece)){
-                    out.print(SET_BG_COLOR_DARK_GREEN);
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                    out.print(SET_BG_COLOR_BLUE);
                 }else {
                     out.print(SET_BG_COLOR_BLACK);
                 }
@@ -247,48 +252,49 @@ public class DrawChessBoard {
         }
 
     private static int mirroredColumn(int column) {
-        column = column +1;
+        column = column + 1;
+        int reversedColumn = column;
         if(column == 1){
-            column = 8;
+            reversedColumn = 8;
         }else if(column == 2){
-            column = 7;
+            reversedColumn = 7;
         }else if(column == 3){
-            column = 6;
+            reversedColumn = 6;
         }else if(column == 4){
-            column = 5;
+            reversedColumn = 5;
         }else if (column == 5){
-            column = 4;
+            reversedColumn = 4;
         }else if (column == 6){
-            column = 3;
+            reversedColumn = 3;
         }else if(column == 7){
-            column = 2;
+            reversedColumn = 2;
         }else if(column == 8){
-            column = 1;
+            reversedColumn = 1;
         }
-        return column;
+        return reversedColumn;
     }
 
 
 
-    public void drawEntireBoardWhiteSide(PrintStream out, ChessMove movingPiece, ChessPiece pieceType){
+    public void drawEntireBoardWhiteSide(PrintStream out, ChessMove movingPiece, ChessPosition requestedCurrentPosition){
 
         out.print(ERASE_SCREEN);
 
         String[] headers = {"   "," a ", " b ", " c "," d "," e "," f "," g "," h ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartWhite(out,movingPiece,pieceType);
+        drawBlankPlayablePartWhite(out,movingPiece,requestedCurrentPosition);
 
         drawHeaders(out, headers);
 
     }
-    public void drawEntireBoardBlackSide(PrintStream out, ChessMove playerMove, ChessPiece pieceType){
+    public void drawEntireBoardBlackSide(PrintStream out, ChessMove playerMove, ChessPosition requestedCurrentPosition){
 
         out.print(ERASE_SCREEN);
         String[] headers = {"   "," h ", " g ", " f "," e "," d "," c "," b "," a ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartBlack(out,playerMove, pieceType);
+        drawBlankPlayablePartBlack(out,playerMove, requestedCurrentPosition);
 
         drawHeaders(out, headers);
 

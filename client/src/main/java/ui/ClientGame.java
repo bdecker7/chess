@@ -30,7 +30,7 @@ public class ClientGame {
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
-                case "1" -> reDrawBoard(out);
+                case "1" -> reDrawBoard(out, playerColor);
                 case "2" -> "exit";
                 case "3" -> makeMove(params);
                 case "4" -> resignGame(out);
@@ -54,14 +54,14 @@ public class ClientGame {
         try {
             int row = Integer.parseInt(rowString);
             int col = Integer.parseInt(columnString);
-            ChessPosition position = new ChessPosition(row,col);
+            ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
             // figure out how to draw the highlighted colors
             board.changeHighlightRequest(true);
             if(Objects.equals(playerColor, "WHITE")){
-                board.drawEntireBoardWhiteSide(out,null,gameBoard.getBoard().getPiece(position));
+                board.drawEntireBoardWhiteSide(out,null,requestedCurrentPosition);
                 board.changeHighlightRequest(false);
             }else if(Objects.equals(playerColor, "BLACK")){
-                board.drawEntireBoardBlackSide(out,null,gameBoard.getBoard().getPiece(position));
+                board.drawEntireBoardBlackSide(out,null,requestedCurrentPosition);
                 board.changeHighlightRequest(false);
             }
 
@@ -81,7 +81,13 @@ public class ClientGame {
         return "make moves";
     }
 
-    private String reDrawBoard(PrintStream out) {
+    private String reDrawBoard(PrintStream out, String playerColor) {
+        if(Objects.equals(playerColor, "WHITE")){
+            board.drawEntireBoardWhiteSide(out,null,null);
+        }else if(Objects.equals(playerColor, "BLACK")){
+            board.drawEntireBoardBlackSide(out,null,null);
+        }
+
         return "redraw that board sonnnnn";
     }
 
