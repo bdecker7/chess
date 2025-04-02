@@ -58,7 +58,7 @@ public class DrawChessBoard {
         return false;
     }
 
-    public void drawBlankPlayablePartWhite(PrintStream out, ChessMove playerMove, ChessPosition requestedCurrentPosition){
+    public void drawBlankPlayablePartWhite(PrintStream out, ChessPosition playerMove, ChessPosition requestedCurrentPosition){
         String color = "white";
         for(int i = numOfGameRows; i > 0 ; i--){
             if(i % 2 == 0){
@@ -69,7 +69,7 @@ public class DrawChessBoard {
         }
     }
 
-    public void drawBlankPlayablePartBlack(PrintStream out,ChessMove playerMove, ChessPosition requestedCurrentPosition){
+    public void drawBlankPlayablePartBlack(PrintStream out,ChessPosition playerMove, ChessPosition requestedCurrentPosition){
         String color = "black";
         for(int i = 1; i < numOfGameRows + 1 ; i++){
             if(i % 2 == 0){
@@ -80,7 +80,7 @@ public class DrawChessBoard {
         }
     }
 
-    private void drawOddRow(PrintStream out, Integer rowNumber, ChessMove playerMove, ChessPosition requestedCurrentPosition, String color){
+    private void drawOddRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
@@ -119,7 +119,7 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
-    private void drawEvenRow(PrintStream out, Integer rowNumber, ChessMove playerMove, ChessPosition requestedCurrentPosition, String color){
+    private void drawEvenRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
@@ -301,25 +301,25 @@ public class DrawChessBoard {
 
 
 
-    public void drawEntireBoardWhiteSide(PrintStream out, ChessMove movingPiece, ChessPosition requestedCurrentPosition){
+    public void drawEntireBoardWhiteSide(PrintStream out, ChessPosition movingPosition, ChessPosition requestedCurrentPosition){
 
         out.print(ERASE_SCREEN);
 
         String[] headers = {"   "," a ", " b ", " c "," d "," e "," f "," g "," h ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartWhite(out,movingPiece,requestedCurrentPosition);
+        drawBlankPlayablePartWhite(out,movingPosition,requestedCurrentPosition);
 
         drawHeaders(out, headers);
 
     }
-    public void drawEntireBoardBlackSide(PrintStream out, ChessMove playerMove, ChessPosition requestedCurrentPosition){
+    public void drawEntireBoardBlackSide(PrintStream out, ChessPosition movingPosition, ChessPosition requestedCurrentPosition){
 
         out.print(ERASE_SCREEN);
         String[] headers = {"   "," h ", " g ", " f "," e "," d "," c "," b "," a ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartBlack(out,playerMove, requestedCurrentPosition);
+        drawBlankPlayablePartBlack(out,movingPosition, requestedCurrentPosition);
 
         drawHeaders(out, headers);
 

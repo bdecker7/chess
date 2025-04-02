@@ -1,8 +1,8 @@
 package serverFacade;
 
+import chess.ChessPosition;
 import com.google.gson.Gson;
-import com.sun.nio.sctp.NotificationHandler;
-import websocket.messages.ServerMessage;
+import websocket.commands.UserGameCommand;
 
 import javax.management.Notification;
 
@@ -47,10 +47,12 @@ public class WebsocketCommunicator implements ServerMessageObserver {
 
     }
 
-    public void makeMove(){}
+    public void makeMoveWs(ChessPosition requestedCurrentPosition, ChessPosition requestedMovingPosition){
 
-    public void leave(){}
+    }
 
-    public void resign(){}
+    public void leaveWs(){}
+
+    public void resignWs(){}
 
 }

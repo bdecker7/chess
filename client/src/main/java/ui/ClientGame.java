@@ -1,9 +1,11 @@
 package ui;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
 import model.GameData;
 import serverFacade.WebsocketCommunicator;
+import websocket.commands.UserGameCommand;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -33,7 +35,7 @@ public class ClientGame {
             return switch (cmd) {
                 case "1" -> reDrawBoard(out, playerColor);
                 case "2" -> leaveGame(out,playerColor);
-                case "3" -> makeMove(params);
+                case "3" -> makeMove(out, playerColor);
                 case "4" -> resignGame(out);
                 case "5" -> highlightLegalMoves(playerColor,out);
                 case "6" -> help();
@@ -85,7 +87,6 @@ public class ClientGame {
             return "Invalid input: row and column must be numbers";
         }
 
-
         return "Moveable places are highlighted in blue or magenta";
     }
 
@@ -93,7 +94,40 @@ public class ClientGame {
         return "resign game";
     }
 
-    private String makeMove(String[] params) {
+    private String makeMove(PrintStream out, String playerColor) {
+        System.out.println("From Row: ");
+        String rowFromString = scanner.nextLine();
+        System.out.println("From Column: ");
+        String columnFromString = scanner.nextLine();
+
+        System.out.println("To Row: ");
+        String rowToString = scanner.nextLine();
+        System.out.println("To Column: ");
+        String columnToString = scanner.nextLine();
+        try {
+            int row = Integer.parseInt(rowFromString);
+            int col = Integer.parseInt(columnFromString);
+            int toRow = Integer.parseInt(rowToString);
+            int toCol = Integer.parseInt(columnToString);
+
+            ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
+            ChessPosition requestedMovingPosition = new ChessPosition(toRow,toCol);
+
+            // call the Websocket communicator make move function here to make the move
+
+            ws.makeMoveWs(requestedCurrentPosition,requestedMovingPosition);
+            if(Objects.equals(playerColor, "WHITE")){
+                board.drawEntireBoardWhiteSide(out,null,null);
+
+            }else if(Objects.equals(playerColor, "BLACK")){
+                board.drawEntireBoardBlackSide(out,null,null);
+
+            }
+
+        } catch (NumberFormatException e) {
+            return "Invalid input: row and column must be numbers";
+        }
+
         return "make moves";
     }
 
