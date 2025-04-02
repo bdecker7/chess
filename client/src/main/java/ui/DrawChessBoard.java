@@ -85,15 +85,28 @@ public class DrawChessBoard {
         for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                int actualColumn;
+                if(Objects.equals(color, "black")){
+                    actualColumn = mirroredColumn(column)-1;
 
+                }else{
+                    actualColumn = column;
+                }
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
                     out.print(SET_BG_COLOR_BLUE);
                 } else {
                     out.print(SET_BG_COLOR_BLACK);
                 }
                 out.print(checkrow);
             }else{
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                int actualColumn;
+                if(Objects.equals(color, "black")){
+                    actualColumn = mirroredColumn(column)-1;
+                }else{
+                    actualColumn = column;
+                }
+
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
                     out.print(SET_BG_COLOR_MAGENTA);
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -111,7 +124,13 @@ public class DrawChessBoard {
         for(int column = 0; column < numOfGameRows; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                int actualColumn;
+                if(Objects.equals(color, "black")){
+                    actualColumn = mirroredColumn(column)-1;
+                }else{
+                    actualColumn = column;
+                }
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
                     out.print(SET_BG_COLOR_MAGENTA);
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -119,7 +138,13 @@ public class DrawChessBoard {
                 out.print(checkrow);
 
             }else{
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,column,requestedCurrentPosition)){
+                int actualColumn;
+                if(Objects.equals(color, "black")){
+                    actualColumn = mirroredColumn(column)-1;
+                }else{
+                    actualColumn = column;
+                }
+                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
                     out.print(SET_BG_COLOR_BLUE);
                 }else {
                     out.print(SET_BG_COLOR_BLACK);

@@ -86,9 +86,11 @@ public class ClientGame {
             board.drawEntireBoardWhiteSide(out,null,null);
         }else if(Objects.equals(playerColor, "BLACK")){
             board.drawEntireBoardBlackSide(out,null,null);
+        }else{
+            board.drawEntireBoardWhiteSide(out,null,null);
         }
 
-        return "redraw that board sonnnnn";
+        return " ";
     }
 
     public void drawChessBoard(String color) {
