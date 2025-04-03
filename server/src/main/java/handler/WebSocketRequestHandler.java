@@ -2,6 +2,7 @@ package handler;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
@@ -55,7 +56,8 @@ public class WebSocketRequestHandler {
         //This should save the session so it keeps track of everything. probably seperate in another class
     }
 
-    private void resign(Session session, String username, UserGameCommand.CommandType commandType) {
+    private void resign(UserGameCommand data) throws DataAccessException {
+        gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
 
     }
 
@@ -67,16 +69,16 @@ public class WebSocketRequestHandler {
         }else if(Objects.equals(username, gamedata.getGame(data.getGameID()).blackUsername())){
             gamedata.updateGame(ChessGame.TeamColor.BLACK,null, data.getGameID());
         }
-
-        //broadcast notification here??
+        // make new notification
+        //broadcast notification here!!!
 
     }
 
-    private void makeMove(MakeMoveCommand data) throws DataAccessException {
+    private void makeMove(MakeMoveCommand data) throws DataAccessException, InvalidMoveException {
         String username = authdata.getAuthUsername(data.getAuthToken());
-        gamedata.updateGame();
-
-
+        GameData currentGame = gamedata.getGame(data.getGameID());
+        ChessMove move = new ChessMove(data.getMove().getStartPosition(),data.getMove().getEndPosition(), null);
+        currentGame.game().makeMove(move);
 
     }
 

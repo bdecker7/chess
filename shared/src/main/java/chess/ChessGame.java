@@ -12,6 +12,8 @@ import java.util.Collection;
 public class ChessGame {
     ChessBoard gameBoard = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
+    Boolean isResigned = false;
+
     public ChessGame() {
         gameBoard.resetBoard();
     }
@@ -21,7 +23,6 @@ public class ChessGame {
      */
     public TeamColor getTeamTurn() {
         return turn;
-
     }
 
     /**
@@ -100,6 +101,10 @@ public class ChessGame {
         }
     }
 
+
+    public void changeResignedStatus(boolean choice){
+        isResigned = choice;
+    }
     /**
      * Makes a move in a chess game
      *
@@ -108,6 +113,10 @@ public class ChessGame {
      */
 
     public void makeMove(ChessMove move) throws InvalidMoveException {
+
+        if(isResigned){
+            throw new GameOverException("Can't make move, game is over.");
+        }
 
         if(validMoves(move.getStartPosition()) == null
                 || !(gameBoard.getPiece(move.getStartPosition()).getTeamColor() == turn)){
