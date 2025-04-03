@@ -7,6 +7,7 @@ import model.GameData;
 import serverFacade.WebsocketCommunicator;
 import websocket.commands.UserGameCommand;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -19,13 +20,19 @@ public class ClientGame {
     public ChessGame gameBoard = new ChessGame();
     public DrawChessBoard board = new DrawChessBoard(gameBoard); // if I want to change the game I might have to declare this somewhere else
     WebsocketCommunicator ws = new WebsocketCommunicator();
+    String authTokenGame = "";
+    Integer gameIDGame;
 
     public ClientGame(String serverUrl, Repl repl) {
         this.ws = ws;
         this.board = board;
     }
 
-    public String eval(String input, String playerColor) {
+    public String eval(String input, String playerColor, String authToken, Integer gameID) throws IOException {
+        authTokenGame = authToken;
+        gameIDGame = gameID;
+
+        ws.connectClient(authTokenGame,gameIDGame);
 
         try {
             var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -42,24 +49,26 @@ public class ClientGame {
 
                 default -> help();
             };
-        } catch (InvalidRequest ex) {
+        } catch (InvalidRequest | IOException ex) {
             return ex.getMessage();
         }
 
     }
 
-    private String leaveGame(PrintStream out, String playerColor) {
+    private String leaveGame(PrintStream out, String playerColor) throws IOException {
+
 
         System.out.println("Are you sure you want to leave? (yes/no) ");
         String responseString = scanner.nextLine();
         if(Objects.equals(responseString, "yes")){
             if(Objects.equals(playerColor, "WHITE")){
                 //delete the player from this and bring them back to null.
-                ws.leaveWs();
+
+                ws.leaveWs(authTokenGame,gameIDGame);
 
             }else if(Objects.equals(playerColor, "BLACK")){
                 //delete the black player from game
-                ws.leaveWs();
+                ws.leaveWs(authTokenGame,gameIDGame);
             }
             return "exit";
         }
@@ -92,9 +101,9 @@ public class ClientGame {
         return "Moveable places are highlighted in blue or magenta";
     }
 
-    private String resignGame(PrintStream out) {
+    private String resignGame(PrintStream out) throws IOException {
 
-        ws.resignWs();
+        ws.resignWs(authTokenGame,gameIDGame);
 
         return "resign game";
     }
@@ -119,8 +128,9 @@ public class ClientGame {
             ChessPosition requestedMovingPosition = new ChessPosition(toRow,toCol);
 
             // call the Websocket communicator make move function here to make the move
+            ChessMove move = new ChessMove(requestedCurrentPosition,requestedMovingPosition,null);
 
-            ws.makeMoveWs();
+            ws.makeMoveWs(authTokenGame,gameIDGame,move);
             if(Objects.equals(playerColor, "WHITE")){
                 board.drawEntireBoardWhiteSide(out,null,null);
 
@@ -131,6 +141,8 @@ public class ClientGame {
 
         } catch (NumberFormatException e) {
             return "Invalid input: row and column must be numbers";
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         return "make moves";
@@ -159,21 +171,6 @@ public class ClientGame {
 
     }
 
-    private void whiteJoin(PrintStream out) {
-
-        Scanner scanner = new Scanner(System.in);
-        ws.connectClient();
-
-        while (true) {
-            System.out.print("Enter command: ");
-            String input = scanner.nextLine();
-
-
-        }
-
-
-
-    }
 
     private String help() {
         return "1. Re-draw chessboard\n" +

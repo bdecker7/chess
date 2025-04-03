@@ -51,28 +51,30 @@ public class WebsocketCommunicator extends Endpoint implements ServerMessageObse
 
     }
 
-    public void connectClient(){
+    public void connectClient(String authToken, int gameID) throws IOException {
+        WebSocketRecords resignObject = new WebSocketRecords(UserGameCommand.CommandType.CONNECT,authToken,gameID);
+        this.session.getBasicRemote().sendText(new Gson().toJson(resignObject));
 
     }
 
     public void makeMoveWs(String authToken, int gameID, ChessMove moveObject) throws IOException {
         //send over the json i think
-        WebSocketRequestMakeMove makeMoveObject = new WebSocketRequestMakeMove(WebSocketRequestMakeMove.Type.MAKEMOVE,authToken,gameID,moveObject);
+        WebSocketRequestMakeMove makeMoveObject = new WebSocketRequestMakeMove(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameID,moveObject);
         this.session.getBasicRemote().sendText(new Gson().toJson(makeMoveObject));
         //reprint the board.
     }
 
     public void leaveWs(String authToken, int gameID) throws IOException {
 
-        WebSocketRecords leavingObject = new WebSocketRecords(WebSocketRecords.Type.LEAVE,authToken,gameID);
+        WebSocketRecords leavingObject = new WebSocketRecords(UserGameCommand.CommandType.LEAVE,authToken,gameID);
         this.session.getBasicRemote().sendText(new Gson().toJson(leavingObject));
         this.session.close();
     }
 
     public void resignWs(String authToken, int gameID) throws IOException {
-        WebSocketRecords resignObject = new WebSocketRecords(WebSocketRecords.Type.LEAVE,authToken,gameID);
+        WebSocketRecords resignObject = new WebSocketRecords(UserGameCommand.CommandType.RESIGN,authToken,gameID);
         this.session.getBasicRemote().sendText(new Gson().toJson(resignObject));
-        this.session.close();
+
     }
 
 

@@ -10,7 +10,7 @@ public class Repl {
     private final ClientGame clientGame;
     private static Integer status = 0;
     private String preLoginResult = null;
-    private String postResult = null;
+    private PostLoginResult postResult = null;
     private String playerColor = null;
     private String gameResult = null;
 
@@ -46,26 +46,28 @@ public class Repl {
                 }else if(status == 1) {
                     //add here if want to have the menu pop up before
                     postResult = clientPostLogin.evalPost(line, preLoginResult);
-                    System.out.println(postResult);
 
-                    if(Objects.equals(postResult, "logged out")){
+                    System.out.println(postResult.message());
+
+                    if(Objects.equals(postResult.message(), "logged out")){
                         status = 0;
-                    }else if(Objects.equals(postResult, "WHITE") || Objects.equals(postResult, "BLACK")){
+                    }else if(Objects.equals(postResult.message(), "WHITE") || Objects.equals(postResult, "BLACK")){
                         status = 2;
-                        playerColor = postResult;
-                    }else if (Objects.equals(postResult, "observer")){
+                        playerColor = postResult.message();
+                    }else if (Objects.equals(postResult.message(), "observer")){
                         status = 2;
                         playerColor = null;
                     }
-                    else if(Objects.equals(postResult, "Successful Play")){
+                    else if(Objects.equals(postResult.message(), "Successful Play")){
                         status = 2;
-                    }else if(Objects.equals(postResult, "Successful Observe")){
+                    }else if(Objects.equals(postResult.message(), "Successful Observe")){
                         status = 2;
                     }
 
                 }else if(status == 2){
-                    gameResult = clientGame.eval(line, playerColor);
+                    gameResult = clientGame.eval(line, playerColor,preLoginResult,postResult.gameID());
                     System.out.println(gameResult);
+
                     if(Objects.equals(gameResult, "exit")){
                         status = 1;
                     }

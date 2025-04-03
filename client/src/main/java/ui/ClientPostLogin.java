@@ -18,7 +18,7 @@ public class ClientPostLogin {
     public ClientPostLogin(String serverUrl, Repl repl) {
     }
 
-    public String evalPost(String input, String preLoginResult) {
+    public PostLoginResult evalPost(String input, String preLoginResult) {
 
         authToken = preLoginResult;
         try {
@@ -36,11 +36,12 @@ public class ClientPostLogin {
                 default -> help();
             };
         } catch (Exception ex){
-            return ex.getMessage();
+            return new PostLoginResult(ex.getMessage(), null);
+
         }
     }
 
-    private String createGame(String[] params) throws Exception {
+    private PostLoginResult createGame(String[] params) throws Exception {
 
         System.out.println("Game Name: ");
         String gameName = scanner.nextLine();
@@ -49,14 +50,12 @@ public class ClientPostLogin {
 
         if(result != null){
             System.out.println("Game successfully created!");
-
-            return "Successful Game Creation";
+            return new PostLoginResult("Successful Game Creation", null);
         }
-
-        return "Not Successful";
+        return new PostLoginResult("not successful", null);
     }
 
-    private String listGame(String[] params) {
+    private PostLoginResult listGame(String[] params) {
 
         ListGameRequest request = new ListGameRequest(authToken);
         String listOfGamesString = "";
@@ -70,17 +69,18 @@ public class ClientPostLogin {
                         + "White Player: " + result.games().get(i).whiteUsername() + "\n   "
                         + "Black Player: " + result.games().get(i).blackUsername() + "\n\n";
             }
-            return listOfGamesString;
+            return new PostLoginResult(listOfGamesString, null);
         }catch (Exception ex){
-            return "Unable to List game";
+            return new PostLoginResult("Unable to List game", null);
         }
 
     }
 
-    private String joinGame(String[] params) {
+    private PostLoginResult joinGame(String[] params) {
 
         if(gameIdList.isEmpty()){
-            return "Check list of Games first";
+
+            return new PostLoginResult("Check list of Games first", null);
         }
 
         System.out.println("Game Number: ");
@@ -88,10 +88,10 @@ public class ClientPostLogin {
         try {
             int gameNum = Integer.parseInt(gameNumber);
             if (!gameIdList.containsKey(gameNum)) {
-                return "Invalid Game number";
+                return new PostLoginResult("Invalid Game number", null);
             }
         } catch (NumberFormatException e) {
-            return "Invalid input: Game number must be an integer";
+            return new PostLoginResult("Invalid input: Game number must be an integer", null);
         }
 
         System.out.println("WHITE/BLACK: ");
@@ -103,29 +103,29 @@ public class ClientPostLogin {
         }else if(Objects.equals(color, "BLACK")){
             teamColor = ChessGame.TeamColor.BLACK;
         }else{
-            return "Invalid Color Input";
+            return new PostLoginResult("Invalid Color Input", null);
         }
 
         if(gameIdList != null) {
             JoinGameRequest joinRequest = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
             try {
                 if (serverFacade.joinGame(joinRequest, authToken) == 200) {
-                    return color;
+                    return new PostLoginResult(color, joinRequest.gameID());
                 } else {
-                    return "Unable to Join game";
+                    return new PostLoginResult("Unable to join game", null);
                 }
             } catch (Exception ex) {
-                return "Unable to Join game";
+                return new PostLoginResult("Unable to join game", null);
             }
         }else{
-            return "No games to Join";
+            return new PostLoginResult("No games to join", null);
         }
     }
-    private String observeGame(String[] params){
+    private PostLoginResult observeGame(String[] params){
 
         int gameNumberInteger;
         if(gameIdList.isEmpty()){
-            return "Check list of Games first";
+            return new PostLoginResult("Check list of Games first", null);
         }
 
         System.out.println("Game Number: ");
@@ -133,44 +133,41 @@ public class ClientPostLogin {
         try {
             int gameNum = Integer.parseInt(gameNumber);
             if (!gameIdList.containsKey(gameNum)) {
-                return "Invalid Game number";
+                return new PostLoginResult("Invalid Game number", null);
             }else{
                 gameNumberInteger = gameIdList.get(gameNum);
-                return "observer";
+                return new PostLoginResult("observer", gameNumberInteger);
             }
         } catch (NumberFormatException e) {
-            return "Invalid input: Game number must be an integer";
+            return new PostLoginResult("Invalid input: Game number must be an integer", null);
         }
-
-        //validate that it is a number
-        // print the board
 
 
     }
-    private String logout(String[] params) throws Exception {
+    private PostLoginResult logout(String[] params) throws Exception {
 
         LogOutRequest request = new LogOutRequest(authToken);
         try{
             if (serverFacade.logout(request) == 200){
-                return "logged out";
+                return new PostLoginResult("logged out", null);
             }else {
                 throw new AuthenticationException("Incorrect AuthToken, not Authorized");
             }
         }catch (Exception ex){
-            return ex.getMessage();
+            return new PostLoginResult(ex.getMessage(), null);
         }
     }
 
-    String help() {
-
-        return "Type the number you wish that coorelates with what you would like to do: \n \n" +
+    PostLoginResult help() {
+        return new PostLoginResult("Type the number you wish that coorelates with what you would like to do: \n \n" +
                 "1. Create Game\n" +
                 "2. List Games\n" +
                 "3. Join Game\n" +
                 "4. Observe Game\n" +
                 "5. Logout\n" +
                 "6. Help\n\n" +
-                "Request: ";
+                "Request: ", null);
+
     }
 
 }
