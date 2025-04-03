@@ -130,8 +130,17 @@ public class DrawChessBoard {
                 }else{
                     actualColumn = column;
                 }
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
-                    out.print(SET_BG_COLOR_MAGENTA);
+
+                if(requestedCurrentPosition != null){
+                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
+                        out.print(SET_BG_COLOR_MAGENTA);
+                    }
+                    // need to highlight the current position yellow
+
+                    //                    else{
+//                        out.print(SET_TEXT_COLOR_YELLOW);
+//                    }
+
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
                 }

@@ -59,6 +59,8 @@ public class WebSocketRequestHandler {
     private void resign(UserGameCommand data) throws DataAccessException {
         gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
 
+        // make new notification
+        //broadcast notification "username resigned"
     }
 
     private void leaveGame(UserGameCommand data) throws DataAccessException, SQLException {
@@ -79,6 +81,8 @@ public class WebSocketRequestHandler {
         GameData currentGame = gamedata.getGame(data.getGameID());
         ChessMove move = new ChessMove(data.getMove().getStartPosition(),data.getMove().getEndPosition(), null);
         currentGame.game().makeMove(move);
+
+
 
     }
 

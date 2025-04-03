@@ -55,9 +55,11 @@ public class ClientGame {
         if(Objects.equals(responseString, "yes")){
             if(Objects.equals(playerColor, "WHITE")){
                 //delete the player from this and bring them back to null.
-                // call the update game from the GameSQL class in Server?
+                ws.leaveWs();
+
             }else if(Objects.equals(playerColor, "BLACK")){
                 //delete the black player from game
+                ws.leaveWs();
             }
             return "exit";
         }
@@ -91,6 +93,9 @@ public class ClientGame {
     }
 
     private String resignGame(PrintStream out) {
+
+        ws.resignWs();
+
         return "resign game";
     }
 
@@ -115,7 +120,7 @@ public class ClientGame {
 
             // call the Websocket communicator make move function here to make the move
 
-            ws.makeMoveWs(requestedCurrentPosition,requestedMovingPosition);
+            ws.makeMoveWs();
             if(Objects.equals(playerColor, "WHITE")){
                 board.drawEntireBoardWhiteSide(out,null,null);
 

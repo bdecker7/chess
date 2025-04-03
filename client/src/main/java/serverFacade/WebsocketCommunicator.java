@@ -1,7 +1,11 @@
 package serverFacade;
 
+import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPosition;
 import com.google.gson.Gson;
+import records.WebSocketRecords;
+import records.WebSocketRequestMakeMove;
 import websocket.commands.UserGameCommand;
 
 import javax.management.Notification;
@@ -11,12 +15,16 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class WebsocketCommunicator implements ServerMessageObserver {
+public class WebsocketCommunicator extends Endpoint implements ServerMessageObserver {
 
 
     Session session;
     ServerMessageObserver notificationHandler;
 
+    @Override
+    public void onOpen(Session session, EndpointConfig endpointConfig) {
+
+    }
 
     public void WebSocketFacade(String url, ServerMessageObserver notificationHandler) throws Exception {
         try {
@@ -47,12 +55,25 @@ public class WebsocketCommunicator implements ServerMessageObserver {
 
     }
 
-    public void makeMoveWs(ChessPosition requestedCurrentPosition, ChessPosition requestedMovingPosition){
-
+    public void makeMoveWs(String authToken, int gameID, ChessMove moveObject) throws IOException {
+        //send over the json i think
+        WebSocketRequestMakeMove makeMoveObject = new WebSocketRequestMakeMove(WebSocketRequestMakeMove.Type.MAKEMOVE,authToken,gameID,moveObject);
+        this.session.getBasicRemote().sendText(new Gson().toJson(makeMoveObject));
+        //reprint the board.
     }
 
-    public void leaveWs(){}
+    public void leaveWs(String authToken, int gameID) throws IOException {
 
-    public void resignWs(){}
+        WebSocketRecords leavingObject = new WebSocketRecords(WebSocketRecords.Type.LEAVE,authToken,gameID);
+        this.session.getBasicRemote().sendText(new Gson().toJson(leavingObject));
+        this.session.close();
+    }
+
+    public void resignWs(String authToken, int gameID) throws IOException {
+        WebSocketRecords resignObject = new WebSocketRecords(WebSocketRecords.Type.LEAVE,authToken,gameID);
+        this.session.getBasicRemote().sendText(new Gson().toJson(resignObject));
+        this.session.close();
+    }
+
 
 }
