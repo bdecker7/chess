@@ -56,6 +56,10 @@ public class WebSocketRequestHandler {
         //This should save the session so it keeps track of everything. probably seperate in another class
     }
 
+    private void sendMessage(String message, Session session){}
+
+    private void broadcastMessage(Integer gameID, String message, Session notThisSession){}
+
     private void resign(UserGameCommand data) throws DataAccessException {
         gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
 
@@ -82,11 +86,13 @@ public class WebSocketRequestHandler {
         ChessMove move = new ChessMove(data.getMove().getStartPosition(),data.getMove().getEndPosition(), null);
         currentGame.game().makeMove(move);
 
-
-
     }
 
-    public void connect(UserGameCommand data){
+    public void connect(UserGameCommand data) throws DataAccessException {
+        String username = authdata.getAuthUsername(data.getAuthToken());
+        GameData currentGame = gamedata.getGame(data.getGameID());
+        // call the websocket connect from here?
+
 
 
     }

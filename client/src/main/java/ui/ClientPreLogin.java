@@ -10,12 +10,16 @@ import records.RegisterRequest;
 import records.RegisterResult;
 import serverFacade.WebsocketCommunicator;
 
+import javax.management.Notification;
+
 public class ClientPreLogin {
 
     ServerFacade serverFacade = new ServerFacade(8080);
     private String authToken;
+    String serverUrl;
     WebsocketCommunicator websocket = new WebsocketCommunicator();
     public ClientPreLogin(String serverUrl, Repl repl) {
+        this.serverUrl = serverUrl;
 
     }
 
@@ -75,7 +79,10 @@ public class ClientPreLogin {
         RegisterResult result = serverFacade.register(request);
         if(result != null){
             System.out.println("Welcome "+ result.username() + "!");
-//            System.out.println("Your Authorization Token is "+ result.authToken()+"\n");
+            websocket = new WebsocketCommunicator();
+//            Notification notification = new Notification()
+//            websocket.WebSocketFacade(serverUrl,);
+
             return result.authToken();
         }
 

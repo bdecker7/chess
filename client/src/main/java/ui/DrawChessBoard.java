@@ -45,17 +45,20 @@ public class DrawChessBoard {
     public void changeHighlightRequest(boolean request){
         highlightRequest = request;
     }
-    public boolean isHighlightPlayerMoves(Integer row, Integer column, ChessPosition requestedCurrentPosition){
+    public String isHighlightPlayerMoves(Integer row, Integer column, ChessPosition requestedCurrentPosition){
 
         ChessPosition position = new ChessPosition(row,column+1);
         Collection<ChessMove> movesList = board.validMoves(requestedCurrentPosition);
 
+        if (requestedCurrentPosition.equals(position)){
+            return "requested piece";
+        }
         for(ChessMove moves : movesList){
             if (Objects.equals(moves.getEndPosition(), position)) {
-                return true;
+                return "highlighted";
             }
         }
-        return false;
+        return "not highlighted";
     }
 
     public void drawBlankPlayablePartWhite(PrintStream out, ChessPosition playerMove, ChessPosition requestedCurrentPosition){
@@ -92,9 +95,15 @@ public class DrawChessBoard {
                 }else{
                     actualColumn = column;
                 }
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
-                    out.print(SET_BG_COLOR_BLUE);
-                } else {
+                if(requestedCurrentPosition != null){
+                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
+                        out.print(SET_BG_COLOR_BLUE);
+                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
+                        out.print(SET_BG_COLOR_WHITE);
+                    }else{
+                        out.print(SET_BG_COLOR_BLACK);
+                    }
+                } else{
                     out.print(SET_BG_COLOR_BLACK);
                 }
                 out.print(checkrow);
@@ -106,8 +115,14 @@ public class DrawChessBoard {
                     actualColumn = column;
                 }
 
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
-                    out.print(SET_BG_COLOR_MAGENTA);
+                if(requestedCurrentPosition != null){
+                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
+                        out.print(SET_BG_COLOR_MAGENTA);
+                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
+                        out.print(SET_BG_COLOR_WHITE);
+                    }else{
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                    }
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
                 }
@@ -132,14 +147,13 @@ public class DrawChessBoard {
                 }
 
                 if(requestedCurrentPosition != null){
-                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
+                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
                         out.print(SET_BG_COLOR_MAGENTA);
+                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
+                        out.print(SET_BG_COLOR_WHITE);
+                    }else{
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
                     }
-                    // need to highlight the current position yellow
-
-                    //                    else{
-//                        out.print(SET_TEXT_COLOR_YELLOW);
-//                    }
 
                 }else{
                     out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -153,8 +167,14 @@ public class DrawChessBoard {
                 }else{
                     actualColumn = column;
                 }
-                if(requestedCurrentPosition != null && isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition)){
-                    out.print(SET_BG_COLOR_BLUE);
+                if(requestedCurrentPosition != null){
+                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
+                        out.print(SET_BG_COLOR_BLUE);
+                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
+                        out.print(SET_BG_COLOR_WHITE);
+                    }else{
+                        out.print(SET_BG_COLOR_BLACK);
+                    }
                 }else {
                     out.print(SET_BG_COLOR_BLACK);
                 }

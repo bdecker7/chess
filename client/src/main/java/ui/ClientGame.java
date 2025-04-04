@@ -31,8 +31,8 @@ public class ClientGame {
     public String eval(String input, String playerColor, String authToken, Integer gameID) throws IOException {
         authTokenGame = authToken;
         gameIDGame = gameID;
-
-        ws.connectClient(authTokenGame,gameIDGame);
+//  Check if I call this here
+//        ws.connectClient(authTokenGame,gameIDGame);
 
         try {
             var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);

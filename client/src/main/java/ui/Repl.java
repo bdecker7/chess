@@ -51,7 +51,7 @@ public class Repl {
 
                     if(Objects.equals(postResult.message(), "logged out")){
                         status = 0;
-                    }else if(Objects.equals(postResult.message(), "WHITE") || Objects.equals(postResult, "BLACK")){
+                    }else if(Objects.equals(postResult.message(), "WHITE") || Objects.equals(postResult.message(), "BLACK")){
                         status = 2;
                         playerColor = postResult.message();
                     }else if (Objects.equals(postResult.message(), "observer")){
