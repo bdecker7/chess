@@ -1,9 +1,12 @@
 package ui;
 
+import serverFacade.ServerMessageObserver;
+
+import javax.management.Notification;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Repl {
+public class Repl implements ServerMessageObserver {
 
     private final ClientPreLogin clientPreLogin;
     private final ClientPostLogin clientPostLogin;
@@ -90,4 +93,8 @@ public class Repl {
         System.out.println();
     }
 
+    @Override
+    public void notify(Notification message) {
+        System.out.print(message);
+    }
 }

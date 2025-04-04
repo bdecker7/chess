@@ -14,6 +14,7 @@ import static java.sql.DriverManager.getConnection;
 
 
 public class Server {
+    WebSocketRequestHandler websocket;
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -25,6 +26,9 @@ public class Server {
             UserDAO usersMemory = new UserSQL();
             AuthDAO authsMemory = new AuthSQL();
             GameDAO gamesMemory = new GameSQL();
+
+            websocket = new WebSocketRequestHandler(usersMemory,authsMemory,gamesMemory);
+            Spark.webSocket("/ws", websocket);
 
         Spark.post("/user", (req, res) ->
                 new RegisterHandler(usersMemory,authsMemory).handleRequest(req,res));

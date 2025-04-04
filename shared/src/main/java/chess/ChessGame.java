@@ -116,6 +116,10 @@ public class ChessGame {
 
         if(isResigned){
             throw new GameOverException("Can't make move, game is over.");
+        }else if(isInCheckmate(TeamColor.BLACK) || isInCheckmate(TeamColor.WHITE)){
+            throw new GameOverException("Checkmate! Thanks for playing!");
+        }else if(isInStalemate(TeamColor.BLACK)|| isInStalemate(TeamColor.WHITE)){
+            throw new GameOverException("Stalemate! Can't make any more moves");
         }
 
         if(validMoves(move.getStartPosition()) == null

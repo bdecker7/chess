@@ -5,12 +5,14 @@ import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
+import dataaccess.AuthSQL;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.exceptions.DataAccessException;
 import dataaccess.exceptions.UnAuthorizedException;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
+import org.eclipse.jetty.websocket.api.Session;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 
@@ -26,7 +28,11 @@ public class WebSocketRequestHandler {
     AuthDAO authdata;
     GameDAO gamedata;
     UserDAO userdata;
-
+    public WebSocketRequestHandler(UserDAO userMemory, AuthDAO authMemory, GameDAO gameMemory){
+        this.userdata = userMemory;
+        this.gamedata = gameMemory;
+        this.authdata = authMemory;
+    }
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
         try {
@@ -54,9 +60,15 @@ public class WebSocketRequestHandler {
 
     private void saveSession(Integer gameID, Session session) {
         //This should save the session so it keeps track of everything. probably seperate in another class
+        WebsocketSessions savedSession = new WebsocketSessions(gameID,session);
+        savedSession.addSessionToGame(gameID,session);
+
     }
 
-    private void sendMessage(String message, Session session){}
+    private void sendMessage(String message, Session session){
+
+        Repl.notify();
+    }
 
     private void broadcastMessage(Integer gameID, String message, Session notThisSession){}
 

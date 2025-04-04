@@ -4,9 +4,11 @@ import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
 import model.GameData;
+import serverFacade.ServerMessageObserver;
 import serverFacade.WebsocketCommunicator;
 import websocket.commands.UserGameCommand;
 
+import javax.management.Notification;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -22,17 +24,24 @@ public class ClientGame {
     WebsocketCommunicator ws = new WebsocketCommunicator();
     String authTokenGame = "";
     Integer gameIDGame;
+    String serverUrl;
+    ServerMessageObserver notification;
+    Repl repl;
 
     public ClientGame(String serverUrl, Repl repl) {
         this.ws = ws;
         this.board = board;
+        this.serverUrl = serverUrl;
+        this.repl = repl;
     }
 
-    public String eval(String input, String playerColor, String authToken, Integer gameID) throws IOException {
+    public String eval(String input, String playerColor, String authToken, Integer gameID) throws Exception {
         authTokenGame = authToken;
         gameIDGame = gameID;
-//  Check if I call this here
-//        ws.connectClient(authTokenGame,gameIDGame);
+
+// check tis
+        ws.WebSocketFacade(serverUrl,repl);
+        ws.connectClient(authTokenGame,gameIDGame);
 
         try {
             var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
