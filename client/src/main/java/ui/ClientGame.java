@@ -129,8 +129,10 @@ public class ClientGame {
         String columnToString = scanner.nextLine();
         try {
             int row = Integer.parseInt(rowFromString);
+            convertToNumber(columnFromString);
             int col = Integer.parseInt(columnFromString);
             int toRow = Integer.parseInt(rowToString);
+            convertToNumber(columnToString);
             int toCol = Integer.parseInt(columnToString);
 
             ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
@@ -157,6 +159,10 @@ public class ClientGame {
 
         return "make moves";
     }
+
+//    private void convertToNumber(String columnFromString) {
+//        if(columnFromString.equals())
+//    }
 
     private String reDrawBoard(PrintStream out, String playerColor) {
         if(Objects.equals(playerColor, "WHITE")){

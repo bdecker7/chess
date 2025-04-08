@@ -8,11 +8,9 @@ import dataaccess.AuthDAO;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.exceptions.DataAccessException;
-import dataaccess.exceptions.UnAuthorizedException;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.Session;
-import records.ServerMessageType;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
@@ -31,12 +29,12 @@ public class WebSocketRequestHandler {
     AuthDAO authdata;
     GameDAO gamedata;
     UserDAO userdata;
-    WebsocketSessions savedSession = new WebsocketSessions();
+    WebsocketSessions savedSessions = new WebsocketSessions();
     public WebSocketRequestHandler(UserDAO userMemory, AuthDAO authMemory, GameDAO gameMemory){
         this.userdata = userMemory;
         this.gamedata = gameMemory;
         this.authdata = authMemory;
-        this.savedSession = savedSession;
+        this.savedSessions = savedSessions;
     }
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
@@ -48,8 +46,6 @@ public class WebSocketRequestHandler {
                 MakeMoveCommand moveCommand = new Gson().fromJson(message,MakeMoveCommand.class);
                 makeMove(moveCommand,session);
             }
-
-            saveSession(command.getGameID(), session);
 
             switch (command.getCommandType()) {
                 case CONNECT -> connect(command,session);
@@ -63,7 +59,7 @@ public class WebSocketRequestHandler {
 
     private void saveSession(Integer gameID, Session session) {
         //This should save the session so it keeps track of everything. probably seperate in another class
-        savedSession.addSessionToGame(gameID,session);
+        savedSessions.addSessionToGame(gameID,session);
 
     }
 
@@ -71,6 +67,8 @@ public class WebSocketRequestHandler {
         if(type.equals(LOAD_GAME)){
             LoadGameMessage messageToSend = new LoadGameMessage(type,gamedata.getGame(gameId));
             session.getRemote().sendString(new Gson().toJson(messageToSend));
+            //need to fix this load game
+
         }else if(type.equals(NOTIFICATION)){
             NotificationMessage messageToSend = new NotificationMessage(type,message);
             session.getRemote().sendString(new Gson().toJson(messageToSend));
@@ -83,11 +81,17 @@ public class WebSocketRequestHandler {
 
     private void broadcastMessage(ServerMessage.ServerMessageType type ,Integer gameID, String message, Session notThisSession) throws IOException {
 
-        savedSession.removeSessionToGame(gameID,notThisSession);
-        for(Session sesh:savedSession.getSession(gameID)){
-            NotificationMessage messageToSend = new NotificationMessage(type,message);
-            sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+//        savedSessions.removeSessionToGame(gameID,notThisSession);
+        for(Session sesh: savedSessions.getSession(gameID)){
+            if(!sesh.equals(notThisSession)){
+                NotificationMessage messageToSend = new NotificationMessage(type,message);
+                sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+            }
+//            NotificationMessage messageToSend = new NotificationMessage(type,message);
+//            sesh.getRemote().sendString(new Gson().toJson(messageToSend));
         }
+//        savedSessions.addSessionToGame(gameID,notThisSession); // adds it back to the session
+
     }
 
     private void resign(UserGameCommand data, Session session) throws DataAccessException, IOException {
@@ -146,6 +150,7 @@ public class WebSocketRequestHandler {
         try {
             String username = authdata.getAuthUsername(data.getAuthToken());
             GameData currentGame = gamedata.getGame(data.getGameID());
+            saveSession(data.getGameID(), session);
 
             sendMessage(LOAD_GAME, data.getGameID(), session, null);
             //Send a LOAD_GAME message back

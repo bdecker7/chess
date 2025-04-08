@@ -51,8 +51,8 @@ public class WebsocketCommunicator extends Endpoint {
                     ServerMessage command = new Gson().fromJson(message,ServerMessage.class);
                     if(command.getServerMessageType() == LOAD_GAME){
                         LoadGameMessage loadMessage = new Gson().fromJson(message,LoadGameMessage.class);
-                        loadMessage.getServerMessageString();
-                        System.out.println("Load Game");
+                        loadMessage.getServerMessageString(); //this is the game data
+                        System.out.println(">>> Load Game");
                     }else if(command.getServerMessageType() == NOTIFICATION){
                         Notification notification = new Gson().fromJson(message, Notification.class);
                         notificationHandler.notify(notification);
