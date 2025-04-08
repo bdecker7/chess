@@ -3,8 +3,10 @@ package ui;
 import serverFacade.ServerFacade;
 import chess.ChessGame;
 import records.*;
+import serverFacade.WebsocketCommunicator;
 
 import javax.naming.AuthenticationException;
+import java.io.IOException;
 import java.util.*;
 
 public class ClientPostLogin {
@@ -13,9 +15,15 @@ public class ClientPostLogin {
     ServerFacade serverFacade = new ServerFacade(8080);
     String authToken = "";
     public HashMap<Integer,Integer> gameIdList = new HashMap<>();
+    String serverUrl;
+    Repl repl;
+    WebsocketCommunicator ws = new WebsocketCommunicator();
+
 
 
     public ClientPostLogin(String serverUrl, Repl repl) {
+        this.serverUrl = serverUrl;
+        this.repl = repl;
     }
 
     public PostLoginResult evalPost(String input, String preLoginResult) {
@@ -110,6 +118,11 @@ public class ClientPostLogin {
             JoinGameRequest joinRequest = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
             try {
                 if (serverFacade.joinGame(joinRequest, authToken) == 200) {
+                    //check if websocket connection is made here.
+//                    WebsocketCommunicator ws = new WebsocketCommunicator();
+                    ws.WebSocketFacade(serverUrl,repl);
+                    ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
+
                     return new PostLoginResult(color, joinRequest.gameID());
                 } else {
                     return new PostLoginResult("Unable to join game", null);
@@ -136,10 +149,16 @@ public class ClientPostLogin {
                 return new PostLoginResult("Invalid Game number", null);
             }else{
                 gameNumberInteger = gameIdList.get(gameNum);
+
+                ws.WebSocketFacade(serverUrl,repl);
+                ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
+
                 return new PostLoginResult("observer", gameNumberInteger);
             }
         } catch (NumberFormatException e) {
             return new PostLoginResult("Invalid input: Game number must be an integer", null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
 

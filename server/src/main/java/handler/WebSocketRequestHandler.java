@@ -5,7 +5,6 @@ import chess.ChessMove;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.AuthDAO;
-import dataaccess.AuthSQL;
 import dataaccess.GameDAO;
 import dataaccess.UserDAO;
 import dataaccess.exceptions.DataAccessException;
@@ -13,100 +12,148 @@ import dataaccess.exceptions.UnAuthorizedException;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.*;
 import org.eclipse.jetty.websocket.api.Session;
+import records.ServerMessageType;
 import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
-import javax.management.Notification;
-import javax.websocket.*;
-import dataaccess.AuthSQL.*;
-
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+
+import static websocket.messages.ServerMessage.ServerMessageType.*;
 
 @WebSocket
 public class WebSocketRequestHandler {
     AuthDAO authdata;
     GameDAO gamedata;
     UserDAO userdata;
+    WebsocketSessions savedSession = new WebsocketSessions();
     public WebSocketRequestHandler(UserDAO userMemory, AuthDAO authMemory, GameDAO gameMemory){
         this.userdata = userMemory;
         this.gamedata = gameMemory;
         this.authdata = authMemory;
+        this.savedSession = savedSession;
     }
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) {
+    public void onMessage(Session session, String message) throws IOException, DataAccessException {
         try {
             UserGameCommand command = new Gson().fromJson(message,UserGameCommand.class);
-            if(command.getCommandType().equals(UserGameCommand.CommandType.MAKE_MOVE)){
+            // need to make command type convert from string to actual command type
+            UserGameCommand.CommandType commandType = command.getCommandType();
+            if(commandType.equals(UserGameCommand.CommandType.MAKE_MOVE)){
                 MakeMoveCommand moveCommand = new Gson().fromJson(message,MakeMoveCommand.class);
-                makeMove(moveCommand);
+                makeMove(moveCommand,session);
             }
 
             saveSession(command.getGameID(), session);
 
             switch (command.getCommandType()) {
-                case CONNECT -> connect(command);
-                case LEAVE -> leaveGame(command);
-                case RESIGN -> resign(command);
+                case CONNECT -> connect(command,session);
+                case LEAVE -> leaveGame(command,session);
+                case RESIGN -> resign(command,session);
             }
-        } catch (UnAuthorizedException ex) {
-            // Serializes and sends the error message
-//            sendMessage(session.getRemote(), new ErrorMessage("Error: unauthorized"));
         } catch (Exception ex) {
-            ex.printStackTrace();
-//            sendMessage(session.getRemote(), new ErrorMessage("Error: " + ex.getMessage()));
+            sendMessage(ERROR,null,session,"Error:" + ex.getMessage());
         }
     }
 
     private void saveSession(Integer gameID, Session session) {
         //This should save the session so it keeps track of everything. probably seperate in another class
-        WebsocketSessions savedSession = new WebsocketSessions(gameID,session);
         savedSession.addSessionToGame(gameID,session);
 
     }
 
-    private void sendMessage(String message, Session session){
-
-        Repl.notify();
-    }
-
-    private void broadcastMessage(Integer gameID, String message, Session notThisSession){}
-
-    private void resign(UserGameCommand data) throws DataAccessException {
-        gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
-
-        // make new notification
-        //broadcast notification "username resigned"
-    }
-
-    private void leaveGame(UserGameCommand data) throws DataAccessException, SQLException {
-
-        String username = authdata.getAuthUsername(data.getAuthToken());
-        if(Objects.equals(username, gamedata.getGame(data.getGameID()).whiteUsername())){
-            gamedata.updateGame(ChessGame.TeamColor.WHITE,null, data.getGameID());
-        }else if(Objects.equals(username, gamedata.getGame(data.getGameID()).blackUsername())){
-            gamedata.updateGame(ChessGame.TeamColor.BLACK,null, data.getGameID());
+    private void sendMessage(ServerMessage.ServerMessageType type,Integer gameId, Session session, String message) throws IOException, DataAccessException {
+        if(type.equals(LOAD_GAME)){
+            LoadGameMessage messageToSend = new LoadGameMessage(type,gamedata.getGame(gameId));
+            session.getRemote().sendString(new Gson().toJson(messageToSend));
+        }else if(type.equals(NOTIFICATION)){
+            NotificationMessage messageToSend = new NotificationMessage(type,message);
+            session.getRemote().sendString(new Gson().toJson(messageToSend));
+        }else if(type.equals(ERROR)){
+            ErrorMessage messageToSend = new ErrorMessage(type,message);
+            session.getRemote().sendString(new Gson().toJson(messageToSend));
         }
-        // make new notification
-        //broadcast notification here!!!
 
     }
 
-    private void makeMove(MakeMoveCommand data) throws DataAccessException, InvalidMoveException {
-        String username = authdata.getAuthUsername(data.getAuthToken());
-        GameData currentGame = gamedata.getGame(data.getGameID());
-        ChessMove move = new ChessMove(data.getMove().getStartPosition(),data.getMove().getEndPosition(), null);
-        currentGame.game().makeMove(move);
+    private void broadcastMessage(ServerMessage.ServerMessageType type ,Integer gameID, String message, Session notThisSession) throws IOException {
+
+        savedSession.removeSessionToGame(gameID,notThisSession);
+        for(Session sesh:savedSession.getSession(gameID)){
+            NotificationMessage messageToSend = new NotificationMessage(type,message);
+            sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+        }
+    }
+
+    private void resign(UserGameCommand data, Session session) throws DataAccessException, IOException {
+        try {
+            gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
+
+            // make new notification
+            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", session);
+            //broadcast notification "username resigned"
+        } catch (Exception e) {
+            sendMessage(ERROR,null,session,"Error:" + e.getMessage());
+        }
+    }
+
+    private void leaveGame(UserGameCommand data, Session session) throws DataAccessException, SQLException, IOException {
+        try {
+            String username = authdata.getAuthUsername(data.getAuthToken());
+            if (Objects.equals(username, gamedata.getGame(data.getGameID()).whiteUsername())) {
+                gamedata.updateGame(ChessGame.TeamColor.WHITE, null, data.getGameID());
+            } else if (Objects.equals(username, gamedata.getGame(data.getGameID()).blackUsername())) {
+                gamedata.updateGame(ChessGame.TeamColor.BLACK, null, data.getGameID());
+            }
+
+            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " left the game", session);
+
+
+            //broadcast notification here to everyone in the session!!
+        }catch (Exception e){
+            sendMessage(ERROR,null,session,"Error:" + e.getMessage());
+        }
 
     }
 
-    public void connect(UserGameCommand data) throws DataAccessException {
-        String username = authdata.getAuthUsername(data.getAuthToken());
-        GameData currentGame = gamedata.getGame(data.getGameID());
-        // call the websocket connect from here?
+    private void makeMove(MakeMoveCommand data, Session session) throws DataAccessException, InvalidMoveException, IOException {
 
+        try {
+            String username = authdata.getAuthUsername(data.getAuthToken());
+            GameData currentGame = gamedata.getGame(data.getGameID());
+            ChessMove move = new ChessMove(data.getMove().getStartPosition(), data.getMove().getEndPosition(), null);
+            currentGame.game().makeMove(move);
 
+            //Sends LOAD_GAME message back to everybody
+            sendMessage(LOAD_GAME, data.getGameID(), session, null);
 
+            broadcastMessage(LOAD_GAME, data.getGameID(), null, session);
+            //broadcasts NOTIFICATION of what move was made
+            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " moved" + data.getMove(), session);
+            //ifCheck, stalemate, or checkmate, broadcast and client get message.
+        }catch (Exception e) {
+            sendMessage(ERROR,null,session,"Error:" + e.getMessage());
+        }
+
+    }
+
+    public void connect(UserGameCommand data, Session session) throws DataAccessException, IOException {
+        try {
+            String username = authdata.getAuthUsername(data.getAuthToken());
+            GameData currentGame = gamedata.getGame(data.getGameID());
+
+            sendMessage(LOAD_GAME, data.getGameID(), session, null);
+            //Send a LOAD_GAME message back
+            //Broadcast to everyone that this client entered with their color or observing status
+            broadcastMessage(NOTIFICATION, currentGame.gameID(), username + " has joined the game", session);
+        }catch (Exception e){
+            sendMessage(ERROR,null,session,"Error:" + e.getMessage());
+        }
     }
 
 }

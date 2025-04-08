@@ -6,7 +6,12 @@ import chess.ChessPosition;
 import com.google.gson.Gson;
 import records.WebSocketRecords;
 import records.WebSocketRequestMakeMove;
+import websocket.commands.MakeMoveCommand;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
+import websocket.messages.ServerMessage;
 
 import javax.management.Notification;
 
@@ -15,7 +20,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class WebsocketCommunicator extends Endpoint implements ServerMessageObserver {
+import static websocket.messages.ServerMessage.ServerMessageType.*;
+
+public class WebsocketCommunicator extends Endpoint {
 
 
     Session session;
@@ -29,26 +36,36 @@ public class WebsocketCommunicator extends Endpoint implements ServerMessageObse
     public void WebSocketFacade(String url, ServerMessageObserver notificationHandler) throws Exception {
         try {
             url = url.replace("http", "ws");
-            URI socketURI = new URI(url + "/ws");
+            URI socketURI = new URI(url + "ws");
             this.notificationHandler = notificationHandler;
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
 
             //set message handler
-            this.session.addMessageHandler((MessageHandler.Whole<String>) message -> {
-                Notification notification = new Gson().fromJson(message, Notification.class);
-                notificationHandler.notify(notification);
+            this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+                @Override
+                public void onMessage(String message) {
+                    //check which type by deserializing
+                    //deserialize it again.
+                    ServerMessage command = new Gson().fromJson(message,ServerMessage.class);
+                    if(command.getServerMessageType() == LOAD_GAME){
+                        LoadGameMessage loadMessage = new Gson().fromJson(message,LoadGameMessage.class);
+                        loadMessage.getServerMessageString();
+                        System.out.println("Load Game");
+                    }else if(command.getServerMessageType() == NOTIFICATION){
+                        Notification notification = new Gson().fromJson(message, Notification.class);
+                        notificationHandler.notify(notification);
+                    }else if(command.getServerMessageType() == ERROR){
+                        ErrorMessage errorMessage = new Gson().fromJson(message,ErrorMessage.class);
+                        System.out.println(errorMessage); // check this one
+                    }
+
+                }
             });
-        } catch ( URISyntaxException | DeploymentException | IOException ex) {
+            } catch ( URISyntaxException | DeploymentException | IOException ex) {
             throw new Exception(ex.getMessage());
         }
-    }
-
-
-    @Override
-    public void notify(Notification message) {
-
     }
 
     public void connectClient(String authToken, int gameID) throws IOException {

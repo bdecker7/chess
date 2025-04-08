@@ -11,9 +11,8 @@ public class WebsocketSessions {
     Integer gameID;
     Session session;
     HashMap<Integer, Set<Session>> sessionMap = new HashMap<>();
-    public WebsocketSessions(Integer gameID, Session session){
-        this.gameID = gameID;
-        this.session = session;
+    public WebsocketSessions(){
+
     }
 
     public void addSessionToGame(Integer gameID,Session session){
@@ -45,7 +44,7 @@ public class WebsocketSessions {
             sessionMap.put(gameID,finalSessions);}
     }
     public Set<Session> getSession(Integer gameID){
-
+        return sessionMap.getOrDefault(gameID, null);
     }
 
 

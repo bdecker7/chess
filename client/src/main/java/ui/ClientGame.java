@@ -39,11 +39,10 @@ public class ClientGame {
         authTokenGame = authToken;
         gameIDGame = gameID;
 
-// check tis
-        ws.WebSocketFacade(serverUrl,repl);
-        ws.connectClient(authTokenGame,gameIDGame);
-
         try {
+//            ws.WebSocketFacade(serverUrl,repl);
+//            ws.connectClient(authTokenGame,gameIDGame);
+
             var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -64,7 +63,7 @@ public class ClientGame {
 
     }
 
-    private String leaveGame(PrintStream out, String playerColor) throws IOException {
+    private String leaveGame(PrintStream out, String playerColor) throws Exception {
 
 
         System.out.println("Are you sure you want to leave? (yes/no) ");
@@ -72,11 +71,12 @@ public class ClientGame {
         if(Objects.equals(responseString, "yes")){
             if(Objects.equals(playerColor, "WHITE")){
                 //delete the player from this and bring them back to null.
-
+                ws.WebSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
 
             }else if(Objects.equals(playerColor, "BLACK")){
                 //delete the black player from game
+                ws.WebSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
             }
             return "exit";
@@ -110,8 +110,8 @@ public class ClientGame {
         return "Moveable places are highlighted in blue or magenta";
     }
 
-    private String resignGame(PrintStream out) throws IOException {
-
+    private String resignGame(PrintStream out) throws Exception {
+        ws.WebSocketFacade(serverUrl,repl);
         ws.resignWs(authTokenGame,gameIDGame);
 
         return "resign game";
@@ -140,6 +140,7 @@ public class ClientGame {
             ChessMove move = new ChessMove(requestedCurrentPosition,requestedMovingPosition,null);
 
             ws.makeMoveWs(authTokenGame,gameIDGame,move);
+
             if(Objects.equals(playerColor, "WHITE")){
                 board.drawEntireBoardWhiteSide(out,null,null);
 
