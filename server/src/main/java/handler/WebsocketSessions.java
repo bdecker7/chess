@@ -19,11 +19,9 @@ public class WebsocketSessions {
         Set<Session> finalSessions = new HashSet<Session>();
         if(sessionMap.containsKey(gameID)){
             Set<Session> sessions = sessionMap.get(gameID);
-            for(Session individualSession : sessions){
-                finalSessions.add(individualSession);
-                sessionMap.put(gameID,finalSessions);
-            }
-
+            finalSessions.addAll(sessions);
+            finalSessions.add(session);
+            sessionMap.put(gameID,finalSessions);
         }else{
             finalSessions.add(session);
             sessionMap.put(gameID,finalSessions);}
