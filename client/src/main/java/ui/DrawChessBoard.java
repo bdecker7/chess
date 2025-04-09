@@ -13,7 +13,6 @@ public class DrawChessBoard {
 
     private static final int HEADERLENGTH = 10;
     private static final int numOfGameRows = 8;
-    private static final boolean isNewGame = false;
     public static boolean highlightRequest = false;
     public static ChessGame board;
 //    public PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);

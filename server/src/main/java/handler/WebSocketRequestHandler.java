@@ -81,26 +81,21 @@ public class WebSocketRequestHandler {
 
     private void broadcastMessage(ServerMessage.ServerMessageType type ,Integer gameID, String message, Session notThisSession) throws IOException {
 
-//        savedSessions.removeSessionToGame(gameID,notThisSession);
         for(Session sesh: savedSessions.getSession(gameID)){
             if(!sesh.equals(notThisSession)){
                 NotificationMessage messageToSend = new NotificationMessage(type,message);
                 sesh.getRemote().sendString(new Gson().toJson(messageToSend));
             }
-//            NotificationMessage messageToSend = new NotificationMessage(type,message);
-//            sesh.getRemote().sendString(new Gson().toJson(messageToSend));
-        }
-//        savedSessions.addSessionToGame(gameID,notThisSession); // adds it back to the session
 
+        }
     }
 
     private void resign(UserGameCommand data, Session session) throws DataAccessException, IOException {
         try {
             gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
 
-
             // make new notification
-            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", session);
+            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", null);
             //broadcast notification "username resigned"
         } catch (Exception e) {
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());

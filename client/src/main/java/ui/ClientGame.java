@@ -27,7 +27,7 @@ public class ClientGame {
 
     public ClientGame(String serverUrl, Repl repl) {
         this.ws = ws;
-        this.board = board;
+        this.gameBoard = gameBoard;
         this.serverUrl = serverUrl;
         this.repl = repl;
     }
@@ -37,8 +37,6 @@ public class ClientGame {
         gameIDGame = gameID;
 
         try {
-//            ws.WebSocketFacade(serverUrl,repl);
-//            ws.connectClient(authTokenGame,gameIDGame);
 
             var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
             var tokens = input.toLowerCase().split(" ");
@@ -68,15 +66,15 @@ public class ClientGame {
         if(Objects.equals(responseString, "yes")){
             if(Objects.equals(playerColor, "WHITE")){
                 //delete the player from this and bring them back to null.
-                ws.WebSocketFacade(serverUrl,repl);
+                ws.webSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
 
             }else if(Objects.equals(playerColor, "BLACK")){
                 //delete the black player from game
-                ws.WebSocketFacade(serverUrl,repl);
+                ws.webSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
             }else if(Objects.equals(playerColor, "observer")){
-                ws.WebSocketFacade(serverUrl,repl);
+                ws.webSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
             }
             return "exit";
@@ -112,7 +110,7 @@ public class ClientGame {
 
     private String resignGame(PrintStream out, String playerColor) throws Exception {
         if(!playerColor.equals("observer")){
-            ws.WebSocketFacade(serverUrl,repl);
+            ws.webSocketFacade(serverUrl,repl);
             ws.resignWs(authTokenGame,gameIDGame);
             return "resign game";
         }
@@ -145,14 +143,19 @@ public class ClientGame {
                 // call the Websocket communicator make move function here to make the move
                 ChessMove move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, null);
 
+                ws.webSocketFacade(serverUrl,repl);
                 ws.makeMoveWs(authTokenGame, gameIDGame, move);
+//                board = ws.gameData.game();
 
+                // need to check if move is valid.
                 if (Objects.equals(playerColor, "WHITE")) {
-                    board.drawEntireBoardWhiteSide(out, null, null);
-
+//                    board.drawEntireBoardWhiteSide(out, requestedMovingPosition, requestedCurrentPosition);
+//                    board = new DrawChessBoard(ws.gameData.game());
+                    board.drawEntireBoardWhiteSide(out, null,null);
                 } else if (Objects.equals(playerColor, "BLACK")) {
-                    board.drawEntireBoardBlackSide(out, null, null);
-
+//                    board.drawEntireBoardBlackSide(out, requestedMovingPosition, requestedCurrentPosition);
+//                    board = new DrawChessBoard(ws.gameData.game());
+                    board.drawEntireBoardWhiteSide(out, null,null);
                 }
 
             } catch (NumberFormatException e) {

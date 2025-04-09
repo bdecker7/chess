@@ -1,6 +1,6 @@
 package records;
 
-public record WebSocketRecords(websocket.commands.UserGameCommand.CommandType type, String authToken, int gameID) {
+public record WebSocketRecords(websocket.commands.UserGameCommand.CommandType commandType, String authToken, int gameID) {
     public enum Type {
         LEAVE,
         RESIGN,

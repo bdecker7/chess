@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import serverFacade.ServerMessageObserver;
 
 import javax.management.Notification;
@@ -16,6 +17,7 @@ public class Repl implements ServerMessageObserver {
     private PostLoginResult postResult = null;
     private String playerColor = null;
     private String gameResult = null;
+    public ChessGame game;
 
     public Repl(String serverUrl) {
         clientPreLogin = new ClientPreLogin(serverUrl, this);
@@ -77,7 +79,6 @@ public class Repl implements ServerMessageObserver {
                     else if(playerColor == null || Objects.equals(gameResult, "observer")){
                         clientGame.drawChessBoard("observer");
                     }else{
-
                         status = 2;
 //                        clientGame.drawChessBoard(playerColor.toString());
                     }

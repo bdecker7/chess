@@ -12,10 +12,14 @@ import java.util.Collection;
 public class ChessGame {
     ChessBoard gameBoard = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
-    Boolean isResigned = false;
+    public Boolean isResigned = false;
 
     public ChessGame() {
         gameBoard.resetBoard();
+    }
+
+    public Boolean getIsResigned(){
+        return isResigned;
     }
 
     /**

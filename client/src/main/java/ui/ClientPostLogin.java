@@ -6,7 +6,6 @@ import records.*;
 import serverFacade.WebsocketCommunicator;
 
 import javax.naming.AuthenticationException;
-import java.io.IOException;
 import java.util.*;
 
 public class ClientPostLogin {
@@ -57,7 +56,7 @@ public class ClientPostLogin {
         CreateGameResult result = serverFacade.createGame(request);
 
         if(result != null){
-            System.out.println("Game successfully created!");
+//            System.out.println("Game successfully created!");
             return new PostLoginResult("Successful Game Creation", null);
         }
         return new PostLoginResult("not successful", null);
@@ -87,7 +86,6 @@ public class ClientPostLogin {
     private PostLoginResult joinGame(String[] params) {
 
         if(gameIdList.isEmpty()){
-
             return new PostLoginResult("Check list of Games first", null);
         }
 
@@ -120,7 +118,7 @@ public class ClientPostLogin {
                 if (serverFacade.joinGame(joinRequest, authToken) == 200) {
                     //check if websocket connection is made here.
 //                    WebsocketCommunicator ws = new WebsocketCommunicator();
-                    ws.WebSocketFacade(serverUrl,repl);
+                    ws.webSocketFacade(serverUrl,repl);
                     ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
 
                     return new PostLoginResult(color, joinRequest.gameID());
@@ -150,7 +148,7 @@ public class ClientPostLogin {
             }else{
                 gameNumberInteger = gameIdList.get(gameNum);
 
-                ws.WebSocketFacade(serverUrl,repl);
+                ws.webSocketFacade(serverUrl,repl);
                 ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
 
                 return new PostLoginResult("observer", gameNumberInteger);
