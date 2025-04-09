@@ -120,9 +120,9 @@ public class ClientGame {
         return "resign game";
     }
 
-    private String makeMove(PrintStream out, String playerColor) {
-        if(!playerColor.equals("observer")) {
+    private String makeMove(PrintStream out, String playerColor) throws Exception {
 
+        if(!playerColor.equals("observer")) {
             System.out.println("From Row: ");
             String rowFromString = scanner.nextLine();
             System.out.println("From Column: ");
@@ -164,7 +164,7 @@ public class ClientGame {
 
             return "make moves";
         }else{
-            return "observer can't make moves";
+            throw new Exception("observer can't make moves");
         }
     }
 

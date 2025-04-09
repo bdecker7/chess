@@ -37,8 +37,10 @@ public class WebsocketSessions {
                 }
             }
             sessionMap.put(gameID,finalSessions);
-        }else{
-            sessionMap.put(gameID,finalSessions);}
+        }else {
+            sessionMap.remove(gameID); //check this functionality
+        }
+//            sessionMap.put(gameID,finalSessions);}
     }
     public Set<Session> getSession(Integer gameID){
         return sessionMap.get(gameID);

@@ -98,6 +98,7 @@ public class WebSocketRequestHandler {
         try {
             gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
 
+
             // make new notification
             broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", session);
             //broadcast notification "username resigned"
@@ -114,7 +115,7 @@ public class WebSocketRequestHandler {
             } else if (Objects.equals(username, gamedata.getGame(data.getGameID()).blackUsername())) {
                 gamedata.updateGame(ChessGame.TeamColor.BLACK, null, data.getGameID());
             }
-
+            savedSessions.removeSessionToGame(data.getGameID(),session);
             broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " left the game", session);
 
 
