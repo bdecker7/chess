@@ -3,12 +3,9 @@ package ui;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
-import model.GameData;
 import serverFacade.ServerMessageObserver;
 import serverFacade.WebsocketCommunicator;
-import websocket.commands.UserGameCommand;
 
-import javax.management.Notification;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
@@ -51,7 +48,7 @@ public class ClientGame {
                 case "1" -> reDrawBoard(out, playerColor);
                 case "2" -> leaveGame(out,playerColor);
                 case "3" -> makeMove(out, playerColor);
-                case "4" -> resignGame(out);
+                case "4" -> resignGame(out,playerColor);
                 case "5" -> highlightLegalMoves(playerColor,out);
                 case "6" -> help();
 
@@ -113,11 +110,13 @@ public class ClientGame {
         return "Moveable places are highlighted in blue or magenta";
     }
 
-    private String resignGame(PrintStream out) throws Exception {
-        ws.WebSocketFacade(serverUrl,repl);
-        ws.resignWs(authTokenGame,gameIDGame);
-
-        return "resign game";
+    private String resignGame(PrintStream out, String playerColor) throws Exception {
+        if(!playerColor.equals("observer")){
+            ws.WebSocketFacade(serverUrl,repl);
+            ws.resignWs(authTokenGame,gameIDGame);
+            return "resign game";
+        }
+        return "observer can't resign game";
     }
 
     private String makeMove(PrintStream out, String playerColor) throws Exception {
