@@ -127,8 +127,6 @@ public class WebSocketRequestHandler {
             savedSessions.removeSessionToGame(data.getGameID(),session);
             broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " left the game", session);
 
-
-            //broadcast notification here to everyone in the session!!
         }catch (Exception e){
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());
         }
@@ -156,13 +154,10 @@ public class WebSocketRequestHandler {
                 ChessMove move = new ChessMove(data.getMove().getStartPosition(), data.getMove().getEndPosition(), null);
                 currentGame.game().makeMove(move);
 
-// implement a new method for this to update the game in the database
                 gamedata.updateAfterMove(data.getGameID(), currentGame.game());
                 //Sends LOAD_GAME message back to everybody
                 sendMessage(LOAD_GAME, data.getGameID(), session, null);
-
                 broadcastMessage(LOAD_GAME, data.getGameID(), null, session);
-                //broadcasts NOTIFICATION of what move was made
                 broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " moved" + data.getMove(), session);
                 //ifCheck, stalemate, or checkmate, broadcast and client get message.
             }else{
