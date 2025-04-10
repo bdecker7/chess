@@ -63,7 +63,8 @@ public class WebSocketRequestHandler {
 
     }
 
-    private void sendMessage(ServerMessage.ServerMessageType type,Integer gameId, Session session, String message) throws IOException, DataAccessException {
+    private void sendMessage(ServerMessage.ServerMessageType type,Integer gameId, Session session, String message)
+            throws IOException, DataAccessException {
         if(type.equals(LOAD_GAME)){
             LoadGameMessage messageToSend = new LoadGameMessage(type,gamedata.getGame(gameId));
             session.getRemote().sendString(new Gson().toJson(messageToSend));
@@ -79,7 +80,9 @@ public class WebSocketRequestHandler {
 
     }
 
-    private void broadcastMessage(ServerMessage.ServerMessageType type ,Integer gameID, String message, Session notThisSession) throws IOException, DataAccessException {
+    private void broadcastMessage(ServerMessage.ServerMessageType type ,
+                                  Integer gameID, String message, Session notThisSession)
+            throws IOException, DataAccessException {
 
         for(Session sesh: savedSessions.getSession(gameID)){
             if(type.equals(LOAD_GAME)){

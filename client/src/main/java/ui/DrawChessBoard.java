@@ -84,57 +84,63 @@ public class DrawChessBoard {
 
     private void drawOddRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
-            String checkrow = checkRow(out, rowNumber,column, color);
-            if(column%2 == 0) {
-                int actualColumn;
-                if(Objects.equals(color, "black")){
-                    actualColumn = mirroredColumn(column)-1;
-
-                }else{
-                    actualColumn = column;
-                }
-                if(requestedCurrentPosition != null){
-                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
-                        out.print(SET_BG_COLOR_BLUE);
-                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
-                        out.print(SET_BG_COLOR_WHITE);
-                    }else{
-                        out.print(SET_BG_COLOR_BLACK);
-                    }
-                } else{
-                    out.print(SET_BG_COLOR_BLACK);
-                }
-                out.print(checkrow);
-            }else{
-                int actualColumn;
-                if(Objects.equals(color, "black")){
-                    actualColumn = mirroredColumn(column)-1;
-                }else{
-                    actualColumn = column;
-                }
-
-                if(requestedCurrentPosition != null){
-                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
-                        out.print(SET_BG_COLOR_MAGENTA);
-                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
-                        out.print(SET_BG_COLOR_WHITE);
-                    }else{
-                        out.print(SET_BG_COLOR_LIGHT_GREY);
-                    }
-                }else{
-                    out.print(SET_BG_COLOR_LIGHT_GREY);
-                }
-                out.print(checkrow);
-            }
-
-        }
+        placeRows(out, rowNumber, requestedCurrentPosition, color);
         placeOneSquare(out,SET_BG_COLOR_DARK_GREEN,SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
+
+    private void placeRows(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, String color) {
+        for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
+            String checkrow = checkRow(out, rowNumber,column, color);
+            if(column%2 == 0) {
+                int actualColumn;
+                if(Objects.equals(color, "black")){
+                    actualColumn = mirroredColumn(column)-1;
+
+                }else{
+                    actualColumn = column;
+                }
+
+                blueFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
+
+            }else{
+                int actualColumn;
+                if(Objects.equals(color, "black")){
+                    actualColumn = mirroredColumn(column)-1;
+                }else{
+                    actualColumn = column;
+                }
+                magentaFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
+            }
+
+        }
+    }
+
+    private void blueFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
+        if(requestedCurrentPosition != null){
+            if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("highlighted")) {
+                out.print(SET_BG_COLOR_BLUE);
+            }else if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("requested piece")){
+                out.print(SET_BG_COLOR_WHITE);
+            }else{
+                out.print(SET_BG_COLOR_BLACK);
+            }
+        } else{
+            out.print(SET_BG_COLOR_BLACK);
+        }
+        out.print(checkrow);
+    }
+
     private void drawEvenRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
+        placeRowsEven(out, rowNumber, requestedCurrentPosition, color);
+        placeOneSquare(out,SET_BG_COLOR_DARK_GREEN,SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
+        out.print(SET_BG_COLOR_BLACK);
+        out.println();
+    }
+
+    private void placeRowsEven(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, String color) {
         for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
@@ -145,19 +151,7 @@ public class DrawChessBoard {
                     actualColumn = column;
                 }
 
-                if(requestedCurrentPosition != null){
-                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
-                        out.print(SET_BG_COLOR_MAGENTA);
-                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
-                        out.print(SET_BG_COLOR_WHITE);
-                    }else{
-                        out.print(SET_BG_COLOR_LIGHT_GREY);
-                    }
-
-                }else{
-                    out.print(SET_BG_COLOR_LIGHT_GREY);
-                }
-                out.print(checkrow);
+                magentaFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
 
             }else{
                 int actualColumn;
@@ -166,23 +160,25 @@ public class DrawChessBoard {
                 }else{
                     actualColumn = column;
                 }
-                if(requestedCurrentPosition != null){
-                    if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("highlighted")) {
-                        out.print(SET_BG_COLOR_BLUE);
-                    }else if(isHighlightPlayerMoves(rowNumber,actualColumn,requestedCurrentPosition).equals("requested piece")){
-                        out.print(SET_BG_COLOR_WHITE);
-                    }else{
-                        out.print(SET_BG_COLOR_BLACK);
-                    }
-                }else {
-                    out.print(SET_BG_COLOR_BLACK);
-                }
-                out.print(checkrow);
+                blueFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
             }
         }
-        placeOneSquare(out,SET_BG_COLOR_DARK_GREEN,SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        out.print(SET_BG_COLOR_BLACK);
-        out.println();
+    }
+
+    private void magentaFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
+        if(requestedCurrentPosition != null){
+            if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("highlighted")) {
+                out.print(SET_BG_COLOR_MAGENTA);
+            }else if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("requested piece")){
+                out.print(SET_BG_COLOR_WHITE);
+            }else{
+                out.print(SET_BG_COLOR_LIGHT_GREY);
+            }
+
+        }else{
+            out.print(SET_BG_COLOR_LIGHT_GREY);
+        }
+        out.print(checkrow);
     }
 
     private static String checkRow(PrintStream out, Integer rowNumber, int column, String color) {
