@@ -164,4 +164,12 @@ public class GameSQL implements GameDAO{
             throw new SQLERROR(String.format("unable to update database: %s, %s", statement, e.getMessage()));
         }
     }
+
+    @Override
+    public void updateAfterMove(int gameID, ChessGame game) throws SQLException {
+
+        var statement = "UPDATE gameData SET gameObject = ? WHERE gameID = ?";
+        var gameDataJson = new Gson().toJson(game);
+        DatabaseManager.executeUpdate(statement, gameDataJson, gameID);
+    }
 }

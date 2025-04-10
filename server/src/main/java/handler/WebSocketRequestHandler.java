@@ -103,7 +103,10 @@ public class WebSocketRequestHandler {
                 if(gamedata.getGame(data.getGameID()).game().isResigned) {
                     throw new DataAccessException("game already resigned");
                 }
-                gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
+                ChessGame newer = gamedata.getGame(data.getGameID()).game();
+                newer.changeResignedStatus();
+                gamedata.updateAfterMove(data.getGameID(), newer);
+
                 broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", null);
             } else{
                 throw new DataAccessException("observer can't resign game");
@@ -137,8 +140,14 @@ public class WebSocketRequestHandler {
         try {
             String username = authdata.getAuthUsername(data.getAuthToken());
             GameData currentGame = gamedata.getGame(data.getGameID());
-            if(currentGame.game().isResigned || currentGame.game().isCheckmate || currentGame.game().isStalemate){
-                throw new InvalidMoveException("Game is over. No more moves can be made");
+            if(currentGame.game().isResigned){
+                throw new InvalidMoveException("Game is resigned. No more moves can be made");
+            }else if(currentGame.game().isInCheckmate(ChessGame.TeamColor.WHITE)
+                    || currentGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
+                throw new InvalidMoveException("Game is in checkmate. No more moves can be made");
+            }else if(currentGame.game().isInStalemate(ChessGame.TeamColor.BLACK)
+                    ||currentGame.game().isInStalemate(ChessGame.TeamColor.WHITE)){
+                throw new InvalidMoveException("Game is in stalemate. No more moves can be made");
             }
             else if((currentGame.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)
                     && currentGame.whiteUsername().equals(username))
@@ -148,7 +157,7 @@ public class WebSocketRequestHandler {
                 currentGame.game().makeMove(move);
 
 // implement a new method for this to update the game in the database
-                //                gamedata.updateMovedGame()
+                gamedata.updateAfterMove(data.getGameID(), currentGame.game());
                 //Sends LOAD_GAME message back to everybody
                 sendMessage(LOAD_GAME, data.getGameID(), session, null);
 

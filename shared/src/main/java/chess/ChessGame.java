@@ -12,7 +12,7 @@ import java.util.Collection;
 public class ChessGame {
     ChessBoard gameBoard = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
-    public Boolean isResigned = false;
+    public Boolean isResigned= false;
     public Boolean isCheckmate = false;
     public Boolean isStalemate = false;
 
@@ -108,8 +108,8 @@ public class ChessGame {
     }
 
 
-    public void changeResignedStatus(boolean choice){
-        isResigned = choice;
+    public void changeResignedStatus(){
+        isResigned = true;
     }
     /**
      * Makes a move in a chess game

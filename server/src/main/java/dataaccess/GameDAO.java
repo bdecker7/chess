@@ -16,5 +16,6 @@ public interface GameDAO {
     Collection<GameData> listGames() throws DataAccessException;
     void updateGame(ChessGame.TeamColor colorToUpdate,String usernameToInput,int gameID) throws SQLException;
     void clear();
+    void updateAfterMove(int gameID, ChessGame game) throws SQLException;
 
 }

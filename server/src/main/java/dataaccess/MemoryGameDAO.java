@@ -59,4 +59,9 @@ public class MemoryGameDAO implements GameDAO{
         allGameDataStorage.clear();
     }
 
+    @Override
+    public void updateAfterMove(int gameID, ChessGame game) {
+
+    }
+
 }
