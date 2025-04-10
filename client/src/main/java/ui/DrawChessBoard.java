@@ -73,23 +73,12 @@ public class DrawChessBoard {
         for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
-                int actualColumn;
-                if(Objects.equals(color, "black")){
-                    actualColumn = mirroredColumn(column)-1;
-
-                }else{
-                    actualColumn = column;
-                }
+                int actualColumn = checkBlack(color, column);
 
                 blueFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
 
             }else{
-                int actualColumn;
-                if(Objects.equals(color, "black")){
-                    actualColumn = mirroredColumn(column)-1;
-                }else{
-                    actualColumn = column;
-                }
+                int actualColumn = checkBlack(color, column);
                 magentaFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
             }
 
@@ -123,25 +112,24 @@ public class DrawChessBoard {
         for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
-                int actualColumn;
-                if(Objects.equals(color, "black")){
-                    actualColumn = mirroredColumn(column)-1;
-                }else{
-                    actualColumn = column;
-                }
-
+                int actualColumn = checkBlack(color, column);
                 magentaFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
 
             }else{
-                int actualColumn;
-                if(Objects.equals(color, "black")){
-                    actualColumn = mirroredColumn(column)-1;
-                }else{
-                    actualColumn = column;
-                }
+                int actualColumn = checkBlack(color, column);
                 blueFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
             }
         }
+    }
+
+    private static int checkBlack(String color, int column) {
+        int actualColumn;
+        if(Objects.equals(color, "black")){
+            actualColumn = mirroredColumn(column)-1;
+        }else{
+            actualColumn = column;
+        }
+        return actualColumn;
     }
 
     private void magentaFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
