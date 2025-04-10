@@ -97,7 +97,7 @@ public class Repl implements ServerMessageObserver {
 
     @Override
     public void notify(String message) {
-        System.out.println(">>>" + message);
+        System.out.println(">>> " + message);
 
     }
 }

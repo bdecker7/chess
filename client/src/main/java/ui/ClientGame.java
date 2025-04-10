@@ -16,8 +16,8 @@ import java.util.Scanner;
 public class ClientGame {
 
     Scanner scanner = new Scanner(System.in);
-    public ChessGame gameBoard = new ChessGame(); //maybe it is because I'm calling a new game?
-    public DrawChessBoard board = new DrawChessBoard(gameBoard); // if I want to change the game I might have to declare this somewhere else
+    public ChessGame gameBoard; //maybe it is because I'm calling a new game?
+    public DrawChessBoard board; // if I want to change the game I might have to declare this somewhere else
     WebsocketCommunicator ws = new WebsocketCommunicator(gameBoard);
     String authTokenGame = "";
     Integer gameIDGame;
@@ -95,13 +95,14 @@ public class ClientGame {
             int row = Integer.parseInt(rowString);
             int col = Integer.parseInt(columnString);
             ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
-            board.changeHighlightRequest(true);
+            board.changeHighlightRequest(true,requestedCurrentPosition);
             if(Objects.equals(playerColor, "WHITE")){
-                board.drawEntireBoardWhiteSide(out,null,requestedCurrentPosition);
-                board.changeHighlightRequest(false);
+                board.drawEntireBoardWhiteSideHighlighted(out,gameBoard,requestedCurrentPosition);
+                board.changeHighlightRequest(false, null);
             }else if(Objects.equals(playerColor, "BLACK")){
-                board.drawEntireBoardBlackSide(out,null,requestedCurrentPosition);
-                board.changeHighlightRequest(false);
+
+//                board.drawEntireBoardBlackSideHighlighted(out,gameBoard,requestedCurrentPosition);
+                board.changeHighlightRequest(false, null);
             }
 
         } catch (NumberFormatException e) {
@@ -152,13 +153,12 @@ public class ClientGame {
                 ws.makeMoveWs(authTokenGame, gameIDGame, move);
 
                 if (Objects.equals(playerColor, "WHITE")) {
-//                    board.drawEntireBoardWhiteSide(out, requestedMovingPosition, requestedCurrentPosition);
-//                    board = new DrawChessBoard(ws.gameData.game());
-                    board.drawEntireBoardWhiteSide(out, null,null);
+                    DrawChessBoard board1 = new DrawChessBoard(gameBoard);
+                    board1.drawEntireBoardWhiteSide(out, gameBoard.getBoard());
                 } else if (Objects.equals(playerColor, "BLACK")) {
-//                    board.drawEntireBoardBlackSide(out, requestedMovingPosition, requestedCurrentPosition);
-//                    board = new DrawChessBoard(ws.gameData.game());
-                    board.drawEntireBoardWhiteSide(out, null,null);
+//                    board.drawEntireBoardWhiteSide(out, null,null);
+                    DrawChessBoard board1 = new DrawChessBoard(gameBoard);
+                    board1.drawEntireBoardWhiteSide(out, gameBoard.getBoard());
                 }
 
             } catch (NumberFormatException e) {
@@ -197,11 +197,11 @@ public class ClientGame {
 
     private String reDrawBoard(PrintStream out, String playerColor) {
         if(Objects.equals(playerColor, "WHITE")){
-            board.drawEntireBoardWhiteSide(out,null,null);
+            board.drawEntireBoardWhiteSide(out,gameBoard.getBoard());
         }else if(Objects.equals(playerColor, "BLACK")){
-            board.drawEntireBoardBlackSide(out,null,null);
+            board.drawEntireBoardBlackSide(out,gameBoard.getBoard());
         }else{
-            board.drawEntireBoardWhiteSide(out,null,null);
+            board.drawEntireBoardWhiteSide(out,gameBoard.getBoard());
         }
 
         return "Press 'Enter' for game menu";
@@ -212,7 +212,7 @@ public class ClientGame {
         switch (color) {
 //            case "WHITE" -> whiteJoin(out);
 //            case "BLACK" -> DrawChessBoard.drawEntireBoardBlackSide(out, null, null);
-            case "observer" -> board.drawEntireBoardWhiteSide(out, null, null);
+            case "observer" -> board.drawEntireBoardWhiteSide(out, gameBoard.getBoard());
             case null, default -> System.out.println("can't access game");
         }
 

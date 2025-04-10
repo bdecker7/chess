@@ -3,6 +3,7 @@ package ui;
 import chess.*;
 
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -14,19 +15,41 @@ public class DrawChessBoard {
     private static final int HEADERLENGTH = 10;
     private static final int NUM_OF_GAME_ROWS = 8;
     public static boolean highlightRequest = false;
-    public static ChessGame board;
+    public static ChessGame boardGame;
+    public ChessPosition selectedPosition;
 
+    public static void main(String[] args) throws InvalidMoveException {
+            var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+
+            //displays white pov
+            ChessPosition positionStart = new ChessPosition(2,2);
+            ChessPosition positionEnd = new ChessPosition(4,2);
+            ChessMove move = new ChessMove(positionStart,positionEnd,null);
+            ChessGame testBoard = new ChessGame();
+            testBoard.makeMove(move);
+
+            ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+
+            DrawChessBoard drawTest = new DrawChessBoard(testBoard);
+
+            drawTest.drawEntireBoardWhiteSide(out,testBoard.getBoard());
+            out.println();
+            //displays black pov
+            drawTest.drawEntireBoardBlackSide(out,testBoard.getBoard());
+
+        }
     public DrawChessBoard(ChessGame board){
-        this.board = board;
+        this.boardGame = board;
     }
 
-    public void changeHighlightRequest(boolean request){
+    public void changeHighlightRequest(boolean request, ChessPosition position){
         highlightRequest = request;
+        selectedPosition = position;
     }
     public String isHighlightPlayerMoves(Integer row, Integer column, ChessPosition requestedCurrentPosition){
 
         ChessPosition position = new ChessPosition(row,column+1);
-        Collection<ChessMove> movesList = board.validMoves(requestedCurrentPosition);
+        Collection<ChessMove> movesList = boardGame.validMoves(requestedCurrentPosition);
 
         if (requestedCurrentPosition.equals(position)){
             return "requested piece";
@@ -39,54 +62,54 @@ public class DrawChessBoard {
         return "not highlighted";
     }
 
-    public void drawBlankPlayablePartWhite(PrintStream out, ChessPosition playerMove, ChessPosition requestedCurrentPosition){
+    public void drawBlankPlayablePartWhite(PrintStream out, ChessBoard gameBoard){
         String color = "white";
         for(int i = NUM_OF_GAME_ROWS; i > 0 ; i--){
             if(i % 2 == 0){
-                drawEvenRow(out, i,playerMove,requestedCurrentPosition,color) ;
+                drawEvenRow(out, i,gameBoard,color) ;
             }else{
-                drawOddRow(out,i,playerMove,requestedCurrentPosition,color);
+                drawOddRow(out,i,gameBoard,color);
             }
         }
     }
 
-    public void drawBlankPlayablePartBlack(PrintStream out,ChessPosition playerMove, ChessPosition requestedCurrentPosition){
+    public void drawBlankPlayablePartBlack(PrintStream out,ChessBoard gameBoard){
         String color = "black";
         for(int i = 1; i < NUM_OF_GAME_ROWS + 1 ; i++){
             if(i % 2 == 0){
-                drawOddRow(out, i ,playerMove,requestedCurrentPosition,color) ;
+                drawOddRow(out, i ,gameBoard,color) ;
             }else{
-                drawEvenRow(out, i ,playerMove, requestedCurrentPosition,color);
+                drawEvenRow(out, i , gameBoard,color);
             }
         }
     }
 
-    private void drawOddRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
+    private void drawOddRow(PrintStream out, Integer rowNumber, ChessBoard gameBoard, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        placeRows(out, rowNumber, requestedCurrentPosition, color);
+        placeRows(out, rowNumber, gameBoard, color);
         placeOneSquare(out,SET_BG_COLOR_DARK_GREEN,SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
 
-    private void placeRows(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, String color) {
+    private void placeRows(PrintStream out, Integer rowNumber, ChessBoard gameBoard, String color) {
         for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
-            String checkrow = checkRow(out, rowNumber,column, color);
+            String checkrow = checkRow(out, rowNumber,column, color, gameBoard);
             if(column%2 == 0) {
                 int actualColumn = checkBlack(color, column);
 
-                blueFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
+                blueFunction(out, rowNumber,null, actualColumn, checkrow);
 
             }else{
                 int actualColumn = checkBlack(color, column);
-                magentaFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
+                magentaFunction(out, rowNumber, null, actualColumn, checkrow);
             }
 
         }
     }
 
     private void blueFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
-        if(requestedCurrentPosition != null){
+        if(selectedPosition != null){
             if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("highlighted")) {
                 out.print(SET_BG_COLOR_BLUE);
             }else if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("requested piece")){
@@ -100,24 +123,24 @@ public class DrawChessBoard {
         out.print(checkrow);
     }
 
-    private void drawEvenRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
+    private void drawEvenRow(PrintStream out, Integer rowNumber, ChessBoard gameBoard, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        placeRowsEven(out, rowNumber, requestedCurrentPosition, color);
+        placeRowsEven(out, rowNumber, gameBoard, color);
         placeOneSquare(out,SET_BG_COLOR_DARK_GREEN,SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
         out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
 
-    private void placeRowsEven(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, String color) {
+    private void placeRowsEven(PrintStream out, Integer rowNumber, ChessBoard gameBoard, String color) {
         for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
-            String checkrow = checkRow(out, rowNumber,column, color);
+            String checkrow = checkRow(out, rowNumber,column, color,gameBoard);
             if(column%2 == 0) {
                 int actualColumn = checkBlack(color, column);
-                magentaFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
+                magentaFunction(out, rowNumber,null, actualColumn, checkrow);   //check this for highlighted.
 
             }else{
                 int actualColumn = checkBlack(color, column);
-                blueFunction(out, rowNumber, requestedCurrentPosition, actualColumn, checkrow);
+                blueFunction(out, rowNumber, null, actualColumn, checkrow);
             }
         }
     }
@@ -133,7 +156,7 @@ public class DrawChessBoard {
     }
 
     private void magentaFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
-        if(requestedCurrentPosition != null){
+        if(selectedPosition != null){
             if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("highlighted")) {
                 out.print(SET_BG_COLOR_MAGENTA);
             }else if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("requested piece")){
@@ -148,12 +171,11 @@ public class DrawChessBoard {
         out.print(checkrow);
     }
 
-    private static String checkRow(PrintStream out, Integer rowNumber, int column, String color) {
+    private static String checkRow(PrintStream out, Integer rowNumber, int column, String color, ChessBoard gameBoard) {
         if(Objects.equals(color, "black")){
             column = mirroredColumn(column);
-
             ChessPosition position = new ChessPosition(rowNumber,column);
-            ChessPiece piece = board.getBoard().getPiece(position);
+            ChessPiece piece = gameBoard.getPiece(position);
             String spaces = getPieceString(out, piece);
             if (spaces != null) {
                 return spaces;
@@ -161,9 +183,8 @@ public class DrawChessBoard {
 
         }
         else if(Objects.equals(color, "white")){
-
             ChessPosition position = new ChessPosition(rowNumber,column+1);
-            ChessPiece piece = board.getBoard().getPiece(position);
+            ChessPiece piece = gameBoard.getPiece(position);
             String spaces = getPieceString(out, piece);
             if (spaces != null) {
                 return spaces;
@@ -252,25 +273,26 @@ public class DrawChessBoard {
 
 
 
-    public void drawEntireBoardWhiteSide(PrintStream out, ChessPosition movingPosition, ChessPosition requestedCurrentPosition){
+    public void drawEntireBoardWhiteSide(PrintStream out, ChessBoard gameBoard){
 
         out.print(ERASE_SCREEN);
 
         String[] headers = {"   "," a ", " b ", " c "," d "," e "," f "," g "," h ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartWhite(out,movingPosition,requestedCurrentPosition);
+        drawBlankPlayablePartWhite(out,gameBoard);
+//        drawBlankPlayablePartWhite(out,movingPosition,requestedCurrentPosition);
 
         drawHeaders(out, headers);
 
     }
-    public void drawEntireBoardBlackSide(PrintStream out, ChessPosition movingPosition, ChessPosition requestedCurrentPosition){
+    public void drawEntireBoardBlackSide(PrintStream out, ChessBoard gameBoard){
 
         out.print(ERASE_SCREEN);
         String[] headers = {"   "," h ", " g ", " f "," e "," d "," c "," b "," a ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartBlack(out,movingPosition, requestedCurrentPosition);
+        drawBlankPlayablePartBlack(out,gameBoard);
 
         drawHeaders(out, headers);
 
@@ -303,5 +325,17 @@ public class DrawChessBoard {
         out.print(colorBlock);
         out.print(stringColor);
         out.print(insideVariable);
+    }
+
+    public void drawEntireBoardWhiteSideHighlighted(PrintStream out, ChessGame game, ChessPosition requestedCurrentPosition) {
+        selectedPosition = requestedCurrentPosition;
+        boardGame = game;
+
+        out.print(ERASE_SCREEN);
+
+        String[] headers = {"   "," a ", " b ", " c "," d "," e "," f "," g "," h ", "   " };
+        drawHeaders(out, headers);
+
+
     }
 }
