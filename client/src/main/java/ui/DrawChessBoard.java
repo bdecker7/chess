@@ -18,26 +18,28 @@ public class DrawChessBoard {
     public static ChessGame boardGame;
     public ChessPosition selectedPosition;
 
-    public static void main(String[] args) throws InvalidMoveException {
-            var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-
-            //displays white pov
-            ChessPosition positionStart = new ChessPosition(2,2);
-            ChessPosition positionEnd = new ChessPosition(4,2);
-            ChessMove move = new ChessMove(positionStart,positionEnd,null);
-            ChessGame testBoard = new ChessGame();
-            testBoard.makeMove(move);
-
-            ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-
-            DrawChessBoard drawTest = new DrawChessBoard(testBoard);
-
-            drawTest.drawEntireBoardWhiteSide(out,testBoard.getBoard());
-            out.println();
-            //displays black pov
-            drawTest.drawEntireBoardBlackSide(out,testBoard.getBoard());
-
-        }
+//    public static void main(String[] args) throws InvalidMoveException {
+//            var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+//
+//            //displays white pov
+//            ChessPosition positionStart = new ChessPosition(2,2);
+//            ChessPosition positionEnd = new ChessPosition(4,2);
+//            ChessMove move = new ChessMove(positionStart,positionEnd,null);
+//            ChessGame testBoard = new ChessGame();
+//
+////            testBoard.makeMove(move);
+//
+//            ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+//
+//            DrawChessBoard drawTest = new DrawChessBoard(testBoard);
+//            drawTest.changeHighlightRequest(true, positionStart);
+//            drawTest.drawEntireBoardWhiteSide(out,testBoard.getBoard());
+//        drawTest.changeHighlightRequest(false, null);
+//            out.println();
+//            //displays black pov
+//            drawTest.drawEntireBoardBlackSide(out,testBoard.getBoard());
+//
+//        }
     public DrawChessBoard(ChessGame board){
         this.boardGame = board;
     }
@@ -49,9 +51,9 @@ public class DrawChessBoard {
     public String isHighlightPlayerMoves(Integer row, Integer column, ChessPosition requestedCurrentPosition){
 
         ChessPosition position = new ChessPosition(row,column+1);
-        Collection<ChessMove> movesList = boardGame.validMoves(requestedCurrentPosition);
+        Collection<ChessMove> movesList = boardGame.validMoves(selectedPosition);
 
-        if (requestedCurrentPosition.equals(position)){
+        if (selectedPosition.equals(position)){
             return "requested piece";
         }
         for(ChessMove moves : movesList){

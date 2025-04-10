@@ -97,10 +97,9 @@ public class ClientGame {
             ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
             board.changeHighlightRequest(true,requestedCurrentPosition);
             if(Objects.equals(playerColor, "WHITE")){
-                board.drawEntireBoardWhiteSideHighlighted(out,gameBoard,requestedCurrentPosition);
+//                board.drawEntireBoardWhiteSideHighlighted(out,gameBoard);
                 board.changeHighlightRequest(false, null);
             }else if(Objects.equals(playerColor, "BLACK")){
-
 //                board.drawEntireBoardBlackSideHighlighted(out,gameBoard,requestedCurrentPosition);
                 board.changeHighlightRequest(false, null);
             }
