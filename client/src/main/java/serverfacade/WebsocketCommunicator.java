@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import model.GameData;
 import records.WebSocketRecords;
 import records.WebSocketRequestMakeMove;
+import ui.ClientGame;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
@@ -24,7 +25,7 @@ public class WebsocketCommunicator extends Endpoint {
 
     Session session;
     ServerMessageObserver notificationHandler;
-    public GameData gameBoard;
+    public GameData gameData;
     public ChessGame currentGame;
 
     //pass in the client game repl with the game here..?
@@ -53,15 +54,16 @@ public class WebsocketCommunicator extends Endpoint {
                     if(command.getServerMessageType() == LOAD_GAME){
                         LoadGameMessage loadMessage = new Gson().fromJson(message,LoadGameMessage.class);
                         GameData game = loadMessage.getServerMessageString();
-                        //how to send the data?
+
                         setCurrentGame(game);
+                        ClientGame.setCurrentGame(game);
 
                     }else if(command.getServerMessageType() == NOTIFICATION){
                         NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
                         notificationHandler.notify(notification.getNotificationMessage());
                     }else if(command.getServerMessageType() == ERROR){
                         ErrorMessage errorMessage = new Gson().fromJson(message,ErrorMessage.class);
-                        System.out.println(errorMessage); // check this one
+                        System.out.println(errorMessage.getErrorMessage()); // check this one
                     }
                 }
             });
@@ -70,7 +72,7 @@ public class WebsocketCommunicator extends Endpoint {
         }
     }
     public void setCurrentGame(GameData currentGame){
-        gameBoard = currentGame;
+        gameData = currentGame;
     }
 
     public void connectClient(String authToken, int gameID) throws IOException {

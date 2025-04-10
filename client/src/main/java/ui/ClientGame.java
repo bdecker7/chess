@@ -3,6 +3,7 @@ package ui;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import model.GameData;
 import serverfacade.ServerMessageObserver;
 import serverfacade.WebsocketCommunicator;
 
@@ -16,28 +17,33 @@ import java.util.Scanner;
 public class ClientGame {
 
     Scanner scanner = new Scanner(System.in);
-    public ChessGame gameBoard; //maybe it is because I'm calling a new game?
-    public DrawChessBoard board; // if I want to change the game I might have to declare this somewhere else
+    public static ChessGame gameBoard; //maybe it is because I'm calling a new game?
+    public DrawChessBoard boardDrawer = new DrawChessBoard(); // if I want to change the game I might have to declare this somewhere else
     WebsocketCommunicator ws = new WebsocketCommunicator(gameBoard);
     String authTokenGame = "";
     Integer gameIDGame;
     String serverUrl;
     ServerMessageObserver notification;
     Repl repl;
+    static String color = "";
 
     public ClientGame(String serverUrl, Repl repl) {
         this.serverUrl = serverUrl;
         this.repl = repl;
     }
+
+    public static void setCurrentGame(GameData game) {
+        gameBoard = game.game();
+    }
+
     public void startConnection(String auth, Integer gameID) throws Exception {
         ws.webSocketFacade(serverUrl,repl);
         ws.connectClient(auth, gameID);
     }
 
-    public String eval(String input, String playerColor, String authToken, Integer gameID, ChessGame game) throws Exception {
+    public String eval(String input, String playerColor, String authToken, Integer gameID) throws Exception {
         authTokenGame = authToken;
         gameIDGame = gameID;
-        gameBoard = game;
 
         try {
 
@@ -87,25 +93,25 @@ public class ClientGame {
 
     private String highlightLegalMoves(String playerColor, PrintStream out) {
 
-        System.out.println("Row: ");
-        String rowString = scanner.nextLine();
-        System.out.println("Column: ");
-        String columnString = scanner.nextLine();
+        System.out.println("Requested Position: ");
+        String moveString = scanner.nextLine();
+        String columnString = moveString.substring(0,1);
+        String rowString = moveString.substring(1);
         try {
             int row = Integer.parseInt(rowString);
-            int col = Integer.parseInt(columnString);
+            int col = convertToNumber(columnString);
             ChessPosition requestedCurrentPosition = new ChessPosition(row,col);
-            board.changeHighlightRequest(true,requestedCurrentPosition);
+            boardDrawer.changeHighlightRequest(true,requestedCurrentPosition);
             if(Objects.equals(playerColor, "WHITE")){
-//                board.drawEntireBoardWhiteSideHighlighted(out,gameBoard);
-                board.changeHighlightRequest(false, null);
+                boardDrawer.drawEntireBoardWhiteSide(out,gameBoard);
+                boardDrawer.changeHighlightRequest(false, null);
             }else if(Objects.equals(playerColor, "BLACK")){
-//                board.drawEntireBoardBlackSideHighlighted(out,gameBoard,requestedCurrentPosition);
-                board.changeHighlightRequest(false, null);
+                boardDrawer.drawEntireBoardBlackSide(out,gameBoard);
+                boardDrawer.changeHighlightRequest(false, null);
             }
 
-        } catch (NumberFormatException e) {
-            return "Invalid input: row and column must be numbers";
+        } catch (Exception e) {
+            return "Invalid input: row and column must be on board";
         }
 
         return "Moveable places are highlighted in blue or magenta";
@@ -119,56 +125,54 @@ public class ClientGame {
         }else{
             throw new Error("observer can't resign game");
         }
-//        return "observer can't resign game";
     }
 
     private String makeMove(PrintStream out, String playerColor) throws Exception {
 
-        if(!playerColor.equals("observer")) {
-            System.out.println("From Row: ");
-            String rowFromString = scanner.nextLine();
-            System.out.println("From Column: ");
-            String columnFromString = scanner.nextLine();
+        if(playerColor != null && !playerColor.equals("observer")) {
+            if(gameBoard.isInStalemate(ChessGame.TeamColor.WHITE)||gameBoard.isInStalemate(ChessGame.TeamColor.BLACK)){
+                return "Stalemate! Game over. No more moves can be made!";
+            }
+            else if(gameBoard.isInCheckmate(ChessGame.TeamColor.WHITE)||gameBoard.isInCheckmate(ChessGame.TeamColor.BLACK)){
+                return "Checkmate! Game over. No more moves can be made!";
+            }else if((gameBoard.getTeamTurn() != ChessGame.TeamColor.WHITE && playerColor.equals("WHITE"))
+                    || (playerColor.equals("BLACK")&& gameBoard.getTeamTurn() != ChessGame.TeamColor.BLACK )){
+                return "Not your turn, can't make that move";
+            }else if((gameBoard.getIsResigned())){
+                return "game resigned, can't make any more moves";
+            }
+            System.out.println("From Position: ");
+            String moveString = scanner.nextLine();
+            String columnFromString = moveString.substring(0,1);
+            String rowFromString = moveString.substring(1);
 
-            System.out.println("To Row: ");
-            String rowToString = scanner.nextLine();
-            System.out.println("To Column: ");
-            String columnToString = scanner.nextLine();
+            System.out.println("To Position: ");
+            String movedString = scanner.nextLine();
+            String columnToString = movedString.substring(0,1);
+            String rowToString = movedString.substring(1);
+
             try {
                 int row = Integer.parseInt(rowFromString);
                 int col = convertToNumber(columnFromString);
-//            int col = Integer.parseInt(columnFromString);
                 int toRow = Integer.parseInt(rowToString);
                 int toCol = convertToNumber(columnToString);
-//            int toCol = Integer.parseInt(columnToString);
 
                 ChessPosition requestedCurrentPosition = new ChessPosition(row, col);
                 ChessPosition requestedMovingPosition = new ChessPosition(toRow, toCol);
 
-                // call the Websocket communicator make move function here to make the move
                 ChessMove move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, null);
-
                 ws.webSocketFacade(serverUrl,repl);
                 ws.makeMoveWs(authTokenGame, gameIDGame, move);
-
-                if (Objects.equals(playerColor, "WHITE")) {
-                    DrawChessBoard board1 = new DrawChessBoard(gameBoard);
-                    board1.drawEntireBoardWhiteSide(out, gameBoard.getBoard());
-                } else if (Objects.equals(playerColor, "BLACK")) {
-//                    board.drawEntireBoardWhiteSide(out, null,null);
-                    DrawChessBoard board1 = new DrawChessBoard(gameBoard);
-                    board1.drawEntireBoardWhiteSide(out, gameBoard.getBoard());
-                }
 
             } catch (NumberFormatException e) {
                 return "Invalid input: row and column must be valid";
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-            return "make moves";
+            return "made move";
         }else{
-            throw new Exception("observer can't make moves");
+//            throw new Exception("observer can't make moves");
+            return "observer can't make moves";
         }
     }
 
@@ -196,11 +200,11 @@ public class ClientGame {
 
     private String reDrawBoard(PrintStream out, String playerColor) {
         if(Objects.equals(playerColor, "WHITE")){
-            board.drawEntireBoardWhiteSide(out,gameBoard.getBoard());
+            boardDrawer.drawEntireBoardWhiteSide(out,gameBoard);
         }else if(Objects.equals(playerColor, "BLACK")){
-            board.drawEntireBoardBlackSide(out,gameBoard.getBoard());
+            boardDrawer.drawEntireBoardBlackSide(out,gameBoard);
         }else{
-            board.drawEntireBoardWhiteSide(out,gameBoard.getBoard());
+            boardDrawer.drawEntireBoardWhiteSide(out,gameBoard);
         }
 
         return "Press 'Enter' for game menu";
@@ -209,9 +213,12 @@ public class ClientGame {
     public void drawChessBoard(String color) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         switch (color) {
-//            case "WHITE" -> whiteJoin(out);
-//            case "BLACK" -> DrawChessBoard.drawEntireBoardBlackSide(out, null, null);
-            case "observer" -> board.drawEntireBoardWhiteSide(out, gameBoard.getBoard());
+            case "WHITE", "observer" -> {
+                boardDrawer.drawEntireBoardWhiteSide(out, gameBoard);
+            }
+            case "BLACK" -> {
+                boardDrawer.drawEntireBoardBlackSide(out,gameBoard);
+            }
             case null, default -> System.out.println("can't access game");
         }
 

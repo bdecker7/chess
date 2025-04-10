@@ -161,7 +161,18 @@ public class WebSocketRequestHandler {
                 //Sends LOAD_GAME message back to everybody
                 sendMessage(LOAD_GAME, data.getGameID(), session, null);
                 broadcastMessage(LOAD_GAME, data.getGameID(), null, session);
-                broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " moved" + data.getMove(), session);
+
+                int column = data.getMove().getStartPosition().getColumn();
+                int row = data.getMove().getStartPosition().getRow();
+                int column2 = data.getMove().getEndPosition().getColumn();
+                int row2 = data.getMove().getEndPosition().getRow();
+                String fromColumn = convertToLetter(column);
+                String fromRow = Integer.toString(row);
+                String fromColumn2 = convertToLetter(column2);
+                String fromRow2 = Integer.toString(row2);
+
+                broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken())
+                        + " moved " + fromColumn +fromRow+ " to "+fromColumn2+fromRow2, session);
                 //ifCheck, stalemate, or checkmate, broadcast and client get message.
             }else{
                 throw new InvalidMoveException("Not your turn");
@@ -184,6 +195,27 @@ public class WebSocketRequestHandler {
             broadcastMessage(NOTIFICATION, currentGame.gameID(), username + " has joined the game", session);
         }catch (Exception e){
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());
+        }
+    }
+    private String convertToLetter(Integer columnFromString) throws Exception {
+        if(columnFromString.equals(1)){
+            return "a";
+        }else if(columnFromString.equals(2)){
+            return "b";
+        }else if(columnFromString.equals(3)){
+            return "c";
+        }else if(columnFromString.equals(4)){
+            return "d";
+        }else if (columnFromString.equals(5)){
+            return "e";
+        }else if(columnFromString.equals(6)){
+            return "f";
+        }else if(columnFromString.equals(7)){
+            return "g";
+        }else if(columnFromString.equals(8)){
+            return "h";
+        }else{
+            throw new Exception("Invalid color");
         }
     }
 

@@ -40,15 +40,14 @@ public class DrawChessBoard {
 //            drawTest.drawEntireBoardBlackSide(out,testBoard.getBoard());
 //
 //        }
-    public DrawChessBoard(ChessGame board){
-        this.boardGame = board;
+    public DrawChessBoard(){
     }
 
     public void changeHighlightRequest(boolean request, ChessPosition position){
         highlightRequest = request;
         selectedPosition = position;
     }
-    public String isHighlightPlayerMoves(Integer row, Integer column, ChessPosition requestedCurrentPosition){
+    public String isHighlightPlayerMoves(Integer row, Integer column){
 
         ChessPosition position = new ChessPosition(row,column+1);
         Collection<ChessMove> movesList = boardGame.validMoves(selectedPosition);
@@ -112,9 +111,9 @@ public class DrawChessBoard {
 
     private void blueFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
         if(selectedPosition != null){
-            if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("highlighted")) {
+            if(isHighlightPlayerMoves(rowNumber, actualColumn).equals("highlighted")) {
                 out.print(SET_BG_COLOR_BLUE);
-            }else if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("requested piece")){
+            }else if(isHighlightPlayerMoves(rowNumber, actualColumn).equals("requested piece")){
                 out.print(SET_BG_COLOR_WHITE);
             }else{
                 out.print(SET_BG_COLOR_BLACK);
@@ -159,9 +158,9 @@ public class DrawChessBoard {
 
     private void magentaFunction(PrintStream out, Integer rowNumber, ChessPosition requestedCurrentPosition, int actualColumn, String checkrow) {
         if(selectedPosition != null){
-            if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("highlighted")) {
+            if(isHighlightPlayerMoves(rowNumber, actualColumn).equals("highlighted")) {
                 out.print(SET_BG_COLOR_MAGENTA);
-            }else if(isHighlightPlayerMoves(rowNumber, actualColumn, requestedCurrentPosition).equals("requested piece")){
+            }else if(isHighlightPlayerMoves(rowNumber, actualColumn).equals("requested piece")){
                 out.print(SET_BG_COLOR_WHITE);
             }else{
                 out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -275,26 +274,30 @@ public class DrawChessBoard {
 
 
 
-    public void drawEntireBoardWhiteSide(PrintStream out, ChessBoard gameBoard){
+    public void drawEntireBoardWhiteSide(PrintStream out, ChessGame gameBoard){
 
         out.print(ERASE_SCREEN);
 
         String[] headers = {"   "," a ", " b ", " c "," d "," e "," f "," g "," h ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartWhite(out,gameBoard);
+        boardGame = gameBoard;
+
+        drawBlankPlayablePartWhite(out,gameBoard.getBoard());
 //        drawBlankPlayablePartWhite(out,movingPosition,requestedCurrentPosition);
 
         drawHeaders(out, headers);
 
     }
-    public void drawEntireBoardBlackSide(PrintStream out, ChessBoard gameBoard){
+    public void drawEntireBoardBlackSide(PrintStream out, ChessGame gameBoard){
 
         out.print(ERASE_SCREEN);
         String[] headers = {"   "," h ", " g ", " f "," e "," d "," c "," b "," a ", "   " };
         drawHeaders(out, headers);
 
-        drawBlankPlayablePartBlack(out,gameBoard);
+        boardGame = gameBoard;
+
+        drawBlankPlayablePartBlack(out,gameBoard.getBoard());
 
         drawHeaders(out, headers);
 

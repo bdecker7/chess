@@ -16,7 +16,6 @@ public class Repl implements ServerMessageObserver {
     private PostLoginResult postResult = null;
     private String playerColor = null;
     private String gameResult = null;
-    public ChessGame game = new ChessGame();
 
     public Repl(String serverUrl) {
         clientPreLogin = new ClientPreLogin(serverUrl, this);
@@ -71,7 +70,7 @@ public class Repl implements ServerMessageObserver {
                     }
 
                 }else if(status == 2){
-                    gameResult = clientGame.eval(line, playerColor,preLoginResult,postResult.gameID(),game);
+                    gameResult = clientGame.eval(line, playerColor,preLoginResult,postResult.gameID());
                     System.out.println(gameResult);
 
                     if(Objects.equals(gameResult, "exit")){
@@ -79,17 +78,16 @@ public class Repl implements ServerMessageObserver {
                     }
                     else if(playerColor == null || Objects.equals(gameResult, "observer")){
                         clientGame.drawChessBoard("observer");
-                    }else{
+                    }
+                    else{
                         status = 2;
-//                        clientGame.drawChessBoard(playerColor.toString());
                     }
 
 
                 }
 
             } catch (Exception e) {
-                var msg = e.toString();
-                System.out.print(msg);
+                System.out.print(e.getMessage());
             }
         }
         System.out.println();
