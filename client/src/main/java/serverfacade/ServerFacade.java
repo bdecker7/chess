@@ -80,21 +80,6 @@ public class ServerFacade {
         }
     }
 
-    private Integer throwIfNotSuccessful(HttpURLConnection http) throws IOException {
-        var statusVar = http.getResponseCode();
-        if (statusVar != 200) {
-            try (InputStream respErr = http.getErrorStream()) {
-                if (respErr != null) {
-                    throw new Exception("Response Code unsuccessful");
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-            throw new RuntimeException("Not successful response");
-        }else{
-            return status;
-        }
-    }
 
     private <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;

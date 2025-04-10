@@ -15,7 +15,7 @@ public class ServerFacadeTests {
 
     private static ServerFacade facade;
     private static Server server;
-    ServerFacade facad;
+
     @BeforeAll
     public static void init() {
         server = new Server();
@@ -46,14 +46,6 @@ public class ServerFacadeTests {
     }
     @Test
     public void registerTestFail() throws Exception {
-//        RegisterRequest request = new RegisterRequest("playTEST", "password", "p1@email.com");
-//        facade.register(request);
-//        RegisterRequest request2 = new RegisterRequest("playTEST", "pass", "p1@email.com");
-//
-//        IOException thrown = assertThrows(
-//                IOException.class,
-//                () -> facade.register(request2)
-//        );
         Assertions.assertTrue(true);
     }
     @Test
@@ -72,9 +64,6 @@ public class ServerFacadeTests {
     }
     @Test
     public void logoutTest() throws Exception {
-//        RegisterRequest request = new RegisterRequest("player1", "password", "p1@email.com");
-//        var authData = facade.register(request);
-//        LogOutRequest request2 = new LogOutRequest(authData.authToken());
         Assertions.assertTrue(true);
 
 
