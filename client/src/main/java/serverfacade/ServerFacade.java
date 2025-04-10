@@ -1,4 +1,4 @@
-package serverFacade;
+package serverfacade;
 
 import com.google.gson.Gson;
 import records.*;
@@ -81,8 +81,8 @@ public class ServerFacade {
     }
 
     private Integer throwIfNotSuccessful(HttpURLConnection http) throws IOException {
-        var status_var = http.getResponseCode();
-        if (status_var != 200) {
+        var statusVar = http.getResponseCode();
+        if (statusVar != 200) {
             try (InputStream respErr = http.getErrorStream()) {
                 if (respErr != null) {
                     throw new Exception("Response Code unsuccessful");

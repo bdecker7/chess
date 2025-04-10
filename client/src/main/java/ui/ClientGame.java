@@ -3,8 +3,8 @@ package ui;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
-import serverFacade.ServerMessageObserver;
-import serverFacade.WebsocketCommunicator;
+import serverfacade.ServerMessageObserver;
+import serverfacade.WebsocketCommunicator;
 
 import java.io.IOException;
 import java.io.PrintStream;

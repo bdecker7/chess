@@ -1,9 +1,8 @@
 package ui;
 
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 import chess.ChessGame;
 import records.*;
-import serverFacade.WebsocketCommunicator;
 
 import javax.naming.AuthenticationException;
 import java.util.*;

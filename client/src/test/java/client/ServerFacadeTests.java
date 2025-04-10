@@ -1,8 +1,7 @@
 package client;
 
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 import org.junit.jupiter.api.*;
-import records.LogOutRequest;
 import records.LoginRequest;
 import records.RegisterRequest;
 import server.Server;

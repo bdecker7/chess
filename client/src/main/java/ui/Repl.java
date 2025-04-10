@@ -1,9 +1,8 @@
 package ui;
 
 import chess.ChessGame;
-import serverFacade.ServerMessageObserver;
+import serverfacade.ServerMessageObserver;
 
-import javax.management.Notification;
 import java.util.Objects;
 import java.util.Scanner;
 

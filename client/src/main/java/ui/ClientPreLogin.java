@@ -4,11 +4,10 @@ import records.LoginRequest;
 
 import java.util.Arrays;
 import java.util.Scanner;
-import serverFacade.ServerFacade;
+import serverfacade.ServerFacade;
 import records.LoginResult;
 import records.RegisterRequest;
 import records.RegisterResult;
-import serverFacade.WebsocketCommunicator;
 
 public class ClientPreLogin {
 

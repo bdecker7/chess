@@ -12,7 +12,7 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 public class DrawChessBoard {
 
     private static final int HEADERLENGTH = 10;
-    private static final int numOfGameRows = 8;
+    private static final int NUM_OF_GAME_ROWS = 8;
     public static boolean highlightRequest = false;
     public static ChessGame board;
 //    public PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
@@ -62,7 +62,7 @@ public class DrawChessBoard {
 
     public void drawBlankPlayablePartWhite(PrintStream out, ChessPosition playerMove, ChessPosition requestedCurrentPosition){
         String color = "white";
-        for(int i = numOfGameRows; i > 0 ; i--){
+        for(int i = NUM_OF_GAME_ROWS; i > 0 ; i--){
             if(i % 2 == 0){
                 drawEvenRow(out, i,playerMove,requestedCurrentPosition,color) ;
             }else{
@@ -73,7 +73,7 @@ public class DrawChessBoard {
 
     public void drawBlankPlayablePartBlack(PrintStream out,ChessPosition playerMove, ChessPosition requestedCurrentPosition){
         String color = "black";
-        for(int i = 1; i < numOfGameRows + 1 ; i++){
+        for(int i = 1; i < NUM_OF_GAME_ROWS + 1 ; i++){
             if(i % 2 == 0){
                 drawOddRow(out, i ,playerMove,requestedCurrentPosition,color) ;
             }else{
@@ -84,7 +84,7 @@ public class DrawChessBoard {
 
     private void drawOddRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        for(int column = 0; column < numOfGameRows; column++){
+        for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
                 int actualColumn;
@@ -135,7 +135,7 @@ public class DrawChessBoard {
     }
     private void drawEvenRow(PrintStream out, Integer rowNumber, ChessPosition playerMove, ChessPosition requestedCurrentPosition, String color){
         placeOneSquare(out, SET_BG_COLOR_DARK_GREEN, SET_TEXT_COLOR_WHITE, " " + rowNumber + " ");
-        for(int column = 0; column < numOfGameRows; column++){
+        for(int column = 0; column < NUM_OF_GAME_ROWS; column++){
             String checkrow = checkRow(out, rowNumber,column, color);
             if(column%2 == 0) {
                 int actualColumn;
@@ -191,56 +191,9 @@ public class DrawChessBoard {
 
             ChessPosition position = new ChessPosition(rowNumber,column);
             ChessPiece piece = board.getBoard().getPiece(position);
-            if(piece == null){
-                return "   ";
-            } else if(piece.getPieceType() == ChessPiece.PieceType.KING){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " K ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " K ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " Q ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " Q ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.PAWN){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " P ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " P ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " N ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " N ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " R ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " R ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.BISHOP){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " B ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " B ";
-                }
+            String spaces = getPieceString(out, piece);
+            if (spaces != null) {
+                return spaces;
             }
 
         }
@@ -248,61 +201,69 @@ public class DrawChessBoard {
 
             ChessPosition position = new ChessPosition(rowNumber,column+1);
             ChessPiece piece = board.getBoard().getPiece(position);
-            if(piece == null){
-                return "   ";
-            } else if(piece.getPieceType() == ChessPiece.PieceType.KING){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " K ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " K ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.QUEEN){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " Q ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " Q ";
-                    }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.PAWN){
-                    if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                        out.print(SET_TEXT_COLOR_RED);
-                        return " P ";
-                    }else{
-                        out.print(SET_TEXT_COLOR_YELLOW);
-                        return " P ";
-                    }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " N ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " N ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " R ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " R ";
-                }
-            }else if(piece.getPieceType() == ChessPiece.PieceType.BISHOP){
-                if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
-                    out.print(SET_TEXT_COLOR_RED);
-                    return " B ";
-                }else{
-                    out.print(SET_TEXT_COLOR_YELLOW);
-                    return " B ";
-                }
+            String spaces = getPieceString(out, piece);
+            if (spaces != null) {
+                return spaces;
             }
 
-            }
+        }
             return "   ";
         }
+
+    private static String getPieceString(PrintStream out, ChessPiece piece) {
+        if(piece == null){
+            return "   ";
+        } else if(piece.getPieceType() == ChessPiece.PieceType.KING){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                out.print(SET_TEXT_COLOR_RED);
+                return " K ";
+            }else{
+                out.print(SET_TEXT_COLOR_YELLOW);
+                return " K ";
+            }
+        }else if(piece.getPieceType() == ChessPiece.PieceType.QUEEN){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                out.print(SET_TEXT_COLOR_RED);
+                return " Q ";
+            }else{
+                out.print(SET_TEXT_COLOR_YELLOW);
+                return " Q ";
+            }
+        }else if(piece.getPieceType() == ChessPiece.PieceType.PAWN){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                out.print(SET_TEXT_COLOR_RED);
+                return " P ";
+            }else{
+                out.print(SET_TEXT_COLOR_YELLOW);
+                return " P ";
+            }
+        }else if(piece.getPieceType() == ChessPiece.PieceType.KNIGHT){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                out.print(SET_TEXT_COLOR_RED);
+                return " N ";
+            }else{
+                out.print(SET_TEXT_COLOR_YELLOW);
+                return " N ";
+            }
+        }else if(piece.getPieceType() == ChessPiece.PieceType.ROOK){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                out.print(SET_TEXT_COLOR_RED);
+                return " R ";
+            }else{
+                out.print(SET_TEXT_COLOR_YELLOW);
+                return " R ";
+            }
+        }else if(piece.getPieceType() == ChessPiece.PieceType.BISHOP){
+            if(piece.getTeamColor() == ChessGame.TeamColor.BLACK){
+                out.print(SET_TEXT_COLOR_RED);
+                return " B ";
+            }else{
+                out.print(SET_TEXT_COLOR_YELLOW);
+                return " B ";
+            }
+        }
+        return null;
+    }
 
     private static int mirroredColumn(int column) {
         column = column + 1;

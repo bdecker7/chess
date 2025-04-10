@@ -1,4 +1,4 @@
-package serverFacade;
+package serverfacade;
 
 import chess.ChessGame;
 import chess.ChessMove;
@@ -11,8 +11,6 @@ import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
 import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
-
-import javax.management.Notification;
 
 import javax.websocket.*;
 import java.io.IOException;
