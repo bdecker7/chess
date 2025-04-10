@@ -79,24 +79,35 @@ public class WebSocketRequestHandler {
 
     }
 
-    private void broadcastMessage(ServerMessage.ServerMessageType type ,Integer gameID, String message, Session notThisSession) throws IOException {
+    private void broadcastMessage(ServerMessage.ServerMessageType type ,Integer gameID, String message, Session notThisSession) throws IOException, DataAccessException {
 
         for(Session sesh: savedSessions.getSession(gameID)){
-            if(!sesh.equals(notThisSession)){
-                NotificationMessage messageToSend = new NotificationMessage(type,message);
-                sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+            if(type.equals(LOAD_GAME)){
+                if(!sesh.equals(notThisSession)){
+                    LoadGameMessage messageToSend = new LoadGameMessage(type,gamedata.getGame(gameID));
+                    sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+                }
+            }else if (type.equals(NOTIFICATION)){
+                if(!sesh.equals(notThisSession)){
+                    NotificationMessage messageToSend = new NotificationMessage(type,message);
+                    sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+                }
             }
-
         }
     }
 
     private void resign(UserGameCommand data, Session session) throws DataAccessException, IOException {
         try {
-            gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
-
-            // make new notification
-            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", null);
-            //broadcast notification "username resigned"
+            if(authdata.getAuthUsername(data.getAuthToken()).equals(gamedata.getGame(data.getGameID()).whiteUsername()) ||
+                    authdata.getAuthUsername(data.getAuthToken()).equals(gamedata.getGame(data.getGameID()).blackUsername())) {
+                if(gamedata.getGame(data.getGameID()).game().isResigned) {
+                    throw new DataAccessException("game already resigned");
+                }
+                gamedata.getGame(data.getGameID()).game().changeResignedStatus(true);
+                broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", null);
+            } else{
+                throw new DataAccessException("observer can't resign game");
+            }
         } catch (Exception e) {
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());
         }
@@ -126,16 +137,28 @@ public class WebSocketRequestHandler {
         try {
             String username = authdata.getAuthUsername(data.getAuthToken());
             GameData currentGame = gamedata.getGame(data.getGameID());
-            ChessMove move = new ChessMove(data.getMove().getStartPosition(), data.getMove().getEndPosition(), null);
-            currentGame.game().makeMove(move);
+            if(currentGame.game().isResigned || currentGame.game().isCheckmate || currentGame.game().isStalemate){
+                throw new InvalidMoveException("Game is over. No more moves can be made");
+            }
+            else if((currentGame.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)
+                    && currentGame.whiteUsername().equals(username))
+                    || (currentGame.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)
+                    && currentGame.blackUsername().equals(username))) {
+                ChessMove move = new ChessMove(data.getMove().getStartPosition(), data.getMove().getEndPosition(), null);
+                currentGame.game().makeMove(move);
 
-            //Sends LOAD_GAME message back to everybody
-            sendMessage(LOAD_GAME, data.getGameID(), session, null);
+// implement a new method for this to update the game in the database
+                //                gamedata.updateMovedGame()
+                //Sends LOAD_GAME message back to everybody
+                sendMessage(LOAD_GAME, data.getGameID(), session, null);
 
-            broadcastMessage(LOAD_GAME, data.getGameID(), null, session);
-            //broadcasts NOTIFICATION of what move was made
-            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " moved" + data.getMove(), session);
-            //ifCheck, stalemate, or checkmate, broadcast and client get message.
+                broadcastMessage(LOAD_GAME, data.getGameID(), null, session);
+                //broadcasts NOTIFICATION of what move was made
+                broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " moved" + data.getMove(), session);
+                //ifCheck, stalemate, or checkmate, broadcast and client get message.
+            }else{
+                throw new InvalidMoveException("Not your turn");
+            }
         }catch (Exception e) {
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());
         }

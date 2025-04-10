@@ -13,6 +13,8 @@ public class ChessGame {
     ChessBoard gameBoard = new ChessBoard();
     TeamColor turn = TeamColor.WHITE;
     public Boolean isResigned = false;
+    public Boolean isCheckmate = false;
+    public Boolean isStalemate = false;
 
     public ChessGame() {
         gameBoard.resetBoard();
@@ -228,7 +230,9 @@ public class ChessGame {
                     }
                 }
             }
-        }return outOfCheckMoves.isEmpty();
+        }
+        isCheckmate = outOfCheckMoves.isEmpty();
+        return outOfCheckMoves.isEmpty();
     }
 
     /**
@@ -253,7 +257,8 @@ public class ChessGame {
                     }
                 }
             }
-        }return outOfAllMoves.isEmpty();
+        }isStalemate = outOfAllMoves.isEmpty();
+        return outOfAllMoves.isEmpty();
     }
     
     /**

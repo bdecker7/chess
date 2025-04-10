@@ -9,6 +9,7 @@ import records.WebSocketRequestMakeMove;
 import websocket.commands.UserGameCommand;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 import websocket.messages.ServerMessage;
 
 import javax.management.Notification;
@@ -26,14 +27,15 @@ public class WebsocketCommunicator extends Endpoint {
     Session session;
     ServerMessageObserver notificationHandler;
     public GameData gameBoard;
+    public ChessGame currentGame;
 
-    //pass in the client game repl with the game here..
-    public WebsocketCommunicator(){
+    //pass in the client game repl with the game here..?
+    public WebsocketCommunicator(ChessGame currentGame){
+        this.currentGame = currentGame;
     }
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
-
     }
 
     public void webSocketFacade(String url, ServerMessageObserver notificationHandler) throws Exception {
@@ -56,10 +58,9 @@ public class WebsocketCommunicator extends Endpoint {
                         //how to send the data?
                         setCurrentGame(game);
 
-
                     }else if(command.getServerMessageType() == NOTIFICATION){
-                        Notification notification = new Gson().fromJson(message, Notification.class);
-                        notificationHandler.notify(notification);
+                        NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
+                        notificationHandler.notify(notification.getNotificationMessage());
                     }else if(command.getServerMessageType() == ERROR){
                         ErrorMessage errorMessage = new Gson().fromJson(message,ErrorMessage.class);
                         System.out.println(errorMessage); // check this one
@@ -97,8 +98,5 @@ public class WebsocketCommunicator extends Endpoint {
     public void resignWs(String authToken, int gameID) throws IOException {
         WebSocketRecords resignObject = new WebSocketRecords(UserGameCommand.CommandType.RESIGN,authToken,gameID);
         this.session.getBasicRemote().sendText(new Gson().toJson(resignObject));
-
     }
-
-
 }

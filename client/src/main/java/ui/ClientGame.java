@@ -16,9 +16,9 @@ import java.util.Scanner;
 public class ClientGame {
 
     Scanner scanner = new Scanner(System.in);
-    public ChessGame gameBoard = new ChessGame();
+    public ChessGame gameBoard = new ChessGame(); //maybe it is because I'm calling a new game?
     public DrawChessBoard board = new DrawChessBoard(gameBoard); // if I want to change the game I might have to declare this somewhere else
-    WebsocketCommunicator ws = new WebsocketCommunicator();
+    WebsocketCommunicator ws = new WebsocketCommunicator(gameBoard);
     String authTokenGame = "";
     Integer gameIDGame;
     String serverUrl;
@@ -26,15 +26,18 @@ public class ClientGame {
     Repl repl;
 
     public ClientGame(String serverUrl, Repl repl) {
-        this.ws = ws;
-        this.gameBoard = gameBoard;
         this.serverUrl = serverUrl;
         this.repl = repl;
     }
+    public void startConnection(String auth, Integer gameID) throws Exception {
+        ws.webSocketFacade(serverUrl,repl);
+        ws.connectClient(auth, gameID);
+    }
 
-    public String eval(String input, String playerColor, String authToken, Integer gameID) throws Exception {
+    public String eval(String input, String playerColor, String authToken, Integer gameID, ChessGame game) throws Exception {
         authTokenGame = authToken;
         gameIDGame = gameID;
+        gameBoard = game;
 
         try {
 
@@ -113,8 +116,10 @@ public class ClientGame {
             ws.webSocketFacade(serverUrl,repl);
             ws.resignWs(authTokenGame,gameIDGame);
             return "resign game";
+        }else{
+            throw new Error("observer can't resign game");
         }
-        return "observer can't resign game";
+//        return "observer can't resign game";
     }
 
     private String makeMove(PrintStream out, String playerColor) throws Exception {
@@ -145,9 +150,7 @@ public class ClientGame {
 
                 ws.webSocketFacade(serverUrl,repl);
                 ws.makeMoveWs(authTokenGame, gameIDGame, move);
-//                board = ws.gameData.game();
 
-                // need to check if move is valid.
                 if (Objects.equals(playerColor, "WHITE")) {
 //                    board.drawEntireBoardWhiteSide(out, requestedMovingPosition, requestedCurrentPosition);
 //                    board = new DrawChessBoard(ws.gameData.game());

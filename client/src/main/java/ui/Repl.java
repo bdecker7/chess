@@ -17,7 +17,7 @@ public class Repl implements ServerMessageObserver {
     private PostLoginResult postResult = null;
     private String playerColor = null;
     private String gameResult = null;
-    public ChessGame game;
+    public ChessGame game = new ChessGame();
 
     public Repl(String serverUrl) {
         clientPreLogin = new ClientPreLogin(serverUrl, this);
@@ -59,9 +59,11 @@ public class Repl implements ServerMessageObserver {
                     }else if(Objects.equals(postResult.message(), "WHITE") || Objects.equals(postResult.message(), "BLACK")){
                         status = 2;
                         playerColor = postResult.message();
+                        clientGame.startConnection(clientPostLogin.authToken, postResult.gameID()); // check this!!!
                     }else if (Objects.equals(postResult.message(), "observer")){
                         status = 2;
                         playerColor = null;
+                        clientGame.startConnection(clientPostLogin.authToken, postResult.gameID()); //check this!!!
                     }
                     else if(Objects.equals(postResult.message(), "Successful Play")){
                         status = 2;
@@ -70,7 +72,7 @@ public class Repl implements ServerMessageObserver {
                     }
 
                 }else if(status == 2){
-                    gameResult = clientGame.eval(line, playerColor,preLoginResult,postResult.gameID());
+                    gameResult = clientGame.eval(line, playerColor,preLoginResult,postResult.gameID(),game);
                     System.out.println(gameResult);
 
                     if(Objects.equals(gameResult, "exit")){
@@ -95,8 +97,8 @@ public class Repl implements ServerMessageObserver {
     }
 
     @Override
-    public void notify(Notification message) {
-        System.out.println(">>>" + message.getMessage());
+    public void notify(String message) {
+        System.out.println(">>>" + message);
 
     }
 }

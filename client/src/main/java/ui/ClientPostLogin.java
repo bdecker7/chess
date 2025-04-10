@@ -16,7 +16,8 @@ public class ClientPostLogin {
     public HashMap<Integer,Integer> gameIdList = new HashMap<>();
     String serverUrl;
     Repl repl;
-    WebsocketCommunicator ws = new WebsocketCommunicator();
+
+//    WebsocketCommunicator ws = new WebsocketCommunicator();
 
 
 
@@ -56,7 +57,6 @@ public class ClientPostLogin {
         CreateGameResult result = serverFacade.createGame(request);
 
         if(result != null){
-//            System.out.println("Game successfully created!");
             return new PostLoginResult("Successful Game Creation", null);
         }
         return new PostLoginResult("not successful", null);
@@ -118,8 +118,9 @@ public class ClientPostLogin {
                 if (serverFacade.joinGame(joinRequest, authToken) == 200) {
                     //check if websocket connection is made here.
 //                    WebsocketCommunicator ws = new WebsocketCommunicator();
-                    ws.webSocketFacade(serverUrl,repl);
-                    ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
+
+//                    ws.webSocketFacade(serverUrl,repl);
+//                    ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
 
                     return new PostLoginResult(color, joinRequest.gameID());
                 } else {
@@ -148,8 +149,8 @@ public class ClientPostLogin {
             }else{
                 gameNumberInteger = gameIdList.get(gameNum);
 
-                ws.webSocketFacade(serverUrl,repl);
-                ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
+//                ws.webSocketFacade(serverUrl,repl);
+//                ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
 
                 return new PostLoginResult("observer", gameNumberInteger);
             }
