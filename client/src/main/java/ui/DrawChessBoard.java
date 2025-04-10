@@ -15,32 +15,11 @@ public class DrawChessBoard {
     private static final int NUM_OF_GAME_ROWS = 8;
     public static boolean highlightRequest = false;
     public static ChessGame board;
-//    public PrintStream out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
     public DrawChessBoard(ChessGame board){
         this.board = board;
     }
 
-//    public static void main(String[] args) throws InvalidMoveException {
-//        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-//        String[] moveLocation = {"1","2"};
-//        //displays white pov
-//        ChessPosition positionStart = new ChessPosition(2,1);
-//        ChessPosition positionEnd = new ChessPosition(4,1);
-//        ChessMove move = new ChessMove(positionStart,positionEnd,null);
-//        ChessGame testBoard = new ChessGame();
-//        testBoard.makeMove(move);
-//        ChessPiece piece = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
-//
-//
-//        DrawChessBoard drawTest = new DrawChessBoard(testBoard);
-//
-//        drawTest.drawEntireBoardWhiteSide(out,null, null);
-//        out.println();
-//        //displays black pov
-//        drawTest.drawEntireBoardBlackSide(out,null,null);
-//
-//    }
     public void changeHighlightRequest(boolean request){
         highlightRequest = request;
     }
@@ -201,7 +180,6 @@ public class DrawChessBoard {
             if (spaces != null) {
                 return spaces;
             }
-
         }
             return "   ";
         }
