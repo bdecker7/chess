@@ -115,12 +115,6 @@ public class ClientPostLogin {
             JoinGameRequest joinRequest = new JoinGameRequest(teamColor, gameIdList.get(Integer.parseInt(gameNumber)));
             try {
                 if (serverFacade.joinGame(joinRequest, authToken) == 200) {
-                    //check if websocket connection is made here.
-//                    WebsocketCommunicator ws = new WebsocketCommunicator();
-
-//                    ws.webSocketFacade(serverUrl,repl);
-//                    ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
-
                     return new PostLoginResult(color, joinRequest.gameID());
                 } else {
                     return new PostLoginResult("Unable to join game", null);
@@ -147,10 +141,6 @@ public class ClientPostLogin {
                 return new PostLoginResult("Invalid Game number", null);
             }else{
                 gameNumberInteger = gameIdList.get(gameNum);
-
-//                ws.webSocketFacade(serverUrl,repl);
-//                ws.connectClient(authToken, gameIdList.get(Integer.parseInt(gameNumber)));
-
                 return new PostLoginResult("observer", gameNumberInteger);
             }
         } catch (NumberFormatException e) {

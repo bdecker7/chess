@@ -20,6 +20,7 @@ import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.Objects;
 
 import static websocket.messages.ServerMessage.ServerMessageType.*;
@@ -57,9 +58,9 @@ public class WebSocketRequestHandler {
         }
     }
 
-    private void saveSession(Integer gameID, Session session) {
+    private void saveSession(Integer gameID, Session session, String authToken) {
         //This should save the session so it keeps track of everything. probably seperate in another class
-        savedSessions.addSessionToGame(gameID,session);
+        savedSessions.addSessionToGame(gameID,session,authToken);
 
     }
 
@@ -81,19 +82,27 @@ public class WebSocketRequestHandler {
     }
 
     private void broadcastMessage(ServerMessage.ServerMessageType type ,
-                                  Integer gameID, String message, Session notThisSession)
+                                  Integer gameID, String message, Session notThisSession, String authToken)
             throws IOException, DataAccessException {
-
-        for(Session sesh: savedSessions.getSession(gameID)){
+        HashMap<String, Session> currentSession = savedSessions.getSession(gameID);
+        for(String auth : currentSession.keySet()){
             if(type.equals(LOAD_GAME)){
-                if(!sesh.equals(notThisSession)){
+                if(authToken == null){
+                    NotificationMessage messageToSend = new NotificationMessage(type,message);
+                    currentSession.get(auth).getRemote().sendString(new Gson().toJson(messageToSend));
+                }
+                else if(!auth.equals(authToken)){
                     LoadGameMessage messageToSend = new LoadGameMessage(type,gamedata.getGame(gameID));
-                    sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+                    currentSession.get(auth).getRemote().sendString(new Gson().toJson(messageToSend));
                 }
             }else if (type.equals(NOTIFICATION)){
-                if(!sesh.equals(notThisSession)){
+                if(authToken == null){
                     NotificationMessage messageToSend = new NotificationMessage(type,message);
-                    sesh.getRemote().sendString(new Gson().toJson(messageToSend));
+                    currentSession.get(auth).getRemote().sendString(new Gson().toJson(messageToSend));
+                }
+                else if(!auth.equals(authToken)){
+                    NotificationMessage messageToSend = new NotificationMessage(type,message);
+                    currentSession.get(auth).getRemote().sendString(new Gson().toJson(messageToSend));
                 }
             }
         }
@@ -110,7 +119,7 @@ public class WebSocketRequestHandler {
                 newer.changeResignedStatus();
                 gamedata.updateAfterMove(data.getGameID(), newer);
 
-                broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", null);
+                broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " has resigned", null,null);
             } else{
                 throw new DataAccessException("observer can't resign game");
             }
@@ -127,8 +136,10 @@ public class WebSocketRequestHandler {
             } else if (Objects.equals(username, gamedata.getGame(data.getGameID()).blackUsername())) {
                 gamedata.updateGame(ChessGame.TeamColor.BLACK, null, data.getGameID());
             }
-            savedSessions.removeSessionToGame(data.getGameID(),session);
-            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " left the game", session);
+
+            //THIS WAS THE PROBLEM!!!!!!
+            savedSessions.removeSessionToGame(data.getGameID(),session, data.getAuthToken());
+            broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken()) + " left the game", session, data.getAuthToken());
 
         }catch (Exception e){
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());
@@ -141,26 +152,46 @@ public class WebSocketRequestHandler {
         try {
             String username = authdata.getAuthUsername(data.getAuthToken());
             GameData currentGame = gamedata.getGame(data.getGameID());
-            if(currentGame.game().isResigned){
-                throw new InvalidMoveException("Game is resigned. No more moves can be made");
+            if(currentGame.game().getIsResigned()){
+//                throw new InvalidMoveException("Game is resigned. No more moves can be made");
+                sendMessage(ERROR,null,session,"Error:" + " game has been resigned");
             }else if(currentGame.game().isInCheckmate(ChessGame.TeamColor.WHITE)
                     || currentGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
-                throw new InvalidMoveException("Game is in checkmate. No more moves can be made");
+//                throw new InvalidMoveException("Game is in checkmate. No more moves can be made");
+                sendMessage(ERROR,null,session,"Error:" + " game has checkmate");
             }else if(currentGame.game().isInStalemate(ChessGame.TeamColor.BLACK)
                     ||currentGame.game().isInStalemate(ChessGame.TeamColor.WHITE)){
-                throw new InvalidMoveException("Game is in stalemate. No more moves can be made");
+//                throw new InvalidMoveException("Game is in stalemate. No more moves can be made");
+                sendMessage(ERROR,null,session,"Error:" + " game has stalemate");
             }
             else if((currentGame.game().getTeamTurn().equals(ChessGame.TeamColor.WHITE)
                     && currentGame.whiteUsername().equals(username))
                     || (currentGame.game().getTeamTurn().equals(ChessGame.TeamColor.BLACK)
                     && currentGame.blackUsername().equals(username))) {
+
                 ChessMove move = new ChessMove(data.getMove().getStartPosition(), data.getMove().getEndPosition(), null);
                 currentGame.game().makeMove(move);
 
                 gamedata.updateAfterMove(data.getGameID(), currentGame.game());
+                GameData updatedGame = gamedata.getGame(data.getGameID());
+
+                if(updatedGame.game().isInCheckmate(ChessGame.TeamColor.WHITE)){
+                    broadcastMessage(NOTIFICATION, data.getGameID(), updatedGame.whiteUsername() + " is in CHECKMATE!! Black wins!",null,null);
+                }else if(updatedGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)){
+                    broadcastMessage(NOTIFICATION, data.getGameID(), updatedGame.blackUsername() + " is in CHECKMATE!! White wins!",null,null);
+                }else if(updatedGame.game().isInStalemate(ChessGame.TeamColor.BLACK)){
+                    broadcastMessage(NOTIFICATION, data.getGameID(), updatedGame.blackUsername()+" is in STALEMATE!! No more moves can be made!",null,null);
+                }else if(updatedGame.game().isInStalemate(ChessGame.TeamColor.WHITE)){
+                    broadcastMessage(NOTIFICATION, data.getGameID(), updatedGame.whiteUsername()+" is in STALEMATE!! No more moves can be made!",null,null);
+                }else if(updatedGame.game().isInCheck(ChessGame.TeamColor.WHITE)){
+                    broadcastMessage(NOTIFICATION, data.getGameID(), updatedGame.whiteUsername()+" is in CHECK!!! White is in Check",null,null);
+                }else if(updatedGame.game().isInCheck(ChessGame.TeamColor.BLACK)){
+                    broadcastMessage(NOTIFICATION, data.getGameID(), updatedGame.blackUsername() + " is in CHECK!! Black is in Check!",null,null);
+                }
+
                 //Sends LOAD_GAME message back to everybody
                 sendMessage(LOAD_GAME, data.getGameID(), session, null);
-                broadcastMessage(LOAD_GAME, data.getGameID(), null, session);
+                broadcastMessage(LOAD_GAME, data.getGameID(), null, session, data.getAuthToken());
 
                 int column = data.getMove().getStartPosition().getColumn();
                 int row = data.getMove().getStartPosition().getRow();
@@ -172,8 +203,8 @@ public class WebSocketRequestHandler {
                 String fromRow2 = Integer.toString(row2);
 
                 broadcastMessage(NOTIFICATION, data.getGameID(), authdata.getAuthUsername(data.getAuthToken())
-                        + " moved " + fromColumn +fromRow+ " to "+fromColumn2+fromRow2, session);
-                //ifCheck, stalemate, or checkmate, broadcast and client get message.
+                        + " moved " + fromColumn +fromRow+ " to "+fromColumn2+fromRow2, session, data.getAuthToken());
+
             }else{
                 throw new InvalidMoveException("Not your turn");
             }
@@ -187,12 +218,22 @@ public class WebSocketRequestHandler {
         try {
             String username = authdata.getAuthUsername(data.getAuthToken());
             GameData currentGame = gamedata.getGame(data.getGameID());
-            saveSession(data.getGameID(), session);
+            saveSession(data.getGameID(), session,data.getAuthToken());
 
             sendMessage(LOAD_GAME, data.getGameID(), session, null);
             //Send a LOAD_GAME message back
             //Broadcast to everyone that this client entered with their color or observing status
-            broadcastMessage(NOTIFICATION, currentGame.gameID(), username + " has joined the game", session);
+            String playerPart = "";
+            if(Objects.equals(currentGame.whiteUsername(), authdata.getAuthUsername(data.getAuthToken()))){
+                playerPart = "white";
+            }else if(Objects.equals(currentGame.blackUsername(), username)){
+                playerPart = "black";
+            }else{
+                playerPart = "observer";
+            }
+
+            broadcastMessage(NOTIFICATION, currentGame.gameID(), username + " has joined the game" + " as "
+                    +playerPart, session, data.getAuthToken());
         }catch (Exception e){
             sendMessage(ERROR,null,session,"Error:" + e.getMessage());
         }

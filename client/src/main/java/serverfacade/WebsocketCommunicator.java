@@ -58,6 +58,7 @@ public class WebsocketCommunicator extends Endpoint {
                         setCurrentGame(game);
                         ClientGame.setCurrentGame(game);
 
+
                     }else if(command.getServerMessageType() == NOTIFICATION){
                         NotificationMessage notification = new Gson().fromJson(message, NotificationMessage.class);
                         notificationHandler.notify(notification.getNotificationMessage());
@@ -85,7 +86,7 @@ public class WebsocketCommunicator extends Endpoint {
         //send over the json i think
         WebSocketRequestMakeMove makeMoveObject = new WebSocketRequestMakeMove(UserGameCommand.CommandType.MAKE_MOVE,authToken,gameID,moveObject);
         this.session.getBasicRemote().sendText(new Gson().toJson(makeMoveObject));
-        //reprint the board.
+
     }
 
     public void leaveWs(String authToken, int gameID) throws IOException {

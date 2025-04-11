@@ -2,6 +2,7 @@ package ui;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import model.GameData;
 import serverfacade.ServerMessageObserver;
@@ -18,7 +19,7 @@ public class ClientGame {
 
     Scanner scanner = new Scanner(System.in);
     public static ChessGame gameBoard; //maybe it is because I'm calling a new game?
-    public DrawChessBoard boardDrawer = new DrawChessBoard(); // if I want to change the game I might have to declare this somewhere else
+    public static DrawChessBoard boardDrawer = new DrawChessBoard(); // if I want to change the game I might have to declare this somewhere else
     WebsocketCommunicator ws = new WebsocketCommunicator(gameBoard);
     String authTokenGame = "";
     Integer gameIDGame;
@@ -34,9 +35,17 @@ public class ClientGame {
 
     public static void setCurrentGame(GameData game) {
         gameBoard = game.game();
+        if (Objects.equals(color, "WHITE")){
+            boardDrawer.drawEntireBoardWhiteSide(System.out,gameBoard);
+        }else if(Objects.equals(color, "BLACK")){
+            boardDrawer.drawEntireBoardBlackSide(System.out,gameBoard);
+        }else{
+            boardDrawer.drawEntireBoardWhiteSide(System.out,gameBoard);
+        }
     }
 
-    public void startConnection(String auth, Integer gameID) throws Exception {
+    public void startConnection(String auth, Integer gameID, String playerColor) throws Exception {
+        color = playerColor;
         ws.webSocketFacade(serverUrl,repl);
         ws.connectClient(auth, gameID);
     }
@@ -44,6 +53,7 @@ public class ClientGame {
     public String eval(String input, String playerColor, String authToken, Integer gameID) throws Exception {
         authTokenGame = authToken;
         gameIDGame = gameID;
+        color = playerColor;
 
         try {
 
@@ -82,13 +92,14 @@ public class ClientGame {
                 //delete the black player from game
                 ws.webSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
-            }else if(Objects.equals(playerColor, "observer")){
+            }else if(Objects.equals(playerColor, "observer") || playerColor == null){
                 ws.webSocketFacade(serverUrl,repl);
                 ws.leaveWs(authTokenGame,gameIDGame);
             }
             return "exit";
+        }else{
+            return "Press 'Enter' for game menu options";
         }
-        return "Press 'Enter' for game menu options" ;
     }
 
     private String highlightLegalMoves(String playerColor, PrintStream out) {
@@ -108,6 +119,9 @@ public class ClientGame {
             }else if(Objects.equals(playerColor, "BLACK")){
                 boardDrawer.drawEntireBoardBlackSide(out,gameBoard);
                 boardDrawer.changeHighlightRequest(false, null);
+            }else{
+                boardDrawer.drawEntireBoardWhiteSide(out,gameBoard);
+                boardDrawer.changeHighlightRequest(false, null);
             }
 
         } catch (Exception e) {
@@ -118,13 +132,27 @@ public class ClientGame {
     }
 
     private String resignGame(PrintStream out, String playerColor) throws Exception {
-        if(!playerColor.equals("observer")){
-            ws.webSocketFacade(serverUrl,repl);
-            ws.resignWs(authTokenGame,gameIDGame);
-            return "resign game";
-        }else{
-            throw new Error("observer can't resign game");
+
+        if(playerColor == null){
+            System.out.println("Error: observer can't resign game");
         }
+        else if(!playerColor.equals("observer")){
+            System.out.println("Are you sure you want to resign? (yes/no) ");
+            String responseString = scanner.nextLine();
+            if(Objects.equals(responseString, "yes")){
+                if(Objects.equals(playerColor, "WHITE")){
+                    ws.webSocketFacade(serverUrl,repl);
+                    ws.resignWs(authTokenGame,gameIDGame);
+                    return "exit";
+                }else if(Objects.equals(playerColor, "BLACK")){
+                    ws.webSocketFacade(serverUrl,repl);
+                    ws.resignWs(authTokenGame,gameIDGame);
+                    return "exit";
+                }
+        }else{
+            return "Press 'Enter' for menu";
+        }
+        }return "";
     }
 
     private String makeMove(PrintStream out, String playerColor) throws Exception {
@@ -141,6 +169,10 @@ public class ClientGame {
             }else if((gameBoard.getIsResigned())){
                 return "game resigned, can't make any more moves";
             }
+//            else if((gameBoard.isInCheck(ChessGame.TeamColor.BLACK))||gameBoard.isInCheck(ChessGame.TeamColor.WHITE)){
+//                return "CHECK!!";
+//            }
+
             System.out.println("From Position: ");
             String moveString = scanner.nextLine();
             String columnFromString = moveString.substring(0,1);
@@ -160,7 +192,33 @@ public class ClientGame {
                 ChessPosition requestedCurrentPosition = new ChessPosition(row, col);
                 ChessPosition requestedMovingPosition = new ChessPosition(toRow, toCol);
 
-                ChessMove move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, null);
+                if(gameBoard.getBoard().getPiece(requestedCurrentPosition) == null){
+                    return "not piece at 'from' position";
+                }
+                //Checks promotions
+                ChessMove move;
+                ChessPiece currentSelectedPiece = gameBoard.getBoard().getPiece(requestedCurrentPosition);
+                if(currentSelectedPiece.getPieceType() == ChessPiece.PieceType.PAWN){
+                    if(requestedMovingPosition.getRow() == 1 && currentSelectedPiece.getTeamColor().equals(ChessGame.TeamColor.BLACK)){
+                        System.out.println("Promotion piece (in lowercase) : ");
+                        String promotionPieceString = scanner.nextLine();
+                        //check here if the piece is a promotion piece
+
+                        ChessPiece.PieceType piece = getPieceType(promotionPieceString);
+                        move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, piece);
+                    }else if(requestedMovingPosition.getRow() == 8 && currentSelectedPiece.getTeamColor().equals(ChessGame.TeamColor.WHITE)){
+                        System.out.println("Promotion piece (in lowercase) : ");
+                        String promotionPieceString = scanner.nextLine();
+
+                        ChessPiece.PieceType piece = getPieceType(promotionPieceString);
+                        move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, piece);
+                    }else{
+                        move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, null);
+                    }
+                    move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, null);
+                }else{
+                    move = new ChessMove(requestedCurrentPosition, requestedMovingPosition, null);
+                }
                 ws.webSocketFacade(serverUrl,repl);
                 ws.makeMoveWs(authTokenGame, gameIDGame, move);
 
@@ -174,6 +232,22 @@ public class ClientGame {
 //            throw new Exception("observer can't make moves");
             return "observer can't make moves";
         }
+    }
+
+    private static ChessPiece.PieceType getPieceType(String promotionPieceString) {
+        ChessPiece.PieceType piece;
+        if(Objects.equals(promotionPieceString, "bishop")){
+            piece = ChessPiece.PieceType.BISHOP;
+        }else if(Objects.equals(promotionPieceString, "rook")){
+            piece = ChessPiece.PieceType.ROOK;
+        }else if(Objects.equals(promotionPieceString, "knight")){
+            piece = ChessPiece.PieceType.KNIGHT;
+        }else if(Objects.equals(promotionPieceString, "queen")){
+            piece = ChessPiece.PieceType.QUEEN;
+        }else{
+            piece = null;
+        }
+        return piece;
     }
 
     private Integer convertToNumber(String columnFromString) throws Exception {

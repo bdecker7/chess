@@ -6,43 +6,42 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WebsocketSessions {
     Integer gameID;
-    Session session;
-    HashMap<Integer, Set<Session>> sessionMap = new HashMap<>();
+    HashMap<Integer, HashMap<String,Session>> sessionMap = new HashMap<>();
     public WebsocketSessions(){
 
     }
+    //hashmap with username and authtoken inside hash set
+    public void addSessionToGame(Integer gameID,Session session, String authToken){
+        HashMap<String,Session> finalSessions = new HashMap<String,Session>();
 
-    public void addSessionToGame(Integer gameID,Session session){
-        Set<Session> finalSessions = new HashSet<Session>();
         if(sessionMap.containsKey(gameID)){
-            Set<Session> sessions = sessionMap.get(gameID);
-            finalSessions.addAll(sessions);
-            finalSessions.add(session);
-            sessionMap.put(gameID,finalSessions);
+            //grabs the hashmap
+            HashMap<String,Session> sessions = sessionMap.get(gameID);
+            sessions.put(authToken,session);
+            sessionMap.put(gameID,sessions);
+
         }else{
-            finalSessions.add(session);
+            finalSessions.put(authToken,session);
             sessionMap.put(gameID,finalSessions);}
     }
-    public void removeSessionToGame(Integer gameID,Session session){
-        Set<Session> finalSessions = new HashSet<Session>();
+    public void removeSessionToGame(Integer gameID,Session session,String authToken){
+        HashSet<Session> finalSessions = new HashSet<Session>();
         if(sessionMap.containsKey(gameID)){
-            Set<Session> sessions = sessionMap.get(gameID);
-            for(Session individualSession : sessions){
-                if(!individualSession.equals(session)){
-                    finalSessions.add(individualSession);
-                    sessionMap.put(gameID,finalSessions);
-                }
-            }
-            sessionMap.put(gameID,finalSessions);
+
+            HashMap<String, Session> sessionsToKeep = sessionMap.get(gameID);
+            sessionsToKeep.remove(sessionsToKeep.remove(authToken));
+
+            sessionMap.replace(gameID,sessionsToKeep);
         }else {
             sessionMap.remove(gameID); //check this functionality
         }
 //            sessionMap.put(gameID,finalSessions);}
     }
-    public Set<Session> getSession(Integer gameID){
+    public HashMap<String, Session> getSession(Integer gameID){
         return sessionMap.get(gameID);
     }
 

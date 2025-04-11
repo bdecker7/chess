@@ -57,11 +57,11 @@ public class Repl implements ServerMessageObserver {
                     }else if(Objects.equals(postResult.message(), "WHITE") || Objects.equals(postResult.message(), "BLACK")){
                         status = 2;
                         playerColor = postResult.message();
-                        clientGame.startConnection(clientPostLogin.authToken, postResult.gameID()); // check this!!!
+                        clientGame.startConnection(clientPostLogin.authToken, postResult.gameID(),playerColor); // check this!!!
                     }else if (Objects.equals(postResult.message(), "observer")){
                         status = 2;
                         playerColor = null;
-                        clientGame.startConnection(clientPostLogin.authToken, postResult.gameID()); //check this!!!
+                        clientGame.startConnection(clientPostLogin.authToken, postResult.gameID(),null); //check this!!!
                     }
                     else if(Objects.equals(postResult.message(), "Successful Play")){
                         status = 2;
@@ -76,9 +76,9 @@ public class Repl implements ServerMessageObserver {
                     if(Objects.equals(gameResult, "exit")){
                         status = 1;
                     }
-                    else if(playerColor == null || Objects.equals(gameResult, "observer")){
-                        clientGame.drawChessBoard("observer");
-                    }
+//                    else if(playerColor == null || Objects.equals(gameResult, "observer")){
+//                        clientGame.drawChessBoard("observer");
+//                    }
                     else{
                         status = 2;
                     }
